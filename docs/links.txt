@@ -1,0 +1,5 @@
+LLVM:
+  http://llvm.org/docs/
+  http://habrahabr.ru/post/47878/
+
+
