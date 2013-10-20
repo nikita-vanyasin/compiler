@@ -3,3 +3,10 @@ LLVM:
   http://habrahabr.ru/post/47878/
 
 
+Python grammar spec:
+  http://docs.python.org/2/reference/grammar.html
+
+Indentation - parse problem:
+  en.wikipedia.org/wiki/Off-side_rule
+  http://stackoverflow.com/questions/356638/how-would-you-parse-indentation-python-style/356954#356954
+  http://stackoverflow.com/questions/232682/how-would-you-go-about-implementing-off-side-rule

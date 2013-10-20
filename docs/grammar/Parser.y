@@ -1,49 +1,67 @@
-%namespace PySharpGrammarCheck 
+%namespace PySharpGrammarCheck
 %token
-
-
-abstract 	as 	base 	bool 	break 	byte 	case
-catch 	char 	checked 	class 	const 	continue 	decimal
-default 	delegate 	do 	double 	else 	enum 	event
-explicit 	extern 	false 	finally 	fixed 	float 	for
-foreach 	goto 	if 	implicit 	in 	int 	interface
-internal 	is 	lock 	long 	namespace 	new 	null
-object 	operator 	out 	override 	params 	private 	protected
-public 	readonly 	ref 	return 	sbyte 	sealed 	short
-sizeof 	stackalloc 	static 	string 	struct 	switch 	this
-throw 	true 	try 	typeof 	uint 	ulong 	unchecked
-unsafe 	ushort 	using 	virtual 	void 	volatile 	while
-
-
+ID INTEGER_VALUE BOOL CHAR CLASS CONST ELSE ENUM FALSE
+IF INT PRIVATE PUBLIC RETURN STATIC TRUE
+COMMA ASSIGNMENT LEFT_PAREN RIGHT_PAREN
+LEFT_BRACE RIGHT_BRACE LEFT_BRACKET
+RIGHT_BRACKET PLUS MINUS MULTIPLICATION
+NOT AND OR LT GT GTE LTE COLON INDENT NEWLINE
 %start A
 %%
-        
-A : DAY B KESHE_1
-  | B
-  ;
 
-B : G Bs ;
+PS_PROGRAM : CLASS_DEF
+           ;
 
-G : SVOBODU
-  | C
-  ;
+CLASS_DEF : CLASS ONE_SPACE ID CLASS_BODY
+          ;
 
-Bs : KESHE C Bs
-   | /* eps */
-   ;
+CLASS_BODY : BLOCK_START NEWLINE FIELD_DECLARATIONS NEWLINE METHOD_DECLARATIONS
+           ;
 
-F : NU D TI
-  | PIASTRI
-  ;
+FIELD_DECLARATIONS : INDENT FIELD_DECLARATION NEWLINE
+                   | INDENT FIELD_DECLARATION NEWLINE FIELD_DECLARATIONS
+                   ;
 
-C : F Cs ;
+FIELD_DECLARATION : VISIBILITY_MODIFIER ONE_SPACE STATIC_MODIFIER TYPE_DEFINITION ONE_SPACE ID
+                  ;
 
-Cs : KASHI Cs
-   | /* eps */
-   ;
+VISIBILITY_MODIFIER : PUBLIC
+                    | PRIVATE
+                    ;
 
-D : OH A UGASS
-  | /* eps */
-  ;
-   
+STATIC_MODIFIER : STATIC ONE_SPACE
+                | /* eps */
+                ;
 
+BLOCK_START : COLON NEWLINE
+            ;
+
+TYPE_DEFINITION : BOOL
+                | CHAR
+                | INT
+                ;
+
+METHOD_DECLARATIONS : METHOD_DECLARATION NEWLINE
+                    | METHOD_DECLARATION NEWLINE NEWLINE METHOD_DECLARATIONS
+                    ;
+
+METHOD_DECLARATION : METHOD_HEADER BLOCK_START METHOD_BODY
+                   ;
+
+METHOD_HEADER : INDENT VISIBILITY_MODIFIER ONE_SPACE STATIC_MODIFIER TYPE_DEFINITION ONE_SPACE ID METHOD_ARGS
+              ;
+
+METHOD_ARGS : LEFT_PAREN ARGUMENTS_DEFINITION RIGHT_PAREN
+            ;
+
+ARGUMENTS_DEFINITION : ARGUMENT_DEFINITION
+                     | ARGUMENT_DEFINITION COMMA ONE_SPACE ARGUMENTS_DEFINITION
+                     ;
+
+ARGUMENT_DEFINITION : TYPE_DEF ONE_SPACE ID
+                    ;
+
+METHOD_BODY : METHOD_STATEMENTS
+            ;
+
+METHOD_STATEMENTS : INDENT INDENT STATEMENT
