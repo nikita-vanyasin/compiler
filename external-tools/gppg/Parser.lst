@@ -1,3 +1,14 @@
+
+// ==========================================================================
+//  GPPG error listing for yacc source file <Parser.y - 23.10.2013 23:20:44>
+// ==========================================================================
+//  Version:  1.5.0
+//  Machine:  MYCOMPUTER
+//  DateTime: 23.10.2013 23:54:02
+//  UserName: User
+// ==========================================================================
+
+
 %namespace PySharpGrammarCheck
 %token
 ID INTEGER_VALUE BOOL CHAR CLASS CONST ELSE ENUM FALSE
@@ -164,3 +175,5 @@ COMPARISON : CONDITION_EXPR
 
 COMPARE_OPERATION : LT | GT | GTE | LTE | EQUAL
                   ;
+// ==========================================================================
+
