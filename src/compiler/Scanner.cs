@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace compiler
 {
-    class Scanner
+    public class Scanner
     {
         private int currCharIndex;
         private char currChar;
@@ -53,12 +53,9 @@ namespace compiler
                 case '+': return new Token(TokenType.PLUS, currChar);
                 case '-': return new Token(TokenType.MINUS, currChar);
                 case '*': return new Token(TokenType.MULTIPLICATION, currChar);
-              //  case '/': return SlashSwitchBranch();
                 case '!': return new Token(TokenType.NOT, currChar);
                 case '<': return new Token(TokenType.LT, currChar);
                 case '>': return new Token(TokenType.GT, currChar);
-              //  case '&': return AmpersandSwitchBranch();
-              //  case '|': return PalkaSwitchBranch();
 
                 default: return new Token(TokenType.ERROR);//DefaultSwitchBranch();
             }

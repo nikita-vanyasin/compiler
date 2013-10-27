@@ -22,7 +22,7 @@ namespace compiler
         BLOCK_START, BLOCK_END, PASS, EQUAL, DOT
     }
 
-    class Token
+    public class Token
     {
         public TokenType Type { get; set; }
         public string Attribute { get; set; }
