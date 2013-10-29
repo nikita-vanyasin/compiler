@@ -13,6 +13,7 @@ namespace compiler
 
         ID = 0,
         COLON = 1,
+        SPACE = 2,
         INTEGER_VALUE, BOOL, CHAR, CLASS, CONST, ELSE, ENUM, FALSE,
         IF, INT, PRIVATE, PUBLIC, RETURN, STATIC, TRUE,
         COMMA, ASSIGNMENT, LEFT_PAREN, RIGHT_PAREN,
@@ -65,6 +66,31 @@ namespace compiler
         public static bool IsCorrectToken(Token t)
         {
             return (t.Type != TokenType.EOF) && (t.Type != TokenType.ERROR);
+        }
+    }
+
+    static class TokenFactory
+    {
+        private static Dictionary<string, TokenType> keywords = new Dictionary<string, TokenType>() 
+        {
+                {"return", TokenType.RETURN},
+                {"static", TokenType.STATIC},                
+                {"class", TokenType.CLASS},
+                {"public", TokenType.PUBLIC},
+                {"if", TokenType.IF},
+                {"else", TokenType.ELSE},
+                {"int", TokenType.INT},
+                {"bool", TokenType.BOOL},
+                {"true", TokenType.TRUE},
+                {"false", TokenType.FALSE},
+                {"pass", TokenType.PASS},
+        };
+
+        public static Token CreateByString(string strKeyword)
+        {
+            TokenType type = keywords.ContainsKey(strKeyword) ? keywords[strKeyword]
+                                                              : TokenType.ID;
+            return new Token(type, strKeyword);
         }
     }
 }

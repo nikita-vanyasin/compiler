@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace compiler
 {
-    class TextUtils
+    public static class ExtensionMethods
     {
-        public static string SkipTrailingSpaces(string input)
+        public static bool IsSimpleLatin(this char ch)
         {
-            return input; // TODO: complete!
+            return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
         }
     }
 }
