@@ -2,25 +2,29 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace compiler
 {
+    public class IndentationException : Exception
+    {
+        public IndentationException() { }
+        public IndentationException(string message) : base(message) { }
+        public IndentationException(string message, Exception inner) : base(message, inner) { }
+        protected IndentationException(
+          System.Runtime.Serialization.SerializationInfo info,
+          System.Runtime.Serialization.StreamingContext context)
+            : base(info, context) { }
+    }
+
     public class Scanner
     {
-        private enum ScannerState
-        {
-            NORMAL,
-            WAIT_BLOCK_START,
-            WAIT_BLOCK_END
-        }
-
-        const UInt16 INDENT_SIZE = 4;
+        const ushort INDENT_SIZE = 4;
 
         private BaseScanner baseScanner;
-        private ScannerState currentState;
-        private UInt16 currIndentationLevel;
-        private UInt16 indentSize = INDENT_SIZE;
+        private ushort currIndentationLevel;
+        private ushort indentSize = INDENT_SIZE;
 
         public Scanner()
         {
@@ -36,7 +40,6 @@ namespace compiler
         {
             baseScanner = new BaseScanner();
             currIndentationLevel = 0;
-            currentState = ScannerState.NORMAL;
 
             baseScanner.SetText(text);
         }
@@ -45,19 +48,15 @@ namespace compiler
         {
             Token newToken = GetNextNotSpace();
 
-            // if state is wait for block_start
-            if (newToken.Type == TokenType.COLON)
+            switch (newToken.Type)
             {
-                return ReadBlockStart(/* pass new token here*/);
+                case TokenType.COLON:
+                    return ReadBlockStart(newToken);
+                case TokenType.LINE_END:
+                    return CheckIndentation(newToken);
+                default:
+                    return newToken;
             }
-            // else if state is wait for block end
-            //         if token is line end - check indention
-            //             return block end if indent level уменьшен либо error если увеличен или не совпадает
-            //             switch state
-
-            // store state in stack!!!
-            
-            return newToken;
         }
 
         private Token GetNextNotSpace()
@@ -71,18 +70,115 @@ namespace compiler
             return newToken;
         }
 
-        private Token ReadBlockStart()
+        private Token CheckIndentation(Token currToken)
         {
-            Token newToken = GetNextNotSpace();
-            if (newToken.Type != TokenType.LINE_END)
+            // 1 empty line - skip/ read and return line end
+            // 2 level decreased - if more than 1 level - store in stack and return blockend
+            // 3 level wrong level - return error
+            // 4 right level - return next token
+            
+            ushort counter = 0;
+            Token t;
+            do
             {
-                return new Token(TokenType.ERROR, "at " + baseScanner.GetCurrentPositionAsString() + ": Expected line ending");
+                t = baseScanner.GetForwardToken();
+                if (t.Type == TokenType.SPACE)
+                {
+                    baseScanner.GetNextToken();
+                    ++counter;
+                }
+            } while (t.Type == TokenType.SPACE);
+
+            if (t.Type == TokenType.LINE_END)
+            {
+                return baseScanner.GetNextToken();
+/*
+                baseScanner.GetNextToken();
+                return CheckIndentation(t);*/ // skipping whitespaced line 1
             }
 
-            // read (currIndentionLevel + 1) * indentSize
-            // return block start, or error
-            // switch state
-            
+            if (counter == GetSpacesCount())
+            {
+                return baseScanner.GetNextToken(); // 4
+            }
+
+            if ((counter < GetSpacesCount()) && ((counter % indentSize) == 0)) // 2
+            {
+                counter -= indentSize;
+                /*
+                // store to buffer block ends, that will be pushed away in GetNextToken()
+                if (counter > 0)
+                {
+
+                }*/
+
+                var result = new Token(TokenType.BLOCK_END, currIndentationLevel.ToString());
+
+                LeaveBlock();
+
+                return result;
+            }
+
+            return GetErrorToken("Wrong indentation level."); //3
+        }
+
+        private Token ReadBlockStart(Token currToken)
+        {
+            currToken = GetNextNotSpace();
+            if (currToken.Type != TokenType.LINE_END)
+            {
+                return GetErrorToken("Expected line ending");
+            }
+
+            EnterBlock();
+
+            try
+            {
+                ReadIndents();
+            }
+            catch (IndentationException e)
+            {
+                return GetErrorToken(e.Message);
+            }
+
+            return new Token(TokenType.BLOCK_START, currIndentationLevel.ToString());            
+        }
+
+        private void EnterBlock()
+        {
+            ++currIndentationLevel;
+        }
+
+        private void LeaveBlock()
+        {
+            --currIndentationLevel;
+            Debug.Assert(currIndentationLevel >= 0);
+        }
+
+        private void ReadIndents()
+        {
+            for (var i = 0; i < GetSpacesCount(); ++i)
+            {
+                var t = baseScanner.GetForwardToken();
+                if (t.Type == TokenType.SPACE)
+                {
+                    baseScanner.GetNextToken();
+                }
+                else
+                {
+                    throw new IndentationException("Expected " + GetSpacesCount() + " spaces. Got " + i);
+                }
+            }
+        }
+
+        private int GetSpacesCount()
+        {
+            return indentSize * currIndentationLevel;
+        }
+
+        private Token GetErrorToken(string msg)
+        {
+            return new Token(TokenType.ERROR, "at " + baseScanner.GetCurrentPositionAsString() + ": " + msg);
         }
     }
 }

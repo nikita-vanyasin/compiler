@@ -17,10 +17,12 @@ namespace Test
                 @"  
 class Program:  
     private int temp  
+
     public static int Main():   
-        if ( true) :   
+        if ( true) :
             Console.WriteInt(temp)   
-    return 0  
+        return 0  
+
 "
             );
 
@@ -32,6 +34,7 @@ class Program:
                     new Token(TokenType.INT, "int"),
                     new Token(TokenType.ID, "temp"),
                     new Token(TokenType.LINE_END, "\n"),
+                  //  new Token(TokenType.LINE_END, "\n"),
                     new Token(TokenType.PUBLIC, "public"),
                     new Token(TokenType.STATIC, "static"),
                     new Token(TokenType.INT, "int"),
@@ -50,11 +53,11 @@ class Program:
                             new Token(TokenType.LEFT_PAREN, "("),
                             new Token(TokenType.ID, "temp"),
                             new Token(TokenType.RIGHT_PAREN, ")"),
-                            new Token(TokenType.LINE_END, "\n"),
+                      //      new Token(TokenType.LINE_END, "\n"),
                         new Token(TokenType.BLOCK_END, "3"),
                         new Token(TokenType.RETURN, "return"),
                         new Token(TokenType.INTEGER_VALUE, "0"),
-                        new Token(TokenType.LINE_END, "\n"),
+                  //      new Token(TokenType.LINE_END, "\n"),
                     new Token(TokenType.BLOCK_END, "2"),
                 new Token(TokenType.BLOCK_END, "1"),
                 new Token(TokenType.EOF, "\0")

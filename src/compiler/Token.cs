@@ -77,6 +77,7 @@ namespace compiler
                 {"static", TokenType.STATIC},                
                 {"class", TokenType.CLASS},
                 {"public", TokenType.PUBLIC},
+                {"private", TokenType.PRIVATE},
                 {"if", TokenType.IF},
                 {"else", TokenType.ELSE},
                 {"int", TokenType.INT},

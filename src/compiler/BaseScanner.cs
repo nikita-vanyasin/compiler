@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace compiler
 {
-    class BaseScanner
+    public class BaseScanner
     {
         private int currCharIndex;
         private char currChar;
@@ -18,21 +18,40 @@ namespace compiler
         {
             Reset();
             this.text = text;
-
+            /*
             UpdateCurrChar();
-            SkipWhiteSpaces();
+            SkipWhiteSpaces();*/
         }
 
         public Token GetNextToken()
         {
             if (currCharIndex >= text.Length)
             {
-                return new Token(TokenType.EOF);
+                return new Token(TokenType.EOF, "\0");
             }
 
             UpdateCurrChar();
             Token t = Scan();
             ++currCharIndex;
+
+            return t;
+        }
+
+        public Token GetForwardToken()
+        {
+            if (currCharIndex >= text.Length)
+            {
+                return new Token(TokenType.EOF);
+            }
+
+            // save current state
+            int savedCurrCharIndex = currCharIndex;
+
+            Token t = GetNextToken();
+
+            // restore state
+            currCharIndex = savedCurrCharIndex;
+            UpdateCurrChar();
 
             return t;
         }
@@ -64,10 +83,30 @@ namespace compiler
                 case '!': return new Token(TokenType.NOT, currChar);
                 case '<': return new Token(TokenType.LT, currChar);
                 case '>': return new Token(TokenType.GT, currChar);
+                case '\n': return NewLineBranch();
+                case '\r': return CarriageReturnBranch();
                 case '&': return AmpersandSwitchBranch();
 
                 default: return DefaultSwitchBranch();
             }
+        }
+
+        private Token NewLineBranch()
+        {
+            if (GetNextChar() == '\r')
+            {
+                PeekNext();
+            }
+            return new Token(TokenType.LINE_END, "\n");
+        }
+
+        private Token CarriageReturnBranch()
+        {
+            if (GetNextChar() == '\n')
+            {
+                PeekNext();
+            }
+            return new Token(TokenType.LINE_END, "\n");
         }
 
         private Token AmpersandSwitchBranch()
