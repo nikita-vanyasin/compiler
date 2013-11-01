@@ -57,7 +57,7 @@ class Program:
                         new Token(TokenType.BLOCK_END, "3"),
                         new Token(TokenType.RETURN, "return"),
                         new Token(TokenType.INTEGER_VALUE, "0"),
-                  //      new Token(TokenType.LINE_END, "\n"),
+                        new Token(TokenType.LINE_END, "\n"),
                     new Token(TokenType.BLOCK_END, "2"),
                 new Token(TokenType.BLOCK_END, "1"),
                 new Token(TokenType.EOF, "\0")

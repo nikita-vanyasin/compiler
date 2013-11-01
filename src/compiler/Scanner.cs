@@ -54,9 +54,23 @@ namespace compiler
                     return ReadBlockStart(newToken);
                 case TokenType.LINE_END:
                     return CheckIndentation(newToken);
+                case TokenType.EOF:
+                    return SendBlockClosingTokens(newToken);
                 default:
                     return newToken;
             }
+        }
+
+        private Token SendBlockClosingTokens(Token currToken)
+        {
+            if (currIndentationLevel > 0)
+            {
+                var result = new Token(TokenType.BLOCK_END, currIndentationLevel.ToString());
+                LeaveBlock();
+                return result;
+            }
+
+            return currToken;
         }
 
         private Token GetNextNotSpace()
