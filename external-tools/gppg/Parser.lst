@@ -1,10 +1,10 @@
 
 // ==========================================================================
-//  GPPG error listing for yacc source file <Parser.y - 23.10.2013 23:20:44>
+//  GPPG error listing for yacc source file <Parser.y - 02.01.2014 13:28:48>
 // ==========================================================================
 //  Version:  1.5.0
 //  Machine:  MYCOMPUTER
-//  DateTime: 23.10.2013 23:54:02
+//  DateTime: 02.01.2014 13:28:49
 //  UserName: User
 // ==========================================================================
 
@@ -21,7 +21,7 @@ BLOCK_START BLOCK_END PASS EQUAL DOT
 %start PS_PROGRAM
 %%
 
-PS_PROGRAM : CLASS_DEF
+PS_PROGRAM : CLASS_DEF EOF
            ;
 
 CLASS_DEF : CLASS ID CLASS_BODY
@@ -51,7 +51,7 @@ TYPE_DEFINITION : BOOL
                 ;
 
 METHOD_DECLARATIONS : METHOD_DECLARATION LINE_END
-                    | METHOD_DECLARATION LINE_END LINE_END METHOD_DECLARATIONS
+                    | METHOD_DECLARATION LINE_END METHOD_DECLARATIONS
                     ;
 
 METHOD_DECLARATION : METHOD_HEADER BLOCK_START STATEMENTS_BLOCK BLOCK_END
@@ -83,7 +83,7 @@ STATEMENT : EXPRESSION_STATEMENT
           | ASSIGN_STATEMENT LINE_END
           ;
 
-EXPRESSION_STATEMENT : EXPRESSION LINE_END
+EXPRESSION_STATEMENT : FUNC_CALL LINE_END
                      ;
 
 ASSIGN_STATEMENT : ID ASSIGNMENT EXPRESSION
@@ -93,19 +93,19 @@ IF_STATEMENT : IF_THEN_STATEMENT
              | IF_THEN_STATEMENT ELSE BLOCK_START STATEMENTS_BLOCK BLOCK_END
              ;
 
-IF_THEN_STATEMENT : IF LEFT_PAREN CONDITION_EXPR RIGHT_PAREN BLOCK_START STATEMENTS_BLOCK BLOCK_END
+IF_THEN_STATEMENT : IF LEFT_PAREN OR_TEST RIGHT_PAREN BLOCK_START STATEMENTS_BLOCK BLOCK_END
                   ;
 
 EXPRESSION : TERM EXPRESSION_S
-           | FUNC_CALL
-           ;
+                  | FUNC_CALL
+                  | BOOL_VALUE
+                  ;
 
 EXPRESSION_S : FIRST_PREC_OPERATOR TERM EXPRESSION_S
              | /* eps */
              ;
 
 TERM : SIMPLE_TERM TERM_S
-     | /* eps */
      ;
 
 TERM_S : SECOND_PREC_OPERATOR SIMPLE_TERM TERM_S
@@ -140,22 +140,13 @@ CALL_ARGS : LEFT_PAREN CALL_ARGS_LIST RIGHT_PAREN
           | LEFT_PAREN RIGHT_PAREN
           ;
 
-CALL_ARGS_LIST : CALL_ARG
-               | CALL_ARG COMMA CALL_ARGS_LIST
+CALL_ARGS_LIST : EXPRESSION
+               | EXPRESSION COMMA CALL_ARGS_LIST
                ;
-
-CALL_ARG : CONDITION_EXPR
-         | EXPRESSION
-         ;
 
 BOOL_VALUE : TRUE
            | FALSE
            ;
-
-CONDITION_EXPR : FUNC_CALL
-               | BOOL_VALUE
-               | OR_TEST
-               ;
 
 OR_TEST : AND_TEST
         | AND_TEST OR OR_TEST
@@ -166,12 +157,12 @@ AND_TEST : NOT_TEST
          ;
 
 NOT_TEST : NOT NOT_TEST
-         | COMPARISON
+         | EXPRESSION COMPARISON_S
          ;
 
-COMPARISON : CONDITION_EXPR
-           | CONDITION_EXPR COMPARE_OPERATION COMPARISON
-           ;
+COMPARISON_S : COMPARE_OPERATION EXPRESSION
+             | /* eps */
+             ;
 
 COMPARE_OPERATION : LT | GT | GTE | LTE | EQUAL
                   ;
