@@ -25,8 +25,7 @@ namespace compiler
         private BaseScanner baseScanner;
         private ushort currIndentationLevel;
         private ushort indentSize = INDENT_SIZE;
-        private Token nextToken = null;
-        private Token previousToken = null;
+        private Token nextToken;
 
         public Scanner()
         {
@@ -49,60 +48,39 @@ namespace compiler
 
         public Token GetNextToken()
         {
-            Token result;
             if (nextToken != null)
             {
                 var tmp = nextToken;
                 nextToken = null;
-                result = tmp;
+                return tmp;
             }
-            else
-            {
-                Token newToken = GetNextNotSpace();
 
-                if (newToken.Type == TokenType.LINE_END && previousToken != null && previousToken.Type == TokenType.LINE_END)
-                {
-                    previousToken = null;
+            Token newToken = GetNextNotSpace();
+            Token result;
+
+            switch (newToken.Type)
+            {
+                case TokenType.COLON:
+                    result = ReadBlockStart(newToken);
+                    break;
+                case TokenType.LINE_END:
+                    nextToken = CheckIndentation(newToken);
                     result = newToken;
-                }
-                else
-                {
-                    switch (newToken.Type)
-                    {
-                        case TokenType.COLON:
-                            result = ReadBlockStart(newToken);
-                            break;
-                        case TokenType.LINE_END:
-                            result = CheckIndentation(newToken);
-                            break;
-                        case TokenType.EOF:
-                            result = SendBlockClosingTokens(newToken);
-                            break;
-                        default:
-                            result = newToken;
-                            break;
-                    }
-                }
-                previousToken = result;
-            }            
+                    break;
+                case TokenType.EOF:
+                    result = SendBlockClosingTokens(newToken);
+                    break;
+                default:
+                    result = newToken;
+                    break;
+            }
+
             return result;
         }
 
         public SourcePosition GetSourcePosition()
         {
             return baseScanner.GetSourcePosition();
-        }
-
-        private Token SendBlockClosingTokens(Token currToken)
-        {
-            if (currIndentationLevel > 0)
-            {
-                var result = new Token(TokenType.BLOCK_END, currIndentationLevel.ToString());
-                LeaveBlock();
-                return result;
-            }
-
-            return currToken;
         }
 
         private Token GetNextNotSpace()
@@ -114,6 +92,19 @@ namespace compiler
             } while (newToken.Type == TokenType.SPACE);
 
             return newToken;
+        }
+
+
+        private Token SendBlockClosingTokens(Token currToken)
+        {
+            if (currIndentationLevel > 0)
+            {
+                var result = new Token(TokenType.BLOCK_END, currIndentationLevel.ToString());
+                LeaveBlock();
+                return result;
+            }
+
+            return currToken;
         }
 
         private Token CheckIndentation(Token currToken)
@@ -137,7 +128,7 @@ namespace compiler
             
             if (t.Type == TokenType.LINE_END)
             {
-                return t;
+                return baseScanner.GetNextToken();
             }
 
             if (counter == GetSpacesCount())
@@ -150,11 +141,8 @@ namespace compiler
                 counter -= indentSize;
 
                 var result = new Token(TokenType.BLOCK_END, currIndentationLevel.ToString());
-
                 LeaveBlock();
-
-                this.nextToken = result;
-                return currToken;
+                return result;
             }
 
             return GetErrorToken("Wrong indentation level."); //3
@@ -208,7 +196,7 @@ namespace compiler
                 }
             }
         }
-
+        
         private int GetSpacesCount()
         {
             return indentSize * currIndentationLevel;
