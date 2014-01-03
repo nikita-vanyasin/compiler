@@ -13,26 +13,28 @@ namespace compiler
 {
     public partial class Form1 : Form
     {
-        Scanner scanner;
-
         public Form1()
         {
             InitializeComponent();
-            scanner = new Scanner();
         }
 
         private void ScanFile(string filePath)
         {
-            this.Text = "Dwarves - " + filePath;
             logListBox.Items.Clear();
-            scanner.SetText(File.ReadAllText(filePath));
 
-            Token t;
-            do
+            var text = File.ReadAllText(filePath);
+            var outStream = new FileStream("result.1", FileMode.OpenOrCreate);
+
+            var compiler = new Compiler();
+            if (!compiler.Compile(text, outStream))
             {
-                t = scanner.GetNextToken();
-                txtResultsBox.Text += t + "\n";
-            } while (Token.IsCorrectToken(t));
+                var errorsContainer = compiler.GetErrorsContainer();
+                logListBox.Items.AddRange(errorsContainer.GetAll());
+            }
+            else
+            {
+                logListBox.Items.Add("Compiled successfully!");
+            }
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)

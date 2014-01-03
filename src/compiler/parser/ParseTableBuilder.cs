@@ -1,7 +1,28 @@
-// PARSE ACTIONS DICTIONARY
-public Dictionary<KeyValuePair<int, TokenType>, ParseAction> CreateActionsTable()
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace compiler
 {
-return new Dictionary<KeyValuePair<int, TokenType>, ParseAction>()
+    class ParseTableBuilder
+    {
+        public static ParseTable Build()
+        {
+            var builder = new ParseTableBuilder();
+
+            var table = new ParseTable();
+            table.SetActionsTable(builder.CreateActionsTable());
+            table.SetGoToTable(builder.CreateGoToTable());
+            table.SetProductionsInfoTable(builder.CreateProductionsInfo());
+            return table;
+        }
+
+        // PARSE ACTIONS DICTIONARY
+        public Dictionary<KeyValuePair<int, TokenType>, ParseAction> CreateActionsTable()
+        {
+            return new Dictionary<KeyValuePair<int, TokenType>, ParseAction>()
 {
 	{ new KeyValuePair<int, TokenType>(30, TokenType.EQUAL), new ParseAction(ParseActionKind.REDUCE, 37) },
 	{ new KeyValuePair<int, TokenType>(31, TokenType.EQUAL), new ParseAction(ParseActionKind.REDUCE, 36) },
@@ -518,13 +539,13 @@ return new Dictionary<KeyValuePair<int, TokenType>, ParseAction>()
 	{ new KeyValuePair<int, TokenType>(5, TokenType.EOF), new ParseAction(ParseActionKind.REDUCE, 2) },
 	{ new KeyValuePair<int, TokenType>(10, TokenType.EOF), new ParseAction(ParseActionKind.REDUCE, 3) }
 };
-}
+        }
 
 
-// GOTO DICTIONARY 
-public Dictionary<KeyValuePair<int, string>, int> CreateGoToTable()
-{
-return new Dictionary<KeyValuePair<int, string>, int>()
+        // GOTO DICTIONARY 
+        public Dictionary<KeyValuePair<int, string>, int> CreateGoToTable()
+        {
+            return new Dictionary<KeyValuePair<int, string>, int>()
 {
 	{ new KeyValuePair<int, string>(0, "PS_PROGRAM"), 1},
 	{ new KeyValuePair<int, string>(0, "CLASS_DEF"), 2},
@@ -683,14 +704,14 @@ return new Dictionary<KeyValuePair<int, string>, int>()
 	{ new KeyValuePair<int, string>(97, "NOT_TEST"), 98},
 	{ new KeyValuePair<int, string>(88, "COMPARISON_S"), 89},
 	{ new KeyValuePair<int, string>(88, "COMPARE_OPERATION"), 90}
-} ;
-}
+};
+        }
 
 
-// PRODUCTIONS 
-public Dictionary<int, ProductionInfo> CreateProductionsInfo()
-{
-return new Dictionary<int, ProductionInfo>()
+        // PRODUCTIONS 
+        public Dictionary<int, ProductionInfo> CreateProductionsInfo()
+        {
+            return new Dictionary<int, ProductionInfo>()
 {
 {1, new ProductionInfo("PS_PROGRAM", 1, "")}, // #PS_PROGRAM #CLASS_DEF
 {2, new ProductionInfo("CLASS_DEF", 3, "")}, // #CLASS_DEF CLASS ID #CLASS_BODY
@@ -766,4 +787,9 @@ return new Dictionary<int, ProductionInfo>()
 {72, new ProductionInfo("COMPARE_OPERATION", 1, "")}, // #COMPARE_OPERATION LTE
 {73, new ProductionInfo("COMPARE_OPERATION", 1, "")} // #COMPARE_OPERATION EQUAL
 };
+        }
+
+
+
+    }
 }

@@ -53,6 +53,7 @@
     <Compile Include="ScannerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BaseScannerTest.cs" />
+    <Compile Include="ParserTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\compiler\compiler.csproj">

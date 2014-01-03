@@ -18,9 +18,6 @@ namespace compiler
         {
             Reset();
             this.text = text;
-            /*
-            UpdateCurrChar();
-            SkipWhiteSpaces();*/
         }
 
         public Token GetNextToken()
@@ -54,6 +51,14 @@ namespace compiler
             UpdateCurrChar();
 
             return t;
+        }
+
+        public SourcePosition GetSourcePosition()
+        {
+            var pos = new SourcePosition();
+            pos.Line = TextUtils.GetLineNumber(text, currCharIndex);
+            pos.Column = TextUtils.GetColumnNumber(text, currCharIndex);
+            return pos;
         }
 
         public string GetCurrentPositionAsString()
@@ -149,7 +154,7 @@ namespace compiler
 
         private Token GetErrorToken()
         {
-            string errMsg = "at " + GetCurrentPositionAsString() + ": Unknown token";
+            string errMsg = "Unknown token";
             return new Token(TokenType.ERROR, errMsg);
         }
 

@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using compiler;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Test
 {
@@ -34,7 +35,7 @@ class Program:
                     new Token(TokenType.INT, "int"),
                     new Token(TokenType.ID, "temp"),
                     new Token(TokenType.LINE_END, "\n"),
-                  //  new Token(TokenType.LINE_END, "\n"),
+                    new Token(TokenType.LINE_END, "\n"),
                     new Token(TokenType.PUBLIC, "public"),
                     new Token(TokenType.STATIC, "static"),
                     new Token(TokenType.INT, "int"),
@@ -53,7 +54,7 @@ class Program:
                             new Token(TokenType.LEFT_PAREN, "("),
                             new Token(TokenType.ID, "temp"),
                             new Token(TokenType.RIGHT_PAREN, ")"),
-                      //      new Token(TokenType.LINE_END, "\n"),
+                            new Token(TokenType.LINE_END, "\n"),
                         new Token(TokenType.BLOCK_END, "3"),
                         new Token(TokenType.RETURN, "return"),
                         new Token(TokenType.INTEGER_VALUE, "0"),
@@ -68,6 +69,15 @@ class Program:
             do
             {
                 t = s.GetNextToken();
+
+                if (i == 29)
+                {
+                    Trace.Write("bug!");
+                }
+
+                Trace.Write("asserting[" + i + "] that " + expectation[i].Type + " equal " + t.Type);
+                Trace.WriteLine("and " + expectation[i].Attribute + " equal " + t.Attribute);
+
                 Assert.AreEqual(expectation[i].Type, t.Type);
                 Assert.AreEqual(expectation[i].Attribute, t.Attribute);
                 ++i;

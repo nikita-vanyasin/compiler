@@ -25,6 +25,8 @@ namespace compiler
         private BaseScanner baseScanner;
         private ushort currIndentationLevel;
         private ushort indentSize = INDENT_SIZE;
+        private Token nextToken = null;
+        private Token previousToken = null;
 
         public Scanner()
         {
@@ -42,23 +44,53 @@ namespace compiler
             currIndentationLevel = 0;
 
             baseScanner.SetText(text);
+            SkipWhiteSpaces();
         }
 
         public Token GetNextToken()
         {
-            Token newToken = GetNextNotSpace();
-
-            switch (newToken.Type)
+            Token result;
+            if (nextToken != null)
             {
-                case TokenType.COLON:
-                    return ReadBlockStart(newToken);
-                case TokenType.LINE_END:
-                    return CheckIndentation(newToken);
-                case TokenType.EOF:
-                    return SendBlockClosingTokens(newToken);
-                default:
-                    return newToken;
+                var tmp = nextToken;
+                nextToken = null;
+                result = tmp;
             }
+            else
+            {
+                Token newToken = GetNextNotSpace();
+
+                if (newToken.Type == TokenType.LINE_END && previousToken != null && previousToken.Type == TokenType.LINE_END)
+                {
+                    previousToken = null;
+                    result = newToken;
+                }
+                else
+                {
+                    switch (newToken.Type)
+                    {
+                        case TokenType.COLON:
+                            result = ReadBlockStart(newToken);
+                            break;
+                        case TokenType.LINE_END:
+                            result = CheckIndentation(newToken);
+                            break;
+                        case TokenType.EOF:
+                            result = SendBlockClosingTokens(newToken);
+                            break;
+                        default:
+                            result = newToken;
+                            break;
+                    }
+                }
+                previousToken = result;
+            }            
+            return result;
+        }
+
+        public SourcePosition GetSourcePosition()
+        {
+            return baseScanner.GetSourcePosition();
         }
 
         private Token SendBlockClosingTokens(Token currToken)
@@ -86,7 +118,7 @@ namespace compiler
 
         private Token CheckIndentation(Token currToken)
         {
-            // 1 empty line - skip/ read and return line end
+            // 1 empty line - skip / read and return line end
             // 2 level decreased - if more than 1 level - store in stack and return blockend
             // 3 level wrong level - return error
             // 4 right level - return next token
@@ -102,13 +134,10 @@ namespace compiler
                     ++counter;
                 }
             } while (t.Type == TokenType.SPACE);
-
+            
             if (t.Type == TokenType.LINE_END)
             {
-                return baseScanner.GetNextToken();
-/*
-                baseScanner.GetNextToken();
-                return CheckIndentation(t);*/ // skipping whitespaced line 1
+                return t;
             }
 
             if (counter == GetSpacesCount())
@@ -119,18 +148,13 @@ namespace compiler
             if ((counter < GetSpacesCount()) && ((counter % indentSize) == 0)) // 2
             {
                 counter -= indentSize;
-                /*
-                // store to buffer block ends, that will be pushed away in GetNextToken()
-                if (counter > 0)
-                {
-
-                }*/
 
                 var result = new Token(TokenType.BLOCK_END, currIndentationLevel.ToString());
 
                 LeaveBlock();
 
-                return result;
+                this.nextToken = result;
+                return currToken;
             }
 
             return GetErrorToken("Wrong indentation level."); //3
@@ -193,6 +217,16 @@ namespace compiler
         private Token GetErrorToken(string msg)
         {
             return new Token(TokenType.ERROR, "at " + baseScanner.GetCurrentPositionAsString() + ": " + msg);
+        }
+
+        private void SkipWhiteSpaces()
+        {
+            Token t = baseScanner.GetForwardToken();
+            while (t.Type == TokenType.SPACE || t.Type == TokenType.LINE_END)
+            {
+                baseScanner.GetNextToken();
+                t = baseScanner.GetForwardToken();
+            }
         }
     }
 }

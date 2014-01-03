@@ -1,10 +1,10 @@
 
 // ==========================================================================
-//  GPPG error listing for yacc source file <Parser.y - 02.01.2014 13:28:48>
+//  GPPG error listing for yacc source file <Parser.y - 03.01.2014 15:37:37>
 // ==========================================================================
 //  Version:  1.5.0
 //  Machine:  MYCOMPUTER
-//  DateTime: 02.01.2014 13:28:49
+//  DateTime: 03.01.2014 15:38:15
 //  UserName: User
 // ==========================================================================
 
@@ -17,7 +17,7 @@ COMMA ASSIGNMENT LEFT_PAREN RIGHT_PAREN
 LEFT_BRACE RIGHT_BRACE LEFT_BRACKET
 RIGHT_BRACKET PLUS MINUS MULTIPLICATION DIV MOD
 NOT AND OR LT GT GTE LTE LINE_END
-BLOCK_START BLOCK_END PASS EQUAL DOT
+BLOCK_START BLOCK_END PASS EQUAL DOT EOF
 %start PS_PROGRAM
 %%
 
@@ -27,7 +27,7 @@ PS_PROGRAM : CLASS_DEF EOF
 CLASS_DEF : CLASS ID CLASS_BODY
           ;
 
-CLASS_BODY : BLOCK_START LINE_END FIELD_DECLARATIONS LINE_END METHOD_DECLARATIONS BLOCK_END
+CLASS_BODY : BLOCK_START FIELD_DECLARATIONS LINE_END METHOD_DECLARATIONS BLOCK_END
            ;
 
 FIELD_DECLARATIONS : FIELD_DECLARATION LINE_END
@@ -61,6 +61,7 @@ METHOD_HEADER : VISIBILITY_MODIFIER STATIC_MODIFIER TYPE_DEFINITION ID METHOD_AR
               ;
 
 METHOD_ARGS : LEFT_PAREN ARGUMENTS_DEFINITION RIGHT_PAREN
+            | LEFT_PAREN RIGHT_PAREN
             ;
 
 ARGUMENTS_DEFINITION : ARGUMENT_DEFINITION
