@@ -95,14 +95,12 @@ namespace compiler
 
         private void Log(string message)
         {
-            Trace.Write(message);
-        //    Console.Write(message);
+        //    Trace.Write(message);
         }
 
         private void LogLine(string message = "")
         {
-            Trace.WriteLine(message);
-         //   Console.WriteLine(message);
+          //  Trace.WriteLine(message);
         }
     }
 }

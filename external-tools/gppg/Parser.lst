@@ -1,10 +1,10 @@
 
 // ==========================================================================
-//  GPPG error listing for yacc source file <Parser.y - 03.01.2014 15:37:37>
+//  GPPG error listing for yacc source file <Parser.y - 04.01.2014 1:26:13>
 // ==========================================================================
 //  Version:  1.5.0
 //  Machine:  MYCOMPUTER
-//  DateTime: 03.01.2014 15:38:15
+//  DateTime: 04.01.2014 1:26:15
 //  UserName: User
 // ==========================================================================
 
@@ -27,14 +27,15 @@ PS_PROGRAM : CLASS_DEF EOF
 CLASS_DEF : CLASS ID CLASS_BODY
           ;
 
-CLASS_BODY : BLOCK_START FIELD_DECLARATIONS LINE_END METHOD_DECLARATIONS BLOCK_END
+CLASS_BODY : BLOCK_START CLASS_DECLARATIONS BLOCK_END
            ;
 
-FIELD_DECLARATIONS : FIELD_DECLARATION LINE_END
-                   | FIELD_DECLARATION LINE_END FIELD_DECLARATIONS
+CLASS_DECLARATIONS : FIELD_DECLARATION CLASS_DECLARATIONS
+                   | METHOD_DECLARATION CLASS_DECLARATIONS
+                   | /* eps */
                    ;
 
-FIELD_DECLARATION : VISIBILITY_MODIFIER STATIC_MODIFIER TYPE_DEFINITION ID
+FIELD_DECLARATION : VISIBILITY_MODIFIER STATIC_MODIFIER TYPE_DEFINITION ID LINE_END
                   ;
 
 VISIBILITY_MODIFIER : PUBLIC
@@ -49,10 +50,6 @@ TYPE_DEFINITION : BOOL
                 | CHAR
                 | INT
                 ;
-
-METHOD_DECLARATIONS : METHOD_DECLARATION LINE_END
-                    | METHOD_DECLARATION LINE_END METHOD_DECLARATIONS
-                    ;
 
 METHOD_DECLARATION : METHOD_HEADER BLOCK_START STATEMENTS_BLOCK BLOCK_END
                    ;
@@ -79,13 +76,11 @@ STATEMENTS : STATEMENT
            | STATEMENT STATEMENTS
            ;
 
-STATEMENT : EXPRESSION_STATEMENT
+STATEMENT : FUNC_CALL LINE_END
           | IF_STATEMENT
           | ASSIGN_STATEMENT LINE_END
+          | RETURN EXPRESSION LINE_END
           ;
-
-EXPRESSION_STATEMENT : FUNC_CALL LINE_END
-                     ;
 
 ASSIGN_STATEMENT : ID ASSIGNMENT EXPRESSION
                  ;
@@ -98,9 +93,9 @@ IF_THEN_STATEMENT : IF LEFT_PAREN OR_TEST RIGHT_PAREN BLOCK_START STATEMENTS_BLO
                   ;
 
 EXPRESSION : TERM EXPRESSION_S
-                  | FUNC_CALL
-                  | BOOL_VALUE
-                  ;
+           | FUNC_CALL
+           | BOOL_VALUE
+           ;
 
 EXPRESSION_S : FIRST_PREC_OPERATOR TERM EXPRESSION_S
              | /* eps */

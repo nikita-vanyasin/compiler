@@ -25,7 +25,7 @@ namespace compiler
         private BaseScanner baseScanner;
         private ushort currIndentationLevel;
         private ushort indentSize = INDENT_SIZE;
-        private Token nextToken;
+        private Token nextToken = null;
 
         public Scanner()
         {
@@ -64,8 +64,7 @@ namespace compiler
                     result = ReadBlockStart(newToken);
                     break;
                 case TokenType.LINE_END:
-                    nextToken = CheckIndentation(newToken);
-                    result = newToken;
+                    result = CheckIndentation(newToken);
                     break;
                 case TokenType.EOF:
                     result = SendBlockClosingTokens(newToken);
@@ -109,7 +108,7 @@ namespace compiler
 
         private Token CheckIndentation(Token currToken)
         {
-            // 1 empty line - skip / read and return line end
+            // 1 empty line - skip 
             // 2 level decreased - if more than 1 level - store in stack and return blockend
             // 3 level wrong level - return error
             // 4 right level - return next token
@@ -124,25 +123,25 @@ namespace compiler
                     baseScanner.GetNextToken();
                     ++counter;
                 }
-            } while (t.Type == TokenType.SPACE);
+                else if (t.Type == TokenType.LINE_END)
+                {
+                    baseScanner.GetNextToken();
+                    counter = 0;
+                }
+            } while (t.Type == TokenType.SPACE || t.Type == TokenType.LINE_END);
             
-            if (t.Type == TokenType.LINE_END)
-            {
-                return baseScanner.GetNextToken();
-            }
-
             if (counter == GetSpacesCount())
             {
-                return baseScanner.GetNextToken(); // 4
+                nextToken = baseScanner.GetNextToken(); // 4
+                return currToken;
             }
 
             if ((counter < GetSpacesCount()) && ((counter % indentSize) == 0)) // 2
             {
-                counter -= indentSize;
-
                 var result = new Token(TokenType.BLOCK_END, currIndentationLevel.ToString());
                 LeaveBlock();
-                return result;
+                nextToken = result;
+                return currToken;
             }
 
             return GetErrorToken("Wrong indentation level."); //3
@@ -190,7 +189,12 @@ namespace compiler
                 {
                     baseScanner.GetNextToken();
                 }
-                else
+                else if (t.Type == TokenType.LINE_END)
+                {
+                    baseScanner.GetNextToken();
+                    i = 0;
+                }
+                else if (t.Type != TokenType.EOF)
                 {
                     throw new IndentationException("Expected " + GetSpacesCount() + " spaces. Got " + i);
                 }
