@@ -250,17 +250,9 @@ namespace compiler
         // #STATEMENTS_BLOCK #STATEMENTS
         private void ConstructStatementsBlock()
         {
-            var statementsList = new List<AstStatement>();
+            var astStatementsList = nodes.Pop() as AstStatementsList;
 
-            var curr = nodes.Peek();
-            while (curr is AstStatement)
-            {
-                nodes.Pop();
-                statementsList.Add(curr as AstStatement);
-                curr = nodes.Peek();
-            }
-
-            var block = new AstStatementsBlock(statementsList);
+            var block = new AstStatementsBlock(astStatementsList);
             nodes.Push(block);
         }
 
@@ -268,18 +260,30 @@ namespace compiler
         private void ConstructPassStatementsBlock()
         {
             var statementsList = new List<AstStatement>();
-            var block = new AstStatementsBlock(statementsList);
+            var astStatementsList = new AstStatementsList(statementsList);
+            var block = new AstStatementsBlock(astStatementsList);
             nodes.Push(block);
         }
 
-        // #STATEMENTS #STATEMENT
-        private void ConstructOneStatements()
+        // #STATEMENTS #STATEMENT #STATEMENTS_S
+        private void ConstructStatements()
+        {
+            var list = nodes.Pop() as AstStatementsList;
+            var oneMore = nodes.Pop() as AstStatement;
+
+            list.Statements.Add(oneMore);
+            nodes.Push(list);
+        }
+
+        // #STATEMENTS_S #STATEMENTS
+        private void ConstructStatementsS()
         {
         }
 
-        // #STATEMENTS #STATEMENT #STATEMENTS
-        private void ConstructStatements()
+        // #STATEMENTS_S
+        private void ConstructStatementsEmptyS()
         {
+            nodes.Push(new AstStatementsList(new List<AstStatement>()));
         }
 
         // #STATEMENT ////////////////
@@ -350,7 +354,7 @@ namespace compiler
             var thenBlock = nodes.Pop() as AstStatementsBlock;
             var orTest = nodes.Pop() as AstExpression;
 
-            var elseBlock = new AstStatementsBlock(new List<AstStatement>());
+            var elseBlock = new AstStatementsBlock(new AstStatementsList(new List<AstStatement>()));
             var ifThenStmt = new AstIfStatement(orTest, thenBlock, elseBlock);
             nodes.Push(ifThenStmt);
         }

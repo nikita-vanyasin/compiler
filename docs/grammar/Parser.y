@@ -60,10 +60,13 @@ ARGUMENT_DEFINITION : TYPE_DEFINITION ID
 STATEMENTS_BLOCK : STATEMENTS
                  | PASS LINE_END
                  ;
-
-STATEMENTS : STATEMENT
-           | STATEMENT STATEMENTS
+              
+STATEMENTS : STATEMENT STATEMENTS_S
            ;
+
+STATEMENTS_S : STATEMENTS
+             | /* eps */
+             ;
 
 STATEMENT : FUNC_CALL LINE_END
           | IF_STATEMENT

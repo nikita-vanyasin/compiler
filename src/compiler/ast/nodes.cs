@@ -132,11 +132,21 @@ namespace compiler
 
     class AstStatementsBlock : AstNode
     {
-        public List<AstStatement> Statements { get; protected set; }
+        public AstStatementsList Statements { get; protected set; }
 
-        public AstStatementsBlock(List<AstStatement> statements)
+        public AstStatementsBlock(AstStatementsList statements)
         {
             Statements = statements;
+        }
+    }
+
+    class AstStatementsList : AstNode
+    {
+        public List<AstStatement> Statements { get; protected set; }
+
+        public AstStatementsList(List<AstStatement> list)
+        {
+            Statements = list;
         }
     }
 
