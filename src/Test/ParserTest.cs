@@ -70,13 +70,29 @@ class Program:
             var text = @"  
 class Program:  
     private int temp  
-
+    private int i
+    private bool c
     public static int Main():   
-        int i = 0
-        bool b = 1 < 2  
-        bool c = false
+        i = 0
+        c = false
         temp = i 
         return temp  
+
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+        }
+
+        [TestMethod]
+        public void TestInvalidAssignment()
+        {
+            Parser p = new Parser();
+            var text = @"  
+class Program:  
+    private bool b
+    public static int Main():   
+        b = 1 < 2  
+        return 0  
 
 ";
             var res = p.Parse(text);
@@ -89,16 +105,16 @@ class Program:
             Parser p = new Parser();
             var text = @"  
 class Program:   
-
+    private int a
     public static int Main():   
-        int i = foo(2)
-        return i  
+        a = foo(2)
+        return a
     private int foo(int i):
         return i
 
 ";
             var res = p.Parse(text);
-            Assert.IsFalse(res);
+            Assert.IsTrue(res);
         }
 
         [TestMethod]
@@ -107,14 +123,15 @@ class Program:
             Parser p = new Parser();
             var text = @"  
 class Program:   
-
+    private int a
+    private int i
     public static int Main():   
-        int a = 0
-        int i = 1 + a
+        a = 0
+        i = 1 + a
         return i  
 ";
             var res = p.Parse(text);
-            Assert.IsFalse(res);
+            Assert.IsTrue(res);
         }
     }
 }
