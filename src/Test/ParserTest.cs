@@ -80,7 +80,7 @@ class Program:
 
 ";
             var res = p.Parse(text);
-            Assert.IsTrue(res);
+            Assert.IsFalse(res);
         }
 
         [TestMethod]
@@ -98,7 +98,7 @@ class Program:
 
 ";
             var res = p.Parse(text);
-            Assert.IsTrue(res);
+            Assert.IsFalse(res);
         }
 
         [TestMethod]
@@ -114,7 +114,7 @@ class Program:
         return i  
 ";
             var res = p.Parse(text);
-            Assert.IsTrue(res);
+            Assert.IsFalse(res);
         }
     }
 }
