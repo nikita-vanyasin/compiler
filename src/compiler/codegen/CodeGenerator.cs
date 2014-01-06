@@ -7,7 +7,7 @@ using System.IO;
 
 namespace compiler
 {
-    abstract class CodeGenerator : ErrorsEventDispatcher
+    abstract class CodeGenerator : ErrorsEventDispatcher, AstNodeVisitor
     {
         abstract public bool Generate(AstNode astRootNode, Stream outStream);
     }

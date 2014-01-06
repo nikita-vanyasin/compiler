@@ -726,78 +726,78 @@ namespace compiler
         {
             return new Dictionary<int, ProductionInfo>()
 {
-{1, new ProductionInfo("PS_PROGRAM", 2, "")}, // #PS_PROGRAM #CLASS_DEF EOF
-{2, new ProductionInfo("CLASS_DEF", 3, "")}, // #CLASS_DEF CLASS ID #CLASS_BODY
-{3, new ProductionInfo("CLASS_BODY", 3, "")}, // #CLASS_BODY BLOCK_START #CLASS_DECLARATIONS BLOCK_END
-{4, new ProductionInfo("CLASS_DECLARATIONS", 2, "")}, // #CLASS_DECLARATIONS #FIELD_DECLARATION #CLASS_DECLARATIONS
-{5, new ProductionInfo("CLASS_DECLARATIONS", 2, "")}, // #CLASS_DECLARATIONS #METHOD_DECLARATION #CLASS_DECLARATIONS
-{6, new ProductionInfo("CLASS_DECLARATIONS", 0, "")}, // #CLASS_DECLARATIONS
-{7, new ProductionInfo("FIELD_DECLARATION", 5, "")}, // #FIELD_DECLARATION #VISIBILITY_MODIFIER #STATIC_MODIFIER #TYPE_DEFINITION ID LINE_END
-{8, new ProductionInfo("VISIBILITY_MODIFIER", 1, "")}, // #VISIBILITY_MODIFIER PUBLIC
-{9, new ProductionInfo("VISIBILITY_MODIFIER", 1, "")}, // #VISIBILITY_MODIFIER PRIVATE
-{10, new ProductionInfo("STATIC_MODIFIER", 1, "")}, // #STATIC_MODIFIER STATIC
-{11, new ProductionInfo("STATIC_MODIFIER", 0, "")}, // #STATIC_MODIFIER
-{12, new ProductionInfo("TYPE_DEFINITION", 1, "")}, // #TYPE_DEFINITION BOOL
-{13, new ProductionInfo("TYPE_DEFINITION", 1, "")}, // #TYPE_DEFINITION CHAR
-{14, new ProductionInfo("TYPE_DEFINITION", 1, "")}, // #TYPE_DEFINITION INT
-{15, new ProductionInfo("METHOD_DECLARATION", 4, "")}, // #METHOD_DECLARATION #METHOD_HEADER BLOCK_START #STATEMENTS_BLOCK BLOCK_END
-{16, new ProductionInfo("METHOD_HEADER", 5, "")}, // #METHOD_HEADER #VISIBILITY_MODIFIER #STATIC_MODIFIER #TYPE_DEFINITION ID #METHOD_ARGS
-{17, new ProductionInfo("METHOD_ARGS", 3, "")}, // #METHOD_ARGS LEFT_PAREN #ARGUMENTS_DEFINITION RIGHT_PAREN
-{18, new ProductionInfo("METHOD_ARGS", 2, "")}, // #METHOD_ARGS LEFT_PAREN RIGHT_PAREN
-{19, new ProductionInfo("ARGUMENTS_DEFINITION", 1, "")}, // #ARGUMENTS_DEFINITION #ARGUMENT_DEFINITION
-{20, new ProductionInfo("ARGUMENTS_DEFINITION", 3, "")}, // #ARGUMENTS_DEFINITION #ARGUMENT_DEFINITION COMMA #ARGUMENTS_DEFINITION
-{21, new ProductionInfo("ARGUMENT_DEFINITION", 2, "")}, // #ARGUMENT_DEFINITION #TYPE_DEFINITION ID
-{22, new ProductionInfo("STATEMENTS_BLOCK", 1, "")}, // #STATEMENTS_BLOCK #STATEMENTS
-{23, new ProductionInfo("STATEMENTS_BLOCK", 2, "")}, // #STATEMENTS_BLOCK PASS LINE_END
-{24, new ProductionInfo("STATEMENTS", 1, "")}, // #STATEMENTS #STATEMENT
-{25, new ProductionInfo("STATEMENTS", 2, "")}, // #STATEMENTS #STATEMENT #STATEMENTS
-{26, new ProductionInfo("STATEMENT", 2, "")}, // #STATEMENT #FUNC_CALL LINE_END
-{27, new ProductionInfo("STATEMENT", 1, "")}, // #STATEMENT #IF_STATEMENT
-{28, new ProductionInfo("STATEMENT", 2, "")}, // #STATEMENT #ASSIGN_STATEMENT LINE_END
-{29, new ProductionInfo("STATEMENT", 3, "")}, // #STATEMENT RETURN #EXPRESSION LINE_END
-{30, new ProductionInfo("ASSIGN_STATEMENT", 3, "")}, // #ASSIGN_STATEMENT ID ASSIGNMENT #EXPRESSION
-{31, new ProductionInfo("IF_STATEMENT", 1, "")}, // #IF_STATEMENT #IF_THEN_STATEMENT
-{32, new ProductionInfo("IF_STATEMENT", 5, "")}, // #IF_STATEMENT #IF_THEN_STATEMENT ELSE BLOCK_START #STATEMENTS_BLOCK BLOCK_END
-{33, new ProductionInfo("IF_THEN_STATEMENT", 7, "")}, // #IF_THEN_STATEMENT IF LEFT_PAREN #OR_TEST RIGHT_PAREN BLOCK_START #STATEMENTS_BLOCK BLOCK_END
-{34, new ProductionInfo("EXPRESSION", 2, "")}, // #EXPRESSION #TERM #EXPRESSION_S
-{35, new ProductionInfo("EXPRESSION", 1, "")}, // #EXPRESSION #FUNC_CALL
-{36, new ProductionInfo("EXPRESSION", 1, "")}, // #EXPRESSION #BOOL_VALUE
-{37, new ProductionInfo("EXPRESSION_S", 3, "")}, // #EXPRESSION_S #FIRST_PREC_OPERATOR #TERM #EXPRESSION_S
-{38, new ProductionInfo("EXPRESSION_S", 0, "")}, // #EXPRESSION_S
-{39, new ProductionInfo("TERM", 2, "")}, // #TERM #SIMPLE_TERM #TERM_S
-{40, new ProductionInfo("TERM_S", 3, "")}, // #TERM_S #SECOND_PREC_OPERATOR #SIMPLE_TERM #TERM_S
-{41, new ProductionInfo("TERM_S", 0, "")}, // #TERM_S
-{42, new ProductionInfo("SIMPLE_TERM", 3, "")}, // #SIMPLE_TERM LEFT_PAREN #EXPRESSION RIGHT_PAREN
-{43, new ProductionInfo("SIMPLE_TERM", 1, "")}, // #SIMPLE_TERM ID
-{44, new ProductionInfo("SIMPLE_TERM", 1, "")}, // #SIMPLE_TERM INTEGER_VALUE
-{45, new ProductionInfo("FIRST_PREC_OPERATOR", 1, "")}, // #FIRST_PREC_OPERATOR PLUS
-{46, new ProductionInfo("FIRST_PREC_OPERATOR", 1, "")}, // #FIRST_PREC_OPERATOR MINUS
-{47, new ProductionInfo("SECOND_PREC_OPERATOR", 1, "")}, // #SECOND_PREC_OPERATOR MULTIPLICATION
-{48, new ProductionInfo("SECOND_PREC_OPERATOR", 1, "")}, // #SECOND_PREC_OPERATOR DIV
-{49, new ProductionInfo("SECOND_PREC_OPERATOR", 1, "")}, // #SECOND_PREC_OPERATOR MOD
-{50, new ProductionInfo("FUNC_CALL", 1, "")}, // #FUNC_CALL #THIS_METHOD_CALL
-{51, new ProductionInfo("FUNC_CALL", 1, "")}, // #FUNC_CALL #EXTERNAL_METHOD_CALL
-{52, new ProductionInfo("THIS_METHOD_CALL", 2, "")}, // #THIS_METHOD_CALL ID #CALL_ARGS
-{53, new ProductionInfo("EXTERNAL_METHOD_CALL", 4, "")}, // #EXTERNAL_METHOD_CALL ID DOT ID #CALL_ARGS
-{54, new ProductionInfo("CALL_ARGS", 3, "")}, // #CALL_ARGS LEFT_PAREN #CALL_ARGS_LIST RIGHT_PAREN
-{55, new ProductionInfo("CALL_ARGS", 2, "")}, // #CALL_ARGS LEFT_PAREN RIGHT_PAREN
-{56, new ProductionInfo("CALL_ARGS_LIST", 1, "")}, // #CALL_ARGS_LIST #EXPRESSION
-{57, new ProductionInfo("CALL_ARGS_LIST", 3, "")}, // #CALL_ARGS_LIST #EXPRESSION COMMA #CALL_ARGS_LIST
-{58, new ProductionInfo("BOOL_VALUE", 1, "")}, // #BOOL_VALUE TRUE
-{59, new ProductionInfo("BOOL_VALUE", 1, "")}, // #BOOL_VALUE FALSE
-{60, new ProductionInfo("OR_TEST", 1, "")}, // #OR_TEST #AND_TEST
-{61, new ProductionInfo("OR_TEST", 3, "")}, // #OR_TEST #AND_TEST OR #OR_TEST
-{62, new ProductionInfo("AND_TEST", 1, "")}, // #AND_TEST #NOT_TEST
-{63, new ProductionInfo("AND_TEST", 3, "")}, // #AND_TEST #NOT_TEST AND #AND_TEST
-{64, new ProductionInfo("NOT_TEST", 2, "")}, // #NOT_TEST NOT #NOT_TEST
-{65, new ProductionInfo("NOT_TEST", 2, "")}, // #NOT_TEST #EXPRESSION #COMPARISON_S
-{66, new ProductionInfo("COMPARISON_S", 2, "")}, // #COMPARISON_S #COMPARE_OPERATION #EXPRESSION
-{67, new ProductionInfo("COMPARISON_S", 0, "")}, // #COMPARISON_S
-{68, new ProductionInfo("COMPARE_OPERATION", 1, "")}, // #COMPARE_OPERATION LT
-{69, new ProductionInfo("COMPARE_OPERATION", 1, "")}, // #COMPARE_OPERATION GT
-{70, new ProductionInfo("COMPARE_OPERATION", 1, "")}, // #COMPARE_OPERATION GTE
-{71, new ProductionInfo("COMPARE_OPERATION", 1, "")}, // #COMPARE_OPERATION LTE
-{72, new ProductionInfo("COMPARE_OPERATION", 1, "")} // #COMPARE_OPERATION EQUAL
+{1, new ProductionInfo("PS_PROGRAM", 2, "ConstructPsProgram")}, // #PS_PROGRAM #CLASS_DEF EOF
+{2, new ProductionInfo("CLASS_DEF", 3, "ConstructClass")}, // #CLASS_DEF CLASS ID #CLASS_BODY
+{3, new ProductionInfo("CLASS_BODY", 3, "ConstructClassBody")}, // #CLASS_BODY BLOCK_START #CLASS_DECLARATIONS BLOCK_END
+{4, new ProductionInfo("CLASS_DECLARATIONS", 2, "ConstructClassFieldDeclarations")}, // #CLASS_DECLARATIONS #FIELD_DECLARATION #CLASS_DECLARATIONS
+{5, new ProductionInfo("CLASS_DECLARATIONS", 2, "ConstructClassMethodDeclarations")}, // #CLASS_DECLARATIONS #METHOD_DECLARATION #CLASS_DECLARATIONS
+{6, new ProductionInfo("CLASS_DECLARATIONS", 0, "ConstructEmptyClassDeclarations")}, // #CLASS_DECLARATIONS
+{7, new ProductionInfo("FIELD_DECLARATION", 5, "ConstructFieldDeclaration")}, // #FIELD_DECLARATION #VISIBILITY_MODIFIER #STATIC_MODIFIER #TYPE_DEFINITION ID LINE_END
+{8, new ProductionInfo("VISIBILITY_MODIFIER", 1, "ConstructPublicVisibilityModifier")}, // #VISIBILITY_MODIFIER PUBLIC
+{9, new ProductionInfo("VISIBILITY_MODIFIER", 1, "ConstructPrivateVisibilityModifier")}, // #VISIBILITY_MODIFIER PRIVATE
+{10, new ProductionInfo("STATIC_MODIFIER", 1, "ConstructStaticModifier")}, // #STATIC_MODIFIER STATIC
+{11, new ProductionInfo("STATIC_MODIFIER", 0, "ConstructEmptyStaticModifier")}, // #STATIC_MODIFIER
+{12, new ProductionInfo("TYPE_DEFINITION", 1, "ConstructBoolTypeDefinition")}, // #TYPE_DEFINITION BOOL
+{13, new ProductionInfo("TYPE_DEFINITION", 1, "ConstructCharTypeDefinition")}, // #TYPE_DEFINITION CHAR
+{14, new ProductionInfo("TYPE_DEFINITION", 1, "ConstructIntTypeDefinition")}, // #TYPE_DEFINITION INT
+{15, new ProductionInfo("METHOD_DECLARATION", 4, "ConstructMethodDeclaration")}, // #METHOD_DECLARATION #METHOD_HEADER BLOCK_START #STATEMENTS_BLOCK BLOCK_END
+{16, new ProductionInfo("METHOD_HEADER", 5, "ConstructMethodHeader")}, // #METHOD_HEADER #VISIBILITY_MODIFIER #STATIC_MODIFIER #TYPE_DEFINITION ID #METHOD_ARGS
+{17, new ProductionInfo("METHOD_ARGS", 3, "ConstructMethodArgs")}, // #METHOD_ARGS LEFT_PAREN #ARGUMENTS_DEFINITION RIGHT_PAREN
+{18, new ProductionInfo("METHOD_ARGS", 2, "ConstructEmptyMethodArgs")}, // #METHOD_ARGS LEFT_PAREN RIGHT_PAREN
+{19, new ProductionInfo("ARGUMENTS_DEFINITION", 1, "ConstructArgumentsDefinition")}, // #ARGUMENTS_DEFINITION #ARGUMENT_DEFINITION
+{20, new ProductionInfo("ARGUMENTS_DEFINITION", 3, "ConstructArgumentsDefinition")}, // #ARGUMENTS_DEFINITION #ARGUMENT_DEFINITION COMMA #ARGUMENTS_DEFINITION
+{21, new ProductionInfo("ARGUMENT_DEFINITION", 2, "ConstructArgumentDefinition")}, // #ARGUMENT_DEFINITION #TYPE_DEFINITION ID
+{22, new ProductionInfo("STATEMENTS_BLOCK", 1, "ConstructStatementsBlock")}, // #STATEMENTS_BLOCK #STATEMENTS
+{23, new ProductionInfo("STATEMENTS_BLOCK", 2, "ConstructPassStatementsBlock")}, // #STATEMENTS_BLOCK PASS LINE_END
+{24, new ProductionInfo("STATEMENTS", 1, "ConstructOneStatements")}, // #STATEMENTS #STATEMENT
+{25, new ProductionInfo("STATEMENTS", 2, "ConstructStatements")}, // #STATEMENTS #STATEMENT #STATEMENTS
+{26, new ProductionInfo("STATEMENT", 2, "ConstructFuncCallStatement")}, // #STATEMENT #FUNC_CALL LINE_END
+{27, new ProductionInfo("STATEMENT", 1, "ConstructStatement")}, // #STATEMENT #IF_STATEMENT
+{28, new ProductionInfo("STATEMENT", 2, "ConstructStatement")}, // #STATEMENT #ASSIGN_STATEMENT LINE_END
+{29, new ProductionInfo("STATEMENT", 3, "ConstructReturnStatement")}, // #STATEMENT RETURN #EXPRESSION LINE_END
+{30, new ProductionInfo("ASSIGN_STATEMENT", 3, "ConstructAssignStatement")}, // #ASSIGN_STATEMENT ID ASSIGNMENT #EXPRESSION
+{31, new ProductionInfo("IF_STATEMENT", 1, "ConstructIfStatement")}, // #IF_STATEMENT #IF_THEN_STATEMENT
+{32, new ProductionInfo("IF_STATEMENT", 5, "ConstructIfElseStatement")}, // #IF_STATEMENT #IF_THEN_STATEMENT ELSE BLOCK_START #STATEMENTS_BLOCK BLOCK_END
+{33, new ProductionInfo("IF_THEN_STATEMENT", 7, "ConstructIfThenStatement")}, // #IF_THEN_STATEMENT IF LEFT_PAREN #OR_TEST RIGHT_PAREN BLOCK_START #STATEMENTS_BLOCK BLOCK_END
+{34, new ProductionInfo("EXPRESSION", 2, "ConstructTermExpression")}, // #EXPRESSION #TERM #EXPRESSION_S
+{35, new ProductionInfo("EXPRESSION", 1, "ConstructFuncCallExpression")}, // #EXPRESSION #FUNC_CALL
+{36, new ProductionInfo("EXPRESSION", 1, "ConstructBoolValueExpression")}, // #EXPRESSION #BOOL_VALUE
+{37, new ProductionInfo("EXPRESSION_S", 3, "ConstructExpressionS")}, // #EXPRESSION_S #FIRST_PREC_OPERATOR #TERM #EXPRESSION_S
+{38, new ProductionInfo("EXPRESSION_S", 0, "ConstructEmptyExpressionS")}, // #EXPRESSION_S
+{39, new ProductionInfo("TERM", 2, "ConstructTerm")}, // #TERM #SIMPLE_TERM #TERM_S
+{40, new ProductionInfo("TERM_S", 3, "ConstructTermS")}, // #TERM_S #SECOND_PREC_OPERATOR #SIMPLE_TERM #TERM_S
+{41, new ProductionInfo("TERM_S", 0, "ConstructEmptyTermS")}, // #TERM_S
+{42, new ProductionInfo("SIMPLE_TERM", 3, "ConstructSimpleParenTerm")}, // #SIMPLE_TERM LEFT_PAREN #EXPRESSION RIGHT_PAREN
+{43, new ProductionInfo("SIMPLE_TERM", 1, "ConstructSimpleIdTerm")}, // #SIMPLE_TERM ID
+{44, new ProductionInfo("SIMPLE_TERM", 1, "ConstructSimpleIntValTerm")}, // #SIMPLE_TERM INTEGER_VALUE
+{45, new ProductionInfo("FIRST_PREC_OPERATOR", 1, "ConstructFirstPrecedancePlusOperator")}, // #FIRST_PREC_OPERATOR PLUS
+{46, new ProductionInfo("FIRST_PREC_OPERATOR", 1, "ConstructFirstPrecedanceMinusOperator")}, // #FIRST_PREC_OPERATOR MINUS
+{47, new ProductionInfo("SECOND_PREC_OPERATOR", 1, "ConstructSecondPrecedanceMulOperator")}, // #SECOND_PREC_OPERATOR MULTIPLICATION
+{48, new ProductionInfo("SECOND_PREC_OPERATOR", 1, "ConstructSecondPrecedanceDivOperator")}, // #SECOND_PREC_OPERATOR DIV
+{49, new ProductionInfo("SECOND_PREC_OPERATOR", 1, "ConstructSecondPrecedanceModOperator")}, // #SECOND_PREC_OPERATOR MOD
+{50, new ProductionInfo("FUNC_CALL", 1, "ConstructFuncCall")}, // #FUNC_CALL #THIS_METHOD_CALL
+{51, new ProductionInfo("FUNC_CALL", 1, "ConstructFuncCall")}, // #FUNC_CALL #EXTERNAL_METHOD_CALL
+{52, new ProductionInfo("THIS_METHOD_CALL", 2, "ConstructThisMethodCall")}, // #THIS_METHOD_CALL ID #CALL_ARGS
+{53, new ProductionInfo("EXTERNAL_METHOD_CALL", 4, "ConstructExternalMethodCall")}, // #EXTERNAL_METHOD_CALL ID DOT ID #CALL_ARGS
+{54, new ProductionInfo("CALL_ARGS", 3, "ConstructCallArgs")}, // #CALL_ARGS LEFT_PAREN #CALL_ARGS_LIST RIGHT_PAREN
+{55, new ProductionInfo("CALL_ARGS", 2, "ConstructEmptyCallArgs")}, // #CALL_ARGS LEFT_PAREN RIGHT_PAREN
+{56, new ProductionInfo("CALL_ARGS_LIST", 1, "ConstructCallArgsList")}, // #CALL_ARGS_LIST #EXPRESSION
+{57, new ProductionInfo("CALL_ARGS_LIST", 3, "ConstructCallArgsListAdd")}, // #CALL_ARGS_LIST #EXPRESSION COMMA #CALL_ARGS_LIST
+{58, new ProductionInfo("BOOL_VALUE", 1, "ConstructBoolTrueValue")}, // #BOOL_VALUE TRUE
+{59, new ProductionInfo("BOOL_VALUE", 1, "ConstructBoolFalseValue")}, // #BOOL_VALUE FALSE
+{60, new ProductionInfo("OR_TEST", 1, "ConstructOrTest")}, // #OR_TEST #AND_TEST
+{61, new ProductionInfo("OR_TEST", 3, "ConstructOrCompoundTest")}, // #OR_TEST #AND_TEST OR #OR_TEST
+{62, new ProductionInfo("AND_TEST", 1, "ConstructAndTest")}, // #AND_TEST #NOT_TEST
+{63, new ProductionInfo("AND_TEST", 3, "ConstructAndCompoundTest")}, // #AND_TEST #NOT_TEST AND #AND_TEST
+{64, new ProductionInfo("NOT_TEST", 2, "ConstructNotTest")}, // #NOT_TEST NOT #NOT_TEST
+{65, new ProductionInfo("NOT_TEST", 2, "ConstructNotCompoundTest")}, // #NOT_TEST #EXPRESSION #COMPARISON_S
+{66, new ProductionInfo("COMPARISON_S", 2, "ConstructComparisonS")}, // #COMPARISON_S #COMPARE_OPERATION #EXPRESSION
+{67, new ProductionInfo("COMPARISON_S", 0, "ConstructEmptyComparisonS")}, // #COMPARISON_S
+{68, new ProductionInfo("COMPARE_OPERATION", 1, "ConstructCompareOperationLt")}, // #COMPARE_OPERATION LT
+{69, new ProductionInfo("COMPARE_OPERATION", 1, "ConstructCompareOperationGt")}, // #COMPARE_OPERATION GT
+{70, new ProductionInfo("COMPARE_OPERATION", 1, "ConstructCompareOperationGte")}, // #COMPARE_OPERATION GTE
+{71, new ProductionInfo("COMPARE_OPERATION", 1, "ConstructCompareOperationLte")}, // #COMPARE_OPERATION LTE
+{72, new ProductionInfo("COMPARE_OPERATION", 1, "ConstructCompareOperationEql")} // #COMPARE_OPERATION EQUAL
 };
         }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace compiler
 {
@@ -11,6 +12,7 @@ namespace compiler
         private ParseTable table;
         private Scanner scanner;
         private Stack<int> stack;
+        private AstBuilder astBuilder;
 
         public Parser()
         {
@@ -24,12 +26,14 @@ namespace compiler
             stack = new Stack<int>();
             stack.Push(table.GetStartState());
 
+            astBuilder = new AstBuilder();
+
             return ParseProgram();
         }
 
         public AstNode GetRootNode()
         {
-            return new AstNode();
+            return astBuilder.GetRootNode();
         }
 
         private bool ParseProgram()
@@ -44,8 +48,8 @@ namespace compiler
 
                 if (a.Type == TokenType.ERROR)
                 {
-                    DispatchError(scanner.GetSourcePosition(), "Error: " + a.Attribute, 1);
-                    return false;
+                        DispatchError(scanner.GetSourcePosition(), "Error: " + a.Attribute, 1);
+                        return false;
                 }
 
                 ParseAction action = table.GetAction(s, a.Type);
@@ -55,6 +59,16 @@ namespace compiler
                     stack.Push(action.Number);
                     currentToken = scanner.GetNextToken();
                     LogLine("Token: " + currentToken);
+
+                    switch (a.Type)
+                    {
+                        case TokenType.ID:
+                            astBuilder.AddAstIdNode(a);
+                            break;
+                        case TokenType.INTEGER_VALUE:
+                            astBuilder.AddAstIntegerValueNode(a);
+                            break;
+                    }
                 }
                 else if (action.Kind == ParseActionKind.REDUCE)
                 {
@@ -62,12 +76,11 @@ namespace compiler
                     int count = productionInfo.Length;
                     for (int i = 0; i < count; ++i)
                     {
-                        //TODO: pop items to list
                         stack.Pop();
                     }
-                    //TODO: update AST
 
-                    LogLine("Reduct: " + productionInfo.Head);
+                    LogLine("Reduce: " + productionInfo.Head);
+                    ReduceProduction(productionInfo);
 
                     int newState = table.GetGoTo(stack.Peek(), productionInfo.Head);
                     stack.Push(newState);
@@ -91,6 +104,11 @@ namespace compiler
             }
 
             return true;
+        }
+
+        private void ReduceProduction(ProductionInfo production)
+        {
+            astBuilder.CallAction(production.Action);
         }
 
         private void Log(string message)

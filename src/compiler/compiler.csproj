@@ -59,9 +59,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AstNodeVisitor.cs" />
     <Compile Include="ast\AstNode.cs" />
+    <Compile Include="ast\enums.cs" />
+    <Compile Include="ast\nodes.cs" />
     <Compile Include="codegen\CodeGenerator.cs" />
     <Compile Include="Compiler.cs" />
+    <Compile Include="parser\AstBuilder.cs" />
     <Compile Include="parser\ParseAction.cs" />
     <Compile Include="parser\ParseTable.cs" />
     <Compile Include="parser\ParseTableBuilder.cs" />
