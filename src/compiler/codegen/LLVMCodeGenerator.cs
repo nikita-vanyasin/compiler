@@ -105,7 +105,7 @@ namespace compiler
             List<string> LLWMArgDefList = new List<string>();
             foreach(var argument in node.ArgumentsDefinition)
             {
-                LLWMArgDefList.Add(GetLLVMType(argument.TypeDef) + " " + argument.Name.Id);
+                LLWMArgDefList.Add(GetLLVMType(argument.TypeDef) + " %" + argument.Name.Id);
               //  symbolTable.Add(argument.Name.Id + , "variable");            
             }
             codeStream.Write(string.Join(",", LLWMArgDefList.ToArray()));
@@ -124,7 +124,7 @@ namespace compiler
             
             node.Statements.Accept(this);
 
-            codeStream.Write("}");
+            codeStream.Write("}\n");
             return true;
         }
 
@@ -155,7 +155,7 @@ namespace compiler
 
         override public bool Visit(AstReturnStatement node)
         {
-            codeStream.Write("ret " + node.Expression);
+           // codeStream.Write("ret " + node.Expression);
             return true;
         }
 
