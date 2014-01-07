@@ -8,6 +8,6 @@ namespace compiler
 {
     public interface AstNodeVisitor
     {
-        //public bool Visit(AstNode node);
+        bool Visit(AstNode node);        
     }
 }

@@ -8,7 +8,12 @@ namespace compiler
 {
     class LLVMCodeGenerator : CodeGenerator
     {
-        public override bool Generate(AstNode astRootNode, System.IO.Stream outStream)
+        public override bool Generate(AstProgram astRootNode, System.IO.Stream outStream)
+        {
+            throw new NotImplementedException();
+        }
+
+        override public bool Visit(AstNode node)
         {
             throw new NotImplementedException();
         }

@@ -6,25 +6,25 @@ using System.Threading.Tasks;
 
 namespace compiler
 {
-    enum VisibilityModifier
+    public enum VisibilityModifier
     {
         PUBLIC,
         PRIVATE
     }
 
-    enum StaticModifier
+    public enum StaticModifier
     {
         INSTANCE,
         STATIC
     }
 
-    enum BoolValue
+    public enum BoolValue
     {
         TRUE,
         FALSE
     }
 
-    enum CompareOp
+    public enum CompareOp
     {
         LT,
         GT,

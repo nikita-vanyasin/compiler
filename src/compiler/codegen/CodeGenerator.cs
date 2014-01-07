@@ -9,6 +9,8 @@ namespace compiler
 {
     abstract class CodeGenerator : ErrorsEventDispatcher, AstNodeVisitor
     {
-        abstract public bool Generate(AstNode astRootNode, Stream outStream);
+        abstract public bool Generate(AstProgram astRootNode, Stream outStream);
+
+        abstract public bool Visit(AstNode node);
     }
 }

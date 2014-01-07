@@ -31,7 +31,7 @@ namespace compiler
             return ParseProgram();
         }
 
-        public AstNode GetRootNode()
+        public AstProgram GetRootNode()
         {
             return astBuilder.GetRootNode();
         }

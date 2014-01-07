@@ -1,7 +1,7 @@
 <html><head><title>Parser.y</title></head>
 <body bgcolor="white">
 <hr><pre>
-<b>Grammar and Diagnosis Parser.y - 07.01.2014 2:16:31</b>
+<b>Grammar and Diagnosis Parser.y - 07.01.2014 12:03:21</b>
 
 <a name="prod1">    1</a> $accept: PS_PROGRAM EOF
              ;
@@ -84,79 +84,86 @@
                              STATEMENTS_BLOCK BLOCK_END
                        ;
 
-<a name="prod36">   36</a> EXPRESSION: TERM EXPRESSION_S
-<a name="prod37">   37</a>           | FUNC_CALL
-<a name="prod38">   38</a>           | BOOL_VALUE
+<a name="prod36">   36</a> EXPRESSION: TERM
+<a name="prod37">   37</a>           | ADD_EXPRESSION
+<a name="prod38">   38</a>           | SUB_EXPRESSION
                 ;
 
-<a name="prod39">   39</a> EXPRESSION_S: FIRST_PREC_OPERATOR TERM EXPRESSION_S
-<a name="prod40">   40</a>             | /* empty */
-                  ;
-
-<a name="prod41">   41</a> TERM: SIMPLE_TERM TERM_S
+<a name="prod39">   39</a> TERM: UNARY_EXPRESSION
+<a name="prod40">   40</a>     | MUL_EXPRESSION
+<a name="prod41">   41</a>     | DIV_EXPRESSION
+<a name="prod42">   42</a>     | MOD_EXPRESSION
           ;
 
-<a name="prod42">   42</a> TERM_S: SECOND_PREC_OPERATOR SIMPLE_TERM TERM_S
-<a name="prod43">   43</a>       | /* empty */
-            ;
-
-<a name="prod44">   44</a> SIMPLE_TERM: LEFT_PAREN EXPRESSION RIGHT_PAREN
-<a name="prod45">   45</a>            | ID
-<a name="prod46">   46</a>            | INTEGER_VALUE
-                 ;
-
-<a name="prod47">   47</a> FIRST_PREC_OPERATOR: PLUS
-<a name="prod48">   48</a>                    | MINUS
-                         ;
-
-<a name="prod49">   49</a> SECOND_PREC_OPERATOR: MULTIPLICATION
-<a name="prod50">   50</a>                     | DIV
-<a name="prod51">   51</a>                     | MOD
-                          ;
-
-<a name="prod52">   52</a> FUNC_CALL: THIS_METHOD_CALL
-<a name="prod53">   53</a>          | EXTERNAL_METHOD_CALL
-               ;
-
-<a name="prod54">   54</a> THIS_METHOD_CALL: ID CALL_ARGS
-                      ;
-
-<a name="prod55">   55</a> EXTERNAL_METHOD_CALL: ID DOT ID CALL_ARGS
-                          ;
-
-<a name="prod56">   56</a> CALL_ARGS: LEFT_PAREN CALL_ARGS_LIST RIGHT_PAREN
-<a name="prod57">   57</a>          | LEFT_PAREN RIGHT_PAREN
-               ;
-
-<a name="prod58">   58</a> CALL_ARGS_LIST: EXPRESSION
-<a name="prod59">   59</a>               | EXPRESSION COMMA CALL_ARGS_LIST
+<a name="prod43">   43</a> MUL_EXPRESSION: UNARY_EXPRESSION MULTIPLICATION TERM
                     ;
 
-<a name="prod60">   60</a> BOOL_VALUE: TRUE
-<a name="prod61">   61</a>           | FALSE
+<a name="prod44">   44</a> DIV_EXPRESSION: UNARY_EXPRESSION DIV TERM
+                    ;
+
+<a name="prod45">   45</a> MOD_EXPRESSION: UNARY_EXPRESSION MOD TERM
+                    ;
+
+<a name="prod46">   46</a> UNARY_EXPRESSION: MINUS SIMPLE_TERM
+<a name="prod47">   47</a>                 | SIMPLE_TERM
+                      ;
+
+<a name="prod48">   48</a> SIMPLE_TERM: LEFT_PAREN EXPRESSION RIGHT_PAREN
+<a name="prod49">   49</a>            | ID
+<a name="prod50">   50</a>            | INTEGER_VALUE
+<a name="prod51">   51</a>            | BOOL_VALUE
+<a name="prod52">   52</a>            | FUNC_CALL
+                 ;
+
+<a name="prod53">   53</a> ADD_EXPRESSION: EXPRESSION PLUS TERM
+                    ;
+
+<a name="prod54">   54</a> SUB_EXPRESSION: EXPRESSION MINUS TERM
+                    ;
+
+<a name="prod55">   55</a> FUNC_CALL: THIS_METHOD_CALL
+<a name="prod56">   56</a>          | EXTERNAL_METHOD_CALL
+               ;
+
+<a name="prod57">   57</a> THIS_METHOD_CALL: ID CALL_ARGS
+                      ;
+
+<a name="prod58">   58</a> EXTERNAL_METHOD_CALL: ID DOT ID CALL_ARGS
+                          ;
+
+<a name="prod59">   59</a> CALL_ARGS: LEFT_PAREN CALL_ARGS_LIST RIGHT_PAREN
+<a name="prod60">   60</a>          | LEFT_PAREN RIGHT_PAREN
+               ;
+
+<a name="prod61">   61</a> CALL_ARGS_LIST: EXPRESSION
+<a name="prod62">   62</a>               | EXPRESSION COMMA CALL_ARGS_LIST
+                    ;
+
+<a name="prod63">   63</a> BOOL_VALUE: TRUE
+<a name="prod64">   64</a>           | FALSE
                 ;
 
-<a name="prod62">   62</a> OR_TEST: AND_TEST
-<a name="prod63">   63</a>        | AND_TEST OR OR_TEST
+<a name="prod65">   65</a> OR_TEST: AND_TEST
+<a name="prod66">   66</a>        | AND_TEST OR OR_TEST
              ;
 
-<a name="prod64">   64</a> AND_TEST: NOT_TEST
-<a name="prod65">   65</a>         | NOT_TEST AND AND_TEST
+<a name="prod67">   67</a> AND_TEST: NOT_TEST
+<a name="prod68">   68</a>         | NOT_TEST AND AND_TEST
               ;
 
-<a name="prod66">   66</a> NOT_TEST: NOT NOT_TEST
-<a name="prod67">   67</a>         | EXPRESSION COMPARISON_S
+<a name="prod69">   69</a> NOT_TEST: NOT NOT_TEST
+<a name="prod70">   70</a>         | EXPRESSION COMPARISON_S
               ;
 
-<a name="prod68">   68</a> COMPARISON_S: COMPARE_OPERATION EXPRESSION
-<a name="prod69">   69</a>             | /* empty */
+<a name="prod71">   71</a> COMPARISON_S: COMPARE_OPERATION EXPRESSION
+<a name="prod72">   72</a>             | /* empty */
                   ;
 
-<a name="prod70">   70</a> COMPARE_OPERATION: LT
-<a name="prod71">   71</a>                  | GT
-<a name="prod72">   72</a>                  | GTE
-<a name="prod73">   73</a>                  | LTE
-<a name="prod74">   74</a>                  | EQUAL
+<a name="prod73">   73</a> COMPARE_OPERATION: LT
+<a name="prod74">   74</a>                  | GT
+<a name="prod75">   75</a>                  | GTE
+<a name="prod76">   76</a>                  | LTE
+<a name="prod77">   77</a>                  | EQUAL
                        ;
 <b><a name="state0">State</a> <a href="#state0">0</a></b>
     Shortest prefix: 
@@ -803,9 +810,9 @@
 
   <b>Parser Actions</b>
     ID             shift, and go to state <a href="#state47">47</a>
-    IF             shift, and go to state <a href="#state93">93</a>
-    RETURN         shift, and go to state <a href="#state102">102</a>
-    PASS           shift, and go to state <a href="#state105">105</a>
+    IF             shift, and go to state <a href="#state97">97</a>
+    RETURN         shift, and go to state <a href="#state106">106</a>
+    PASS           shift, and go to state <a href="#state109">109</a>
 
   <b>Transitions</b>
     STATEMENTS_BLOCK go to state <a href="#state38">38</a>
@@ -813,10 +820,10 @@
     STATEMENT      go to state <a href="#state41">41</a>
     FUNC_CALL      go to state <a href="#state44">44</a>
     THIS_METHOD_CALL go to state <a href="#state46">46</a>
-    EXTERNAL_METHOD_CALL go to state <a href="#state80">80</a>
-    IF_STATEMENT   go to state <a href="#state87">87</a>
-    IF_THEN_STATEMENT go to state <a href="#state88">88</a>
-    ASSIGN_STATEMENT go to state <a href="#state100">100</a>
+    EXTERNAL_METHOD_CALL go to state <a href="#state76">76</a>
+    IF_STATEMENT   go to state <a href="#state91">91</a>
+    IF_THEN_STATEMENT go to state <a href="#state92">92</a>
+    ASSIGN_STATEMENT go to state <a href="#state104">104</a>
 
 
 <b><a name="state38">State</a> <a href="#state38">38</a></b>
@@ -854,7 +861,7 @@
 <b><a name="state40">State</a> <a href="#state40">40</a></b>
     Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START STATEMENTS
     Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state40">40</a>
-    Predecessors: <a href="#state37">37</a>, <a href="#state90">90</a>, <a href="#state97">97</a>
+    Predecessors: <a href="#state37">37</a>, <a href="#state94">94</a>, <a href="#state101">101</a>
 
   <b>Kernel Items</b>
     23 STATEMENTS_BLOCK: STATEMENTS .
@@ -868,15 +875,15 @@
 <b><a name="state41">State</a> <a href="#state41">41</a></b>
     Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START STATEMENT
     Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state41">41</a>
-    Predecessors: <a href="#state37">37</a>, <a href="#state41">41</a>, <a href="#state90">90</a>, <a href="#state97">97</a>
+    Predecessors: <a href="#state37">37</a>, <a href="#state41">41</a>, <a href="#state94">94</a>, <a href="#state101">101</a>
 
   <b>Kernel Items</b>
     25 STATEMENTS: STATEMENT . STATEMENTS_S
 
   <b>Parser Actions</b>
     ID             shift, and go to state <a href="#state47">47</a>
-    IF             shift, and go to state <a href="#state93">93</a>
-    RETURN         shift, and go to state <a href="#state102">102</a>
+    IF             shift, and go to state <a href="#state97">97</a>
+    RETURN         shift, and go to state <a href="#state106">106</a>
     BLOCK_END      reduce using <a href="#prod27">rule 27</a> (Erasing STATEMENTS_S)
 
   <b>Transitions</b>
@@ -885,10 +892,10 @@
     STATEMENT      go to state <a href="#state41">41</a>
     FUNC_CALL      go to state <a href="#state44">44</a>
     THIS_METHOD_CALL go to state <a href="#state46">46</a>
-    EXTERNAL_METHOD_CALL go to state <a href="#state80">80</a>
-    IF_STATEMENT   go to state <a href="#state87">87</a>
-    IF_THEN_STATEMENT go to state <a href="#state88">88</a>
-    ASSIGN_STATEMENT go to state <a href="#state100">100</a>
+    EXTERNAL_METHOD_CALL go to state <a href="#state76">76</a>
+    IF_STATEMENT   go to state <a href="#state91">91</a>
+    IF_THEN_STATEMENT go to state <a href="#state92">92</a>
+    ASSIGN_STATEMENT go to state <a href="#state104">104</a>
 
 
 <b><a name="state42">State</a> <a href="#state42">42</a></b>
@@ -922,7 +929,7 @@
 <b><a name="state44">State</a> <a href="#state44">44</a></b>
     Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START FUNC_CALL
     Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state44">44</a>
-    Predecessors: <a href="#state37">37</a>, <a href="#state41">41</a>, <a href="#state90">90</a>, <a href="#state97">97</a>
+    Predecessors: <a href="#state37">37</a>, <a href="#state41">41</a>, <a href="#state94">94</a>, <a href="#state101">101</a>
 
   <b>Kernel Items</b>
     28 STATEMENT: FUNC_CALL . LINE_END
@@ -952,39 +959,46 @@
 <b><a name="state46">State</a> <a href="#state46">46</a></b>
     Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START THIS_METHOD_CALL
     Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state46">46</a>
-    Predecessors: <a href="#state37">37</a>, <a href="#state41">41</a>, <a href="#state52">52</a>, <a href="#state57">57</a>, <a href="#state74">74</a>, <a href="#state85">85</a>, <a href="#state90">90</a>, <a href="#state94">94</a>, <a href="#state97">97</a>, <a href="#state102">102</a>, <a href="#state108">108</a>, <a href="#state111">111</a>, <a href="#state113">113</a>, <a href="#state117">117</a>
+    Predecessors: <a href="#state37">37</a>, <a href="#state41">41</a>, <a href="#state52">52</a>, <a href="#state57">57</a>, <a href="#state60">60</a>, <a href="#state62">62</a>, <a href="#state64">64</a>, <a href="#state67">67</a>, <a href="#state83">83</a>, <a href="#state85">85</a>, <a href="#state87">87</a>, <a href="#state89">89</a>, <a href="#state94">94</a>, <a href="#state98">98</a>, <a href="#state101">101</a>, <a href="#state106">106</a>, 
+                  <a href="#state112">112</a>, <a href="#state115">115</a>, <a href="#state117">117</a>, <a href="#state121">121</a>
 
   <b>Kernel Items</b>
-    52 FUNC_CALL: THIS_METHOD_CALL .
-	-lookahead: { LINE_END, COMMA, RIGHT_PAREN, LT, GT, GTE, LTE, EQUAL, AND, OR }
+    55 FUNC_CALL: THIS_METHOD_CALL .
+	-lookahead: { LINE_END, MULTIPLICATION, DIV, MOD, PLUS, MINUS, COMMA, 
+                RIGHT_PAREN, LT, GT, GTE, LTE, EQUAL, AND, OR }
 
   <b>Parser Actions</b>
-    LINE_END       reduce using <a href="#prod52">rule 52</a> (FUNC_CALL)
-    COMMA          reduce using <a href="#prod52">rule 52</a> (FUNC_CALL)
-    RIGHT_PAREN    reduce using <a href="#prod52">rule 52</a> (FUNC_CALL)
-    LT             reduce using <a href="#prod52">rule 52</a> (FUNC_CALL)
-    GT             reduce using <a href="#prod52">rule 52</a> (FUNC_CALL)
-    GTE            reduce using <a href="#prod52">rule 52</a> (FUNC_CALL)
-    LTE            reduce using <a href="#prod52">rule 52</a> (FUNC_CALL)
-    EQUAL          reduce using <a href="#prod52">rule 52</a> (FUNC_CALL)
-    AND            reduce using <a href="#prod52">rule 52</a> (FUNC_CALL)
-    OR             reduce using <a href="#prod52">rule 52</a> (FUNC_CALL)
+    LINE_END       reduce using <a href="#prod55">rule 55</a> (FUNC_CALL)
+    MULTIPLICATION reduce using <a href="#prod55">rule 55</a> (FUNC_CALL)
+    DIV            reduce using <a href="#prod55">rule 55</a> (FUNC_CALL)
+    MOD            reduce using <a href="#prod55">rule 55</a> (FUNC_CALL)
+    PLUS           reduce using <a href="#prod55">rule 55</a> (FUNC_CALL)
+    MINUS          reduce using <a href="#prod55">rule 55</a> (FUNC_CALL)
+    COMMA          reduce using <a href="#prod55">rule 55</a> (FUNC_CALL)
+    RIGHT_PAREN    reduce using <a href="#prod55">rule 55</a> (FUNC_CALL)
+    LT             reduce using <a href="#prod55">rule 55</a> (FUNC_CALL)
+    GT             reduce using <a href="#prod55">rule 55</a> (FUNC_CALL)
+    GTE            reduce using <a href="#prod55">rule 55</a> (FUNC_CALL)
+    LTE            reduce using <a href="#prod55">rule 55</a> (FUNC_CALL)
+    EQUAL          reduce using <a href="#prod55">rule 55</a> (FUNC_CALL)
+    AND            reduce using <a href="#prod55">rule 55</a> (FUNC_CALL)
+    OR             reduce using <a href="#prod55">rule 55</a> (FUNC_CALL)
 
 
 
 <b><a name="state47">State</a> <a href="#state47">47</a></b>
     Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START ID
     Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state47">47</a>
-    Predecessors: <a href="#state37">37</a>, <a href="#state41">41</a>, <a href="#state90">90</a>, <a href="#state97">97</a>
+    Predecessors: <a href="#state37">37</a>, <a href="#state41">41</a>, <a href="#state94">94</a>, <a href="#state101">101</a>
 
   <b>Kernel Items</b>
-    54 THIS_METHOD_CALL: ID . CALL_ARGS
-    55 EXTERNAL_METHOD_CALL: ID . DOT ID CALL_ARGS
+    57 THIS_METHOD_CALL: ID . CALL_ARGS
+    58 EXTERNAL_METHOD_CALL: ID . DOT ID CALL_ARGS
     32 ASSIGN_STATEMENT: ID . ASSIGNMENT EXPRESSION
 
   <b>Parser Actions</b>
     DOT            shift, and go to state <a href="#state49">49</a>
-    ASSIGNMENT     shift, and go to state <a href="#state85">85</a>
+    ASSIGNMENT     shift, and go to state <a href="#state89">89</a>
     LEFT_PAREN     shift, and go to state <a href="#state52">52</a>
 
   <b>Transitions</b>
@@ -994,33 +1008,39 @@
 <b><a name="state48">State</a> <a href="#state48">48</a></b>
     Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START ID CALL_ARGS
     Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state47">47</a>-><a href="#state48">48</a>
-    Predecessors: <a href="#state47">47</a>, <a href="#state77">77</a>
+    Predecessors: <a href="#state47">47</a>, <a href="#state70">70</a>
 
   <b>Kernel Items</b>
-    54 THIS_METHOD_CALL: ID CALL_ARGS .
-	-lookahead: { LINE_END, COMMA, RIGHT_PAREN, LT, GT, GTE, LTE, EQUAL, AND, OR }
+    57 THIS_METHOD_CALL: ID CALL_ARGS .
+	-lookahead: { LINE_END, MULTIPLICATION, DIV, MOD, PLUS, MINUS, COMMA, 
+                RIGHT_PAREN, LT, GT, GTE, LTE, EQUAL, AND, OR }
 
   <b>Parser Actions</b>
-    LINE_END       reduce using <a href="#prod54">rule 54</a> (THIS_METHOD_CALL)
-    COMMA          reduce using <a href="#prod54">rule 54</a> (THIS_METHOD_CALL)
-    RIGHT_PAREN    reduce using <a href="#prod54">rule 54</a> (THIS_METHOD_CALL)
-    LT             reduce using <a href="#prod54">rule 54</a> (THIS_METHOD_CALL)
-    GT             reduce using <a href="#prod54">rule 54</a> (THIS_METHOD_CALL)
-    GTE            reduce using <a href="#prod54">rule 54</a> (THIS_METHOD_CALL)
-    LTE            reduce using <a href="#prod54">rule 54</a> (THIS_METHOD_CALL)
-    EQUAL          reduce using <a href="#prod54">rule 54</a> (THIS_METHOD_CALL)
-    AND            reduce using <a href="#prod54">rule 54</a> (THIS_METHOD_CALL)
-    OR             reduce using <a href="#prod54">rule 54</a> (THIS_METHOD_CALL)
+    LINE_END       reduce using <a href="#prod57">rule 57</a> (THIS_METHOD_CALL)
+    MULTIPLICATION reduce using <a href="#prod57">rule 57</a> (THIS_METHOD_CALL)
+    DIV            reduce using <a href="#prod57">rule 57</a> (THIS_METHOD_CALL)
+    MOD            reduce using <a href="#prod57">rule 57</a> (THIS_METHOD_CALL)
+    PLUS           reduce using <a href="#prod57">rule 57</a> (THIS_METHOD_CALL)
+    MINUS          reduce using <a href="#prod57">rule 57</a> (THIS_METHOD_CALL)
+    COMMA          reduce using <a href="#prod57">rule 57</a> (THIS_METHOD_CALL)
+    RIGHT_PAREN    reduce using <a href="#prod57">rule 57</a> (THIS_METHOD_CALL)
+    LT             reduce using <a href="#prod57">rule 57</a> (THIS_METHOD_CALL)
+    GT             reduce using <a href="#prod57">rule 57</a> (THIS_METHOD_CALL)
+    GTE            reduce using <a href="#prod57">rule 57</a> (THIS_METHOD_CALL)
+    LTE            reduce using <a href="#prod57">rule 57</a> (THIS_METHOD_CALL)
+    EQUAL          reduce using <a href="#prod57">rule 57</a> (THIS_METHOD_CALL)
+    AND            reduce using <a href="#prod57">rule 57</a> (THIS_METHOD_CALL)
+    OR             reduce using <a href="#prod57">rule 57</a> (THIS_METHOD_CALL)
 
 
 
 <b><a name="state49">State</a> <a href="#state49">49</a></b>
     Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START ID DOT
     Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state47">47</a>-><a href="#state49">49</a>
-    Predecessors: <a href="#state47">47</a>, <a href="#state77">77</a>
+    Predecessors: <a href="#state47">47</a>, <a href="#state70">70</a>
 
   <b>Kernel Items</b>
-    55 EXTERNAL_METHOD_CALL: ID DOT . ID CALL_ARGS
+    58 EXTERNAL_METHOD_CALL: ID DOT . ID CALL_ARGS
 
   <b>Parser Actions</b>
     ID             shift, and go to state <a href="#state50">50</a>
@@ -1033,7 +1053,7 @@
     Predecessors: <a href="#state49">49</a>
 
   <b>Kernel Items</b>
-    55 EXTERNAL_METHOD_CALL: ID DOT ID . CALL_ARGS
+    58 EXTERNAL_METHOD_CALL: ID DOT ID . CALL_ARGS
 
   <b>Parser Actions</b>
     LEFT_PAREN     shift, and go to state <a href="#state52">52</a>
@@ -1048,49 +1068,62 @@
     Predecessors: <a href="#state50">50</a>
 
   <b>Kernel Items</b>
-    55 EXTERNAL_METHOD_CALL: ID DOT ID CALL_ARGS .
-	-lookahead: { LINE_END, COMMA, RIGHT_PAREN, LT, GT, GTE, LTE, EQUAL, AND, OR }
+    58 EXTERNAL_METHOD_CALL: ID DOT ID CALL_ARGS .
+	-lookahead: { LINE_END, MULTIPLICATION, DIV, MOD, PLUS, MINUS, COMMA, 
+                RIGHT_PAREN, LT, GT, GTE, LTE, EQUAL, AND, OR }
 
   <b>Parser Actions</b>
-    LINE_END       reduce using <a href="#prod55">rule 55</a> (EXTERNAL_METHOD_CALL)
-    COMMA          reduce using <a href="#prod55">rule 55</a> (EXTERNAL_METHOD_CALL)
-    RIGHT_PAREN    reduce using <a href="#prod55">rule 55</a> (EXTERNAL_METHOD_CALL)
-    LT             reduce using <a href="#prod55">rule 55</a> (EXTERNAL_METHOD_CALL)
-    GT             reduce using <a href="#prod55">rule 55</a> (EXTERNAL_METHOD_CALL)
-    GTE            reduce using <a href="#prod55">rule 55</a> (EXTERNAL_METHOD_CALL)
-    LTE            reduce using <a href="#prod55">rule 55</a> (EXTERNAL_METHOD_CALL)
-    EQUAL          reduce using <a href="#prod55">rule 55</a> (EXTERNAL_METHOD_CALL)
-    AND            reduce using <a href="#prod55">rule 55</a> (EXTERNAL_METHOD_CALL)
-    OR             reduce using <a href="#prod55">rule 55</a> (EXTERNAL_METHOD_CALL)
+    LINE_END       reduce using <a href="#prod58">rule 58</a> (EXTERNAL_METHOD_CALL)
+    MULTIPLICATION reduce using <a href="#prod58">rule 58</a> (EXTERNAL_METHOD_CALL)
+    DIV            reduce using <a href="#prod58">rule 58</a> (EXTERNAL_METHOD_CALL)
+    MOD            reduce using <a href="#prod58">rule 58</a> (EXTERNAL_METHOD_CALL)
+    PLUS           reduce using <a href="#prod58">rule 58</a> (EXTERNAL_METHOD_CALL)
+    MINUS          reduce using <a href="#prod58">rule 58</a> (EXTERNAL_METHOD_CALL)
+    COMMA          reduce using <a href="#prod58">rule 58</a> (EXTERNAL_METHOD_CALL)
+    RIGHT_PAREN    reduce using <a href="#prod58">rule 58</a> (EXTERNAL_METHOD_CALL)
+    LT             reduce using <a href="#prod58">rule 58</a> (EXTERNAL_METHOD_CALL)
+    GT             reduce using <a href="#prod58">rule 58</a> (EXTERNAL_METHOD_CALL)
+    GTE            reduce using <a href="#prod58">rule 58</a> (EXTERNAL_METHOD_CALL)
+    LTE            reduce using <a href="#prod58">rule 58</a> (EXTERNAL_METHOD_CALL)
+    EQUAL          reduce using <a href="#prod58">rule 58</a> (EXTERNAL_METHOD_CALL)
+    AND            reduce using <a href="#prod58">rule 58</a> (EXTERNAL_METHOD_CALL)
+    OR             reduce using <a href="#prod58">rule 58</a> (EXTERNAL_METHOD_CALL)
 
 
 
 <b><a name="state52">State</a> <a href="#state52">52</a></b>
     Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START ID LEFT_PAREN
     Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state47">47</a>-><a href="#state52">52</a>
-    Predecessors: <a href="#state47">47</a>, <a href="#state50">50</a>, <a href="#state77">77</a>
+    Predecessors: <a href="#state47">47</a>, <a href="#state50">50</a>, <a href="#state70">70</a>
 
   <b>Kernel Items</b>
-    56 CALL_ARGS: LEFT_PAREN . CALL_ARGS_LIST RIGHT_PAREN
-    57 CALL_ARGS: LEFT_PAREN . RIGHT_PAREN
+    59 CALL_ARGS: LEFT_PAREN . CALL_ARGS_LIST RIGHT_PAREN
+    60 CALL_ARGS: LEFT_PAREN . RIGHT_PAREN
 
   <b>Parser Actions</b>
     RIGHT_PAREN    shift, and go to state <a href="#state55">55</a>
-    LEFT_PAREN     shift, and go to state <a href="#state74">74</a>
-    ID             shift, and go to state <a href="#state77">77</a>
-    INTEGER_VALUE  shift, and go to state <a href="#state78">78</a>
-    TRUE           shift, and go to state <a href="#state82">82</a>
-    FALSE          shift, and go to state <a href="#state83">83</a>
+    MINUS          shift, and go to state <a href="#state62">62</a>
+    LEFT_PAREN     shift, and go to state <a href="#state64">64</a>
+    ID             shift, and go to state <a href="#state70">70</a>
+    INTEGER_VALUE  shift, and go to state <a href="#state71">71</a>
+    TRUE           shift, and go to state <a href="#state73">73</a>
+    FALSE          shift, and go to state <a href="#state74">74</a>
 
   <b>Transitions</b>
     CALL_ARGS_LIST go to state <a href="#state53">53</a>
     EXPRESSION     go to state <a href="#state56">56</a>
-    TERM           go to state <a href="#state59">59</a>
-    SIMPLE_TERM    go to state <a href="#state66">66</a>
-    FUNC_CALL      go to state <a href="#state79">79</a>
+    TERM           go to state <a href="#state80">80</a>
+    UNARY_EXPRESSION go to state <a href="#state59">59</a>
+    SIMPLE_TERM    go to state <a href="#state69">69</a>
+    BOOL_VALUE     go to state <a href="#state72">72</a>
+    FUNC_CALL      go to state <a href="#state75">75</a>
     THIS_METHOD_CALL go to state <a href="#state46">46</a>
-    EXTERNAL_METHOD_CALL go to state <a href="#state80">80</a>
-    BOOL_VALUE     go to state <a href="#state81">81</a>
+    EXTERNAL_METHOD_CALL go to state <a href="#state76">76</a>
+    MUL_EXPRESSION go to state <a href="#state77">77</a>
+    DIV_EXPRESSION go to state <a href="#state78">78</a>
+    MOD_EXPRESSION go to state <a href="#state79">79</a>
+    ADD_EXPRESSION go to state <a href="#state81">81</a>
+    SUB_EXPRESSION go to state <a href="#state82">82</a>
 
 
 <b><a name="state53">State</a> <a href="#state53">53</a></b>
@@ -1100,7 +1133,7 @@
     Predecessors: <a href="#state52">52</a>
 
   <b>Kernel Items</b>
-    56 CALL_ARGS: LEFT_PAREN CALL_ARGS_LIST . RIGHT_PAREN
+    59 CALL_ARGS: LEFT_PAREN CALL_ARGS_LIST . RIGHT_PAREN
 
   <b>Parser Actions</b>
     RIGHT_PAREN    shift, and go to state <a href="#state54">54</a>
@@ -1114,20 +1147,26 @@
     Predecessors: <a href="#state53">53</a>
 
   <b>Kernel Items</b>
-    56 CALL_ARGS: LEFT_PAREN CALL_ARGS_LIST RIGHT_PAREN .
-	-lookahead: { LINE_END, COMMA, RIGHT_PAREN, LT, GT, GTE, LTE, EQUAL, AND, OR }
+    59 CALL_ARGS: LEFT_PAREN CALL_ARGS_LIST RIGHT_PAREN .
+	-lookahead: { LINE_END, MULTIPLICATION, DIV, MOD, PLUS, MINUS, COMMA, 
+                RIGHT_PAREN, LT, GT, GTE, LTE, EQUAL, AND, OR }
 
   <b>Parser Actions</b>
-    LINE_END       reduce using <a href="#prod56">rule 56</a> (CALL_ARGS)
-    COMMA          reduce using <a href="#prod56">rule 56</a> (CALL_ARGS)
-    RIGHT_PAREN    reduce using <a href="#prod56">rule 56</a> (CALL_ARGS)
-    LT             reduce using <a href="#prod56">rule 56</a> (CALL_ARGS)
-    GT             reduce using <a href="#prod56">rule 56</a> (CALL_ARGS)
-    GTE            reduce using <a href="#prod56">rule 56</a> (CALL_ARGS)
-    LTE            reduce using <a href="#prod56">rule 56</a> (CALL_ARGS)
-    EQUAL          reduce using <a href="#prod56">rule 56</a> (CALL_ARGS)
-    AND            reduce using <a href="#prod56">rule 56</a> (CALL_ARGS)
-    OR             reduce using <a href="#prod56">rule 56</a> (CALL_ARGS)
+    LINE_END       reduce using <a href="#prod59">rule 59</a> (CALL_ARGS)
+    MULTIPLICATION reduce using <a href="#prod59">rule 59</a> (CALL_ARGS)
+    DIV            reduce using <a href="#prod59">rule 59</a> (CALL_ARGS)
+    MOD            reduce using <a href="#prod59">rule 59</a> (CALL_ARGS)
+    PLUS           reduce using <a href="#prod59">rule 59</a> (CALL_ARGS)
+    MINUS          reduce using <a href="#prod59">rule 59</a> (CALL_ARGS)
+    COMMA          reduce using <a href="#prod59">rule 59</a> (CALL_ARGS)
+    RIGHT_PAREN    reduce using <a href="#prod59">rule 59</a> (CALL_ARGS)
+    LT             reduce using <a href="#prod59">rule 59</a> (CALL_ARGS)
+    GT             reduce using <a href="#prod59">rule 59</a> (CALL_ARGS)
+    GTE            reduce using <a href="#prod59">rule 59</a> (CALL_ARGS)
+    LTE            reduce using <a href="#prod59">rule 59</a> (CALL_ARGS)
+    EQUAL          reduce using <a href="#prod59">rule 59</a> (CALL_ARGS)
+    AND            reduce using <a href="#prod59">rule 59</a> (CALL_ARGS)
+    OR             reduce using <a href="#prod59">rule 59</a> (CALL_ARGS)
 
 
 
@@ -1138,271 +1177,654 @@
     Predecessors: <a href="#state52">52</a>
 
   <b>Kernel Items</b>
-    57 CALL_ARGS: LEFT_PAREN RIGHT_PAREN .
-	-lookahead: { LINE_END, COMMA, RIGHT_PAREN, LT, GT, GTE, LTE, EQUAL, AND, OR }
+    60 CALL_ARGS: LEFT_PAREN RIGHT_PAREN .
+	-lookahead: { LINE_END, MULTIPLICATION, DIV, MOD, PLUS, MINUS, COMMA, 
+                RIGHT_PAREN, LT, GT, GTE, LTE, EQUAL, AND, OR }
 
   <b>Parser Actions</b>
-    LINE_END       reduce using <a href="#prod57">rule 57</a> (CALL_ARGS)
-    COMMA          reduce using <a href="#prod57">rule 57</a> (CALL_ARGS)
-    RIGHT_PAREN    reduce using <a href="#prod57">rule 57</a> (CALL_ARGS)
-    LT             reduce using <a href="#prod57">rule 57</a> (CALL_ARGS)
-    GT             reduce using <a href="#prod57">rule 57</a> (CALL_ARGS)
-    GTE            reduce using <a href="#prod57">rule 57</a> (CALL_ARGS)
-    LTE            reduce using <a href="#prod57">rule 57</a> (CALL_ARGS)
-    EQUAL          reduce using <a href="#prod57">rule 57</a> (CALL_ARGS)
-    AND            reduce using <a href="#prod57">rule 57</a> (CALL_ARGS)
-    OR             reduce using <a href="#prod57">rule 57</a> (CALL_ARGS)
+    LINE_END       reduce using <a href="#prod60">rule 60</a> (CALL_ARGS)
+    MULTIPLICATION reduce using <a href="#prod60">rule 60</a> (CALL_ARGS)
+    DIV            reduce using <a href="#prod60">rule 60</a> (CALL_ARGS)
+    MOD            reduce using <a href="#prod60">rule 60</a> (CALL_ARGS)
+    PLUS           reduce using <a href="#prod60">rule 60</a> (CALL_ARGS)
+    MINUS          reduce using <a href="#prod60">rule 60</a> (CALL_ARGS)
+    COMMA          reduce using <a href="#prod60">rule 60</a> (CALL_ARGS)
+    RIGHT_PAREN    reduce using <a href="#prod60">rule 60</a> (CALL_ARGS)
+    LT             reduce using <a href="#prod60">rule 60</a> (CALL_ARGS)
+    GT             reduce using <a href="#prod60">rule 60</a> (CALL_ARGS)
+    GTE            reduce using <a href="#prod60">rule 60</a> (CALL_ARGS)
+    LTE            reduce using <a href="#prod60">rule 60</a> (CALL_ARGS)
+    EQUAL          reduce using <a href="#prod60">rule 60</a> (CALL_ARGS)
+    AND            reduce using <a href="#prod60">rule 60</a> (CALL_ARGS)
+    OR             reduce using <a href="#prod60">rule 60</a> (CALL_ARGS)
 
 
 
 <b><a name="state56">State</a> <a href="#state56">56</a></b>
     Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START ID LEFT_PAREN EXPRESSION
     Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state47">47</a>-><a href="#state52">52</a>-><a href="#state56">56</a>
-    Predecessors: <a href="#state52">52</a>, <a href="#state57">57</a>
+    Predecessors: <a href="#state52">52</a>, <a href="#state87">87</a>
 
   <b>Kernel Items</b>
-    58 CALL_ARGS_LIST: EXPRESSION .
+    61 CALL_ARGS_LIST: EXPRESSION .
 	-lookahead: { RIGHT_PAREN }
-    59 CALL_ARGS_LIST: EXPRESSION . COMMA CALL_ARGS_LIST
+    53 ADD_EXPRESSION: EXPRESSION . PLUS TERM
+    54 SUB_EXPRESSION: EXPRESSION . MINUS TERM
+    62 CALL_ARGS_LIST: EXPRESSION . COMMA CALL_ARGS_LIST
 
   <b>Parser Actions</b>
-    COMMA          shift, and go to state <a href="#state57">57</a>
-    RIGHT_PAREN    reduce using <a href="#prod58">rule 58</a> (CALL_ARGS_LIST)
+    PLUS           shift, and go to state <a href="#state57">57</a>
+    MINUS          shift, and go to state <a href="#state67">67</a>
+    COMMA          shift, and go to state <a href="#state87">87</a>
+    RIGHT_PAREN    reduce using <a href="#prod61">rule 61</a> (CALL_ARGS_LIST)
 
 
 
 <b><a name="state57">State</a> <a href="#state57">57</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START ID LEFT_PAREN EXPRESSION 
-        COMMA
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state47">47</a>-><a href="#state52">52</a>-><a href="#state56">56</a>-><a href="#state57">57</a>
-    Predecessors: <a href="#state56">56</a>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN EXPRESSION PLUS
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state106">106</a>-><a href="#state107">107</a>-><a href="#state57">57</a>
+    Predecessors: <a href="#state56">56</a>, <a href="#state65">65</a>, <a href="#state90">90</a>, <a href="#state107">107</a>, <a href="#state119">119</a>, <a href="#state122">122</a>
 
   <b>Kernel Items</b>
-    59 CALL_ARGS_LIST: EXPRESSION COMMA . CALL_ARGS_LIST
+    53 ADD_EXPRESSION: EXPRESSION PLUS . TERM
 
   <b>Parser Actions</b>
-    LEFT_PAREN     shift, and go to state <a href="#state74">74</a>
-    ID             shift, and go to state <a href="#state77">77</a>
-    INTEGER_VALUE  shift, and go to state <a href="#state78">78</a>
-    TRUE           shift, and go to state <a href="#state82">82</a>
-    FALSE          shift, and go to state <a href="#state83">83</a>
+    MINUS          shift, and go to state <a href="#state62">62</a>
+    LEFT_PAREN     shift, and go to state <a href="#state64">64</a>
+    ID             shift, and go to state <a href="#state70">70</a>
+    INTEGER_VALUE  shift, and go to state <a href="#state71">71</a>
+    TRUE           shift, and go to state <a href="#state73">73</a>
+    FALSE          shift, and go to state <a href="#state74">74</a>
 
   <b>Transitions</b>
-    CALL_ARGS_LIST go to state <a href="#state58">58</a>
-    EXPRESSION     go to state <a href="#state56">56</a>
-    TERM           go to state <a href="#state59">59</a>
-    SIMPLE_TERM    go to state <a href="#state66">66</a>
-    FUNC_CALL      go to state <a href="#state79">79</a>
+    TERM           go to state <a href="#state58">58</a>
+    UNARY_EXPRESSION go to state <a href="#state59">59</a>
+    SIMPLE_TERM    go to state <a href="#state69">69</a>
+    BOOL_VALUE     go to state <a href="#state72">72</a>
+    FUNC_CALL      go to state <a href="#state75">75</a>
     THIS_METHOD_CALL go to state <a href="#state46">46</a>
-    EXTERNAL_METHOD_CALL go to state <a href="#state80">80</a>
-    BOOL_VALUE     go to state <a href="#state81">81</a>
+    EXTERNAL_METHOD_CALL go to state <a href="#state76">76</a>
+    MUL_EXPRESSION go to state <a href="#state77">77</a>
+    DIV_EXPRESSION go to state <a href="#state78">78</a>
+    MOD_EXPRESSION go to state <a href="#state79">79</a>
 
 
 <b><a name="state58">State</a> <a href="#state58">58</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START ID LEFT_PAREN EXPRESSION 
-        COMMA CALL_ARGS_LIST
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state47">47</a>-><a href="#state52">52</a>-><a href="#state56">56</a>-><a href="#state57">57</a>-><a href="#state58">58</a>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN EXPRESSION PLUS 
+        TERM
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state106">106</a>-><a href="#state107">107</a>-><a href="#state57">57</a>-><a href="#state58">58</a>
     Predecessors: <a href="#state57">57</a>
 
   <b>Kernel Items</b>
-    59 CALL_ARGS_LIST: EXPRESSION COMMA CALL_ARGS_LIST .
-	-lookahead: { RIGHT_PAREN }
+    53 ADD_EXPRESSION: EXPRESSION PLUS TERM .
+	-lookahead: { PLUS, MINUS, COMMA, RIGHT_PAREN, LINE_END, LT, GT, GTE, LTE, 
+                EQUAL, AND, OR }
 
   <b>Parser Actions</b>
-    RIGHT_PAREN    reduce using <a href="#prod59">rule 59</a> (CALL_ARGS_LIST)
+    PLUS           reduce using <a href="#prod53">rule 53</a> (ADD_EXPRESSION)
+    MINUS          reduce using <a href="#prod53">rule 53</a> (ADD_EXPRESSION)
+    COMMA          reduce using <a href="#prod53">rule 53</a> (ADD_EXPRESSION)
+    RIGHT_PAREN    reduce using <a href="#prod53">rule 53</a> (ADD_EXPRESSION)
+    LINE_END       reduce using <a href="#prod53">rule 53</a> (ADD_EXPRESSION)
+    LT             reduce using <a href="#prod53">rule 53</a> (ADD_EXPRESSION)
+    GT             reduce using <a href="#prod53">rule 53</a> (ADD_EXPRESSION)
+    GTE            reduce using <a href="#prod53">rule 53</a> (ADD_EXPRESSION)
+    LTE            reduce using <a href="#prod53">rule 53</a> (ADD_EXPRESSION)
+    EQUAL          reduce using <a href="#prod53">rule 53</a> (ADD_EXPRESSION)
+    AND            reduce using <a href="#prod53">rule 53</a> (ADD_EXPRESSION)
+    OR             reduce using <a href="#prod53">rule 53</a> (ADD_EXPRESSION)
 
 
 
 <b><a name="state59">State</a> <a href="#state59">59</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN TERM
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state102">102</a>-><a href="#state59">59</a>
-    Predecessors: <a href="#state52">52</a>, <a href="#state57">57</a>, <a href="#state74">74</a>, <a href="#state85">85</a>, <a href="#state94">94</a>, <a href="#state102">102</a>, <a href="#state108">108</a>, <a href="#state111">111</a>, <a href="#state113">113</a>, <a href="#state117">117</a>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN UNARY_EXPRESSION
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state106">106</a>-><a href="#state59">59</a>
+    Predecessors: <a href="#state52">52</a>, <a href="#state57">57</a>, <a href="#state60">60</a>, <a href="#state64">64</a>, <a href="#state67">67</a>, <a href="#state83">83</a>, <a href="#state85">85</a>, <a href="#state87">87</a>, <a href="#state89">89</a>, <a href="#state98">98</a>, <a href="#state106">106</a>, <a href="#state112">112</a>, <a href="#state115">115</a>, <a href="#state117">117</a>, <a href="#state121">121</a>
 
   <b>Kernel Items</b>
-    36 EXPRESSION: TERM . EXPRESSION_S
+    39 TERM: UNARY_EXPRESSION .
+	-lookahead: { PLUS, MINUS, COMMA, RIGHT_PAREN, LINE_END, LT, GT, GTE, LTE, 
+                EQUAL, AND, OR }
+    43 MUL_EXPRESSION: UNARY_EXPRESSION . MULTIPLICATION TERM
+    44 DIV_EXPRESSION: UNARY_EXPRESSION . DIV TERM
+    45 MOD_EXPRESSION: UNARY_EXPRESSION . MOD TERM
 
   <b>Parser Actions</b>
-    PLUS           shift, and go to state <a href="#state64">64</a>
-    MINUS          shift, and go to state <a href="#state65">65</a>
-    COMMA          reduce using <a href="#prod40">rule 40</a> (Erasing EXPRESSION_S)
-    RIGHT_PAREN    reduce using <a href="#prod40">rule 40</a> (Erasing EXPRESSION_S)
-    LINE_END       reduce using <a href="#prod40">rule 40</a> (Erasing EXPRESSION_S)
-    LT             reduce using <a href="#prod40">rule 40</a> (Erasing EXPRESSION_S)
-    GT             reduce using <a href="#prod40">rule 40</a> (Erasing EXPRESSION_S)
-    GTE            reduce using <a href="#prod40">rule 40</a> (Erasing EXPRESSION_S)
-    LTE            reduce using <a href="#prod40">rule 40</a> (Erasing EXPRESSION_S)
-    EQUAL          reduce using <a href="#prod40">rule 40</a> (Erasing EXPRESSION_S)
-    AND            reduce using <a href="#prod40">rule 40</a> (Erasing EXPRESSION_S)
-    OR             reduce using <a href="#prod40">rule 40</a> (Erasing EXPRESSION_S)
+    MULTIPLICATION shift, and go to state <a href="#state60">60</a>
+    DIV            shift, and go to state <a href="#state83">83</a>
+    MOD            shift, and go to state <a href="#state85">85</a>
+    PLUS           reduce using <a href="#prod39">rule 39</a> (TERM)
+    MINUS          reduce using <a href="#prod39">rule 39</a> (TERM)
+    COMMA          reduce using <a href="#prod39">rule 39</a> (TERM)
+    RIGHT_PAREN    reduce using <a href="#prod39">rule 39</a> (TERM)
+    LINE_END       reduce using <a href="#prod39">rule 39</a> (TERM)
+    LT             reduce using <a href="#prod39">rule 39</a> (TERM)
+    GT             reduce using <a href="#prod39">rule 39</a> (TERM)
+    GTE            reduce using <a href="#prod39">rule 39</a> (TERM)
+    LTE            reduce using <a href="#prod39">rule 39</a> (TERM)
+    EQUAL          reduce using <a href="#prod39">rule 39</a> (TERM)
+    AND            reduce using <a href="#prod39">rule 39</a> (TERM)
+    OR             reduce using <a href="#prod39">rule 39</a> (TERM)
 
-  <b>Transitions</b>
-    EXPRESSION_S   go to state <a href="#state60">60</a>
-    FIRST_PREC_OPERATOR go to state <a href="#state61">61</a>
 
 
 <b><a name="state60">State</a> <a href="#state60">60</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN TERM
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state102">102</a>-><a href="#state59">59</a>-><a href="#state60">60</a>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN UNARY_EXPRESSION 
+        MULTIPLICATION
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state106">106</a>-><a href="#state59">59</a>-><a href="#state60">60</a>
     Predecessors: <a href="#state59">59</a>
 
   <b>Kernel Items</b>
-    36 EXPRESSION: TERM EXPRESSION_S .
-	-lookahead: { COMMA, RIGHT_PAREN, LINE_END, LT, GT, GTE, LTE, EQUAL, AND, OR }
+    43 MUL_EXPRESSION: UNARY_EXPRESSION MULTIPLICATION . TERM
 
   <b>Parser Actions</b>
-    COMMA          reduce using <a href="#prod36">rule 36</a> (EXPRESSION)
-    RIGHT_PAREN    reduce using <a href="#prod36">rule 36</a> (EXPRESSION)
-    LINE_END       reduce using <a href="#prod36">rule 36</a> (EXPRESSION)
-    LT             reduce using <a href="#prod36">rule 36</a> (EXPRESSION)
-    GT             reduce using <a href="#prod36">rule 36</a> (EXPRESSION)
-    GTE            reduce using <a href="#prod36">rule 36</a> (EXPRESSION)
-    LTE            reduce using <a href="#prod36">rule 36</a> (EXPRESSION)
-    EQUAL          reduce using <a href="#prod36">rule 36</a> (EXPRESSION)
-    AND            reduce using <a href="#prod36">rule 36</a> (EXPRESSION)
-    OR             reduce using <a href="#prod36">rule 36</a> (EXPRESSION)
+    MINUS          shift, and go to state <a href="#state62">62</a>
+    LEFT_PAREN     shift, and go to state <a href="#state64">64</a>
+    ID             shift, and go to state <a href="#state70">70</a>
+    INTEGER_VALUE  shift, and go to state <a href="#state71">71</a>
+    TRUE           shift, and go to state <a href="#state73">73</a>
+    FALSE          shift, and go to state <a href="#state74">74</a>
 
+  <b>Transitions</b>
+    TERM           go to state <a href="#state61">61</a>
+    UNARY_EXPRESSION go to state <a href="#state59">59</a>
+    SIMPLE_TERM    go to state <a href="#state69">69</a>
+    BOOL_VALUE     go to state <a href="#state72">72</a>
+    FUNC_CALL      go to state <a href="#state75">75</a>
+    THIS_METHOD_CALL go to state <a href="#state46">46</a>
+    EXTERNAL_METHOD_CALL go to state <a href="#state76">76</a>
+    MUL_EXPRESSION go to state <a href="#state77">77</a>
+    DIV_EXPRESSION go to state <a href="#state78">78</a>
+    MOD_EXPRESSION go to state <a href="#state79">79</a>
 
 
 <b><a name="state61">State</a> <a href="#state61">61</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN TERM 
-        FIRST_PREC_OPERATOR
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state102">102</a>-><a href="#state59">59</a>-><a href="#state61">61</a>
-    Predecessors: <a href="#state59">59</a>, <a href="#state62">62</a>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN UNARY_EXPRESSION 
+        MULTIPLICATION TERM
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state106">106</a>-><a href="#state59">59</a>-><a href="#state60">60</a>-><a href="#state61">61</a>
+    Predecessors: <a href="#state60">60</a>
 
   <b>Kernel Items</b>
-    39 EXPRESSION_S: FIRST_PREC_OPERATOR . TERM EXPRESSION_S
+    43 MUL_EXPRESSION: UNARY_EXPRESSION MULTIPLICATION TERM .
+	-lookahead: { PLUS, MINUS, COMMA, RIGHT_PAREN, LINE_END, LT, GT, GTE, LTE, 
+                EQUAL, AND, OR }
 
   <b>Parser Actions</b>
-    LEFT_PAREN     shift, and go to state <a href="#state74">74</a>
-    ID             shift, and go to state <a href="#state84">84</a>
-    INTEGER_VALUE  shift, and go to state <a href="#state78">78</a>
+    PLUS           reduce using <a href="#prod43">rule 43</a> (MUL_EXPRESSION)
+    MINUS          reduce using <a href="#prod43">rule 43</a> (MUL_EXPRESSION)
+    COMMA          reduce using <a href="#prod43">rule 43</a> (MUL_EXPRESSION)
+    RIGHT_PAREN    reduce using <a href="#prod43">rule 43</a> (MUL_EXPRESSION)
+    LINE_END       reduce using <a href="#prod43">rule 43</a> (MUL_EXPRESSION)
+    LT             reduce using <a href="#prod43">rule 43</a> (MUL_EXPRESSION)
+    GT             reduce using <a href="#prod43">rule 43</a> (MUL_EXPRESSION)
+    GTE            reduce using <a href="#prod43">rule 43</a> (MUL_EXPRESSION)
+    LTE            reduce using <a href="#prod43">rule 43</a> (MUL_EXPRESSION)
+    EQUAL          reduce using <a href="#prod43">rule 43</a> (MUL_EXPRESSION)
+    AND            reduce using <a href="#prod43">rule 43</a> (MUL_EXPRESSION)
+    OR             reduce using <a href="#prod43">rule 43</a> (MUL_EXPRESSION)
 
-  <b>Transitions</b>
-    TERM           go to state <a href="#state62">62</a>
-    SIMPLE_TERM    go to state <a href="#state66">66</a>
 
 
 <b><a name="state62">State</a> <a href="#state62">62</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN TERM 
-        FIRST_PREC_OPERATOR TERM
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state102">102</a>-><a href="#state59">59</a>-><a href="#state61">61</a>-><a href="#state62">62</a>
-    Predecessors: <a href="#state61">61</a>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN MINUS
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state106">106</a>-><a href="#state62">62</a>
+    Predecessors: <a href="#state52">52</a>, <a href="#state57">57</a>, <a href="#state60">60</a>, <a href="#state64">64</a>, <a href="#state67">67</a>, <a href="#state83">83</a>, <a href="#state85">85</a>, <a href="#state87">87</a>, <a href="#state89">89</a>, <a href="#state98">98</a>, <a href="#state106">106</a>, <a href="#state112">112</a>, <a href="#state115">115</a>, <a href="#state117">117</a>, <a href="#state121">121</a>
 
   <b>Kernel Items</b>
-    39 EXPRESSION_S: FIRST_PREC_OPERATOR TERM . EXPRESSION_S
+    46 UNARY_EXPRESSION: MINUS . SIMPLE_TERM
 
   <b>Parser Actions</b>
-    PLUS           shift, and go to state <a href="#state64">64</a>
-    MINUS          shift, and go to state <a href="#state65">65</a>
-    COMMA          reduce using <a href="#prod40">rule 40</a> (Erasing EXPRESSION_S)
-    RIGHT_PAREN    reduce using <a href="#prod40">rule 40</a> (Erasing EXPRESSION_S)
-    LINE_END       reduce using <a href="#prod40">rule 40</a> (Erasing EXPRESSION_S)
-    LT             reduce using <a href="#prod40">rule 40</a> (Erasing EXPRESSION_S)
-    GT             reduce using <a href="#prod40">rule 40</a> (Erasing EXPRESSION_S)
-    GTE            reduce using <a href="#prod40">rule 40</a> (Erasing EXPRESSION_S)
-    LTE            reduce using <a href="#prod40">rule 40</a> (Erasing EXPRESSION_S)
-    EQUAL          reduce using <a href="#prod40">rule 40</a> (Erasing EXPRESSION_S)
-    AND            reduce using <a href="#prod40">rule 40</a> (Erasing EXPRESSION_S)
-    OR             reduce using <a href="#prod40">rule 40</a> (Erasing EXPRESSION_S)
+    LEFT_PAREN     shift, and go to state <a href="#state64">64</a>
+    ID             shift, and go to state <a href="#state70">70</a>
+    INTEGER_VALUE  shift, and go to state <a href="#state71">71</a>
+    TRUE           shift, and go to state <a href="#state73">73</a>
+    FALSE          shift, and go to state <a href="#state74">74</a>
 
   <b>Transitions</b>
-    EXPRESSION_S   go to state <a href="#state63">63</a>
-    FIRST_PREC_OPERATOR go to state <a href="#state61">61</a>
+    SIMPLE_TERM    go to state <a href="#state63">63</a>
+    BOOL_VALUE     go to state <a href="#state72">72</a>
+    FUNC_CALL      go to state <a href="#state75">75</a>
+    THIS_METHOD_CALL go to state <a href="#state46">46</a>
+    EXTERNAL_METHOD_CALL go to state <a href="#state76">76</a>
 
 
 <b><a name="state63">State</a> <a href="#state63">63</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN TERM 
-        FIRST_PREC_OPERATOR TERM
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state102">102</a>-><a href="#state59">59</a>-><a href="#state61">61</a>-><a href="#state62">62</a>-><a href="#state63">63</a>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN MINUS SIMPLE_TERM
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state106">106</a>-><a href="#state62">62</a>-><a href="#state63">63</a>
     Predecessors: <a href="#state62">62</a>
 
   <b>Kernel Items</b>
-    39 EXPRESSION_S: FIRST_PREC_OPERATOR TERM EXPRESSION_S .
-	-lookahead: { COMMA, RIGHT_PAREN, LINE_END, LT, GT, GTE, LTE, EQUAL, AND, OR }
+    46 UNARY_EXPRESSION: MINUS SIMPLE_TERM .
+	-lookahead: { MULTIPLICATION, DIV, MOD, PLUS, MINUS, COMMA, RIGHT_PAREN, 
+                LINE_END, LT, GT, GTE, LTE, EQUAL, AND, OR }
 
   <b>Parser Actions</b>
-    COMMA          reduce using <a href="#prod39">rule 39</a> (EXPRESSION_S)
-    RIGHT_PAREN    reduce using <a href="#prod39">rule 39</a> (EXPRESSION_S)
-    LINE_END       reduce using <a href="#prod39">rule 39</a> (EXPRESSION_S)
-    LT             reduce using <a href="#prod39">rule 39</a> (EXPRESSION_S)
-    GT             reduce using <a href="#prod39">rule 39</a> (EXPRESSION_S)
-    GTE            reduce using <a href="#prod39">rule 39</a> (EXPRESSION_S)
-    LTE            reduce using <a href="#prod39">rule 39</a> (EXPRESSION_S)
-    EQUAL          reduce using <a href="#prod39">rule 39</a> (EXPRESSION_S)
-    AND            reduce using <a href="#prod39">rule 39</a> (EXPRESSION_S)
-    OR             reduce using <a href="#prod39">rule 39</a> (EXPRESSION_S)
+    MULTIPLICATION reduce using <a href="#prod46">rule 46</a> (UNARY_EXPRESSION)
+    DIV            reduce using <a href="#prod46">rule 46</a> (UNARY_EXPRESSION)
+    MOD            reduce using <a href="#prod46">rule 46</a> (UNARY_EXPRESSION)
+    PLUS           reduce using <a href="#prod46">rule 46</a> (UNARY_EXPRESSION)
+    MINUS          reduce using <a href="#prod46">rule 46</a> (UNARY_EXPRESSION)
+    COMMA          reduce using <a href="#prod46">rule 46</a> (UNARY_EXPRESSION)
+    RIGHT_PAREN    reduce using <a href="#prod46">rule 46</a> (UNARY_EXPRESSION)
+    LINE_END       reduce using <a href="#prod46">rule 46</a> (UNARY_EXPRESSION)
+    LT             reduce using <a href="#prod46">rule 46</a> (UNARY_EXPRESSION)
+    GT             reduce using <a href="#prod46">rule 46</a> (UNARY_EXPRESSION)
+    GTE            reduce using <a href="#prod46">rule 46</a> (UNARY_EXPRESSION)
+    LTE            reduce using <a href="#prod46">rule 46</a> (UNARY_EXPRESSION)
+    EQUAL          reduce using <a href="#prod46">rule 46</a> (UNARY_EXPRESSION)
+    AND            reduce using <a href="#prod46">rule 46</a> (UNARY_EXPRESSION)
+    OR             reduce using <a href="#prod46">rule 46</a> (UNARY_EXPRESSION)
 
 
 
 <b><a name="state64">State</a> <a href="#state64">64</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN TERM PLUS
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state102">102</a>-><a href="#state59">59</a>-><a href="#state64">64</a>
-    Predecessors: <a href="#state59">59</a>, <a href="#state62">62</a>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN LEFT_PAREN
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state106">106</a>-><a href="#state64">64</a>
+    Predecessors: <a href="#state52">52</a>, <a href="#state57">57</a>, <a href="#state60">60</a>, <a href="#state62">62</a>, <a href="#state64">64</a>, <a href="#state67">67</a>, <a href="#state83">83</a>, <a href="#state85">85</a>, <a href="#state87">87</a>, <a href="#state89">89</a>, <a href="#state98">98</a>, <a href="#state106">106</a>, <a href="#state112">112</a>, <a href="#state115">115</a>, <a href="#state117">117</a>, <a href="#state121">121</a>
 
   <b>Kernel Items</b>
-    47 FIRST_PREC_OPERATOR: PLUS .
-	-lookahead: { LEFT_PAREN, ID, INTEGER_VALUE }
+    48 SIMPLE_TERM: LEFT_PAREN . EXPRESSION RIGHT_PAREN
 
   <b>Parser Actions</b>
-    LEFT_PAREN     reduce using <a href="#prod47">rule 47</a> (FIRST_PREC_OPERATOR)
-    ID             reduce using <a href="#prod47">rule 47</a> (FIRST_PREC_OPERATOR)
-    INTEGER_VALUE  reduce using <a href="#prod47">rule 47</a> (FIRST_PREC_OPERATOR)
+    MINUS          shift, and go to state <a href="#state62">62</a>
+    LEFT_PAREN     shift, and go to state <a href="#state64">64</a>
+    ID             shift, and go to state <a href="#state70">70</a>
+    INTEGER_VALUE  shift, and go to state <a href="#state71">71</a>
+    TRUE           shift, and go to state <a href="#state73">73</a>
+    FALSE          shift, and go to state <a href="#state74">74</a>
 
+  <b>Transitions</b>
+    EXPRESSION     go to state <a href="#state65">65</a>
+    TERM           go to state <a href="#state80">80</a>
+    UNARY_EXPRESSION go to state <a href="#state59">59</a>
+    SIMPLE_TERM    go to state <a href="#state69">69</a>
+    BOOL_VALUE     go to state <a href="#state72">72</a>
+    FUNC_CALL      go to state <a href="#state75">75</a>
+    THIS_METHOD_CALL go to state <a href="#state46">46</a>
+    EXTERNAL_METHOD_CALL go to state <a href="#state76">76</a>
+    MUL_EXPRESSION go to state <a href="#state77">77</a>
+    DIV_EXPRESSION go to state <a href="#state78">78</a>
+    MOD_EXPRESSION go to state <a href="#state79">79</a>
+    ADD_EXPRESSION go to state <a href="#state81">81</a>
+    SUB_EXPRESSION go to state <a href="#state82">82</a>
 
 
 <b><a name="state65">State</a> <a href="#state65">65</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN TERM MINUS
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state102">102</a>-><a href="#state59">59</a>-><a href="#state65">65</a>
-    Predecessors: <a href="#state59">59</a>, <a href="#state62">62</a>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN LEFT_PAREN 
+        EXPRESSION
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state106">106</a>-><a href="#state64">64</a>-><a href="#state65">65</a>
+    Predecessors: <a href="#state64">64</a>
 
   <b>Kernel Items</b>
-    48 FIRST_PREC_OPERATOR: MINUS .
-	-lookahead: { LEFT_PAREN, ID, INTEGER_VALUE }
+    48 SIMPLE_TERM: LEFT_PAREN EXPRESSION . RIGHT_PAREN
+    53 ADD_EXPRESSION: EXPRESSION . PLUS TERM
+    54 SUB_EXPRESSION: EXPRESSION . MINUS TERM
 
   <b>Parser Actions</b>
-    LEFT_PAREN     reduce using <a href="#prod48">rule 48</a> (FIRST_PREC_OPERATOR)
-    ID             reduce using <a href="#prod48">rule 48</a> (FIRST_PREC_OPERATOR)
-    INTEGER_VALUE  reduce using <a href="#prod48">rule 48</a> (FIRST_PREC_OPERATOR)
+    RIGHT_PAREN    shift, and go to state <a href="#state66">66</a>
+    PLUS           shift, and go to state <a href="#state57">57</a>
+    MINUS          shift, and go to state <a href="#state67">67</a>
 
 
 
 <b><a name="state66">State</a> <a href="#state66">66</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN SIMPLE_TERM
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state102">102</a>-><a href="#state66">66</a>
-    Predecessors: <a href="#state52">52</a>, <a href="#state57">57</a>, <a href="#state61">61</a>, <a href="#state74">74</a>, <a href="#state85">85</a>, <a href="#state94">94</a>, <a href="#state102">102</a>, <a href="#state108">108</a>, <a href="#state111">111</a>, <a href="#state113">113</a>, <a href="#state117">117</a>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN LEFT_PAREN 
+        EXPRESSION RIGHT_PAREN
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state106">106</a>-><a href="#state64">64</a>-><a href="#state65">65</a>-><a href="#state66">66</a>
+    Predecessors: <a href="#state65">65</a>
 
   <b>Kernel Items</b>
-    41 TERM: SIMPLE_TERM . TERM_S
+    48 SIMPLE_TERM: LEFT_PAREN EXPRESSION RIGHT_PAREN .
+	-lookahead: { MULTIPLICATION, DIV, MOD, PLUS, MINUS, COMMA, RIGHT_PAREN, 
+                LINE_END, LT, GT, GTE, LTE, EQUAL, AND, OR }
 
   <b>Parser Actions</b>
-    MULTIPLICATION shift, and go to state <a href="#state71">71</a>
-    DIV            shift, and go to state <a href="#state72">72</a>
-    MOD            shift, and go to state <a href="#state73">73</a>
-    PLUS           reduce using <a href="#prod43">rule 43</a> (Erasing TERM_S)
-    MINUS          reduce using <a href="#prod43">rule 43</a> (Erasing TERM_S)
-    COMMA          reduce using <a href="#prod43">rule 43</a> (Erasing TERM_S)
-    RIGHT_PAREN    reduce using <a href="#prod43">rule 43</a> (Erasing TERM_S)
-    LINE_END       reduce using <a href="#prod43">rule 43</a> (Erasing TERM_S)
-    LT             reduce using <a href="#prod43">rule 43</a> (Erasing TERM_S)
-    GT             reduce using <a href="#prod43">rule 43</a> (Erasing TERM_S)
-    GTE            reduce using <a href="#prod43">rule 43</a> (Erasing TERM_S)
-    LTE            reduce using <a href="#prod43">rule 43</a> (Erasing TERM_S)
-    EQUAL          reduce using <a href="#prod43">rule 43</a> (Erasing TERM_S)
-    AND            reduce using <a href="#prod43">rule 43</a> (Erasing TERM_S)
-    OR             reduce using <a href="#prod43">rule 43</a> (Erasing TERM_S)
+    MULTIPLICATION reduce using <a href="#prod48">rule 48</a> (SIMPLE_TERM)
+    DIV            reduce using <a href="#prod48">rule 48</a> (SIMPLE_TERM)
+    MOD            reduce using <a href="#prod48">rule 48</a> (SIMPLE_TERM)
+    PLUS           reduce using <a href="#prod48">rule 48</a> (SIMPLE_TERM)
+    MINUS          reduce using <a href="#prod48">rule 48</a> (SIMPLE_TERM)
+    COMMA          reduce using <a href="#prod48">rule 48</a> (SIMPLE_TERM)
+    RIGHT_PAREN    reduce using <a href="#prod48">rule 48</a> (SIMPLE_TERM)
+    LINE_END       reduce using <a href="#prod48">rule 48</a> (SIMPLE_TERM)
+    LT             reduce using <a href="#prod48">rule 48</a> (SIMPLE_TERM)
+    GT             reduce using <a href="#prod48">rule 48</a> (SIMPLE_TERM)
+    GTE            reduce using <a href="#prod48">rule 48</a> (SIMPLE_TERM)
+    LTE            reduce using <a href="#prod48">rule 48</a> (SIMPLE_TERM)
+    EQUAL          reduce using <a href="#prod48">rule 48</a> (SIMPLE_TERM)
+    AND            reduce using <a href="#prod48">rule 48</a> (SIMPLE_TERM)
+    OR             reduce using <a href="#prod48">rule 48</a> (SIMPLE_TERM)
 
-  <b>Transitions</b>
-    TERM_S         go to state <a href="#state67">67</a>
-    SECOND_PREC_OPERATOR go to state <a href="#state68">68</a>
 
 
 <b><a name="state67">State</a> <a href="#state67">67</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN SIMPLE_TERM
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state102">102</a>-><a href="#state66">66</a>-><a href="#state67">67</a>
-    Predecessors: <a href="#state66">66</a>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN EXPRESSION MINUS
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state106">106</a>-><a href="#state107">107</a>-><a href="#state67">67</a>
+    Predecessors: <a href="#state56">56</a>, <a href="#state65">65</a>, <a href="#state90">90</a>, <a href="#state107">107</a>, <a href="#state119">119</a>, <a href="#state122">122</a>
 
   <b>Kernel Items</b>
-    41 TERM: SIMPLE_TERM TERM_S .
+    54 SUB_EXPRESSION: EXPRESSION MINUS . TERM
+
+  <b>Parser Actions</b>
+    MINUS          shift, and go to state <a href="#state62">62</a>
+    LEFT_PAREN     shift, and go to state <a href="#state64">64</a>
+    ID             shift, and go to state <a href="#state70">70</a>
+    INTEGER_VALUE  shift, and go to state <a href="#state71">71</a>
+    TRUE           shift, and go to state <a href="#state73">73</a>
+    FALSE          shift, and go to state <a href="#state74">74</a>
+
+  <b>Transitions</b>
+    TERM           go to state <a href="#state68">68</a>
+    UNARY_EXPRESSION go to state <a href="#state59">59</a>
+    SIMPLE_TERM    go to state <a href="#state69">69</a>
+    BOOL_VALUE     go to state <a href="#state72">72</a>
+    FUNC_CALL      go to state <a href="#state75">75</a>
+    THIS_METHOD_CALL go to state <a href="#state46">46</a>
+    EXTERNAL_METHOD_CALL go to state <a href="#state76">76</a>
+    MUL_EXPRESSION go to state <a href="#state77">77</a>
+    DIV_EXPRESSION go to state <a href="#state78">78</a>
+    MOD_EXPRESSION go to state <a href="#state79">79</a>
+
+
+<b><a name="state68">State</a> <a href="#state68">68</a></b>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN EXPRESSION MINUS 
+        TERM
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state106">106</a>-><a href="#state107">107</a>-><a href="#state67">67</a>-><a href="#state68">68</a>
+    Predecessors: <a href="#state67">67</a>
+
+  <b>Kernel Items</b>
+    54 SUB_EXPRESSION: EXPRESSION MINUS TERM .
+	-lookahead: { PLUS, MINUS, COMMA, RIGHT_PAREN, LINE_END, LT, GT, GTE, LTE, 
+                EQUAL, AND, OR }
+
+  <b>Parser Actions</b>
+    PLUS           reduce using <a href="#prod54">rule 54</a> (SUB_EXPRESSION)
+    MINUS          reduce using <a href="#prod54">rule 54</a> (SUB_EXPRESSION)
+    COMMA          reduce using <a href="#prod54">rule 54</a> (SUB_EXPRESSION)
+    RIGHT_PAREN    reduce using <a href="#prod54">rule 54</a> (SUB_EXPRESSION)
+    LINE_END       reduce using <a href="#prod54">rule 54</a> (SUB_EXPRESSION)
+    LT             reduce using <a href="#prod54">rule 54</a> (SUB_EXPRESSION)
+    GT             reduce using <a href="#prod54">rule 54</a> (SUB_EXPRESSION)
+    GTE            reduce using <a href="#prod54">rule 54</a> (SUB_EXPRESSION)
+    LTE            reduce using <a href="#prod54">rule 54</a> (SUB_EXPRESSION)
+    EQUAL          reduce using <a href="#prod54">rule 54</a> (SUB_EXPRESSION)
+    AND            reduce using <a href="#prod54">rule 54</a> (SUB_EXPRESSION)
+    OR             reduce using <a href="#prod54">rule 54</a> (SUB_EXPRESSION)
+
+
+
+<b><a name="state69">State</a> <a href="#state69">69</a></b>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN SIMPLE_TERM
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state106">106</a>-><a href="#state69">69</a>
+    Predecessors: <a href="#state52">52</a>, <a href="#state57">57</a>, <a href="#state60">60</a>, <a href="#state64">64</a>, <a href="#state67">67</a>, <a href="#state83">83</a>, <a href="#state85">85</a>, <a href="#state87">87</a>, <a href="#state89">89</a>, <a href="#state98">98</a>, <a href="#state106">106</a>, <a href="#state112">112</a>, <a href="#state115">115</a>, <a href="#state117">117</a>, <a href="#state121">121</a>
+
+  <b>Kernel Items</b>
+    47 UNARY_EXPRESSION: SIMPLE_TERM .
+	-lookahead: { MULTIPLICATION, DIV, MOD, PLUS, MINUS, COMMA, RIGHT_PAREN, 
+                LINE_END, LT, GT, GTE, LTE, EQUAL, AND, OR }
+
+  <b>Parser Actions</b>
+    MULTIPLICATION reduce using <a href="#prod47">rule 47</a> (UNARY_EXPRESSION)
+    DIV            reduce using <a href="#prod47">rule 47</a> (UNARY_EXPRESSION)
+    MOD            reduce using <a href="#prod47">rule 47</a> (UNARY_EXPRESSION)
+    PLUS           reduce using <a href="#prod47">rule 47</a> (UNARY_EXPRESSION)
+    MINUS          reduce using <a href="#prod47">rule 47</a> (UNARY_EXPRESSION)
+    COMMA          reduce using <a href="#prod47">rule 47</a> (UNARY_EXPRESSION)
+    RIGHT_PAREN    reduce using <a href="#prod47">rule 47</a> (UNARY_EXPRESSION)
+    LINE_END       reduce using <a href="#prod47">rule 47</a> (UNARY_EXPRESSION)
+    LT             reduce using <a href="#prod47">rule 47</a> (UNARY_EXPRESSION)
+    GT             reduce using <a href="#prod47">rule 47</a> (UNARY_EXPRESSION)
+    GTE            reduce using <a href="#prod47">rule 47</a> (UNARY_EXPRESSION)
+    LTE            reduce using <a href="#prod47">rule 47</a> (UNARY_EXPRESSION)
+    EQUAL          reduce using <a href="#prod47">rule 47</a> (UNARY_EXPRESSION)
+    AND            reduce using <a href="#prod47">rule 47</a> (UNARY_EXPRESSION)
+    OR             reduce using <a href="#prod47">rule 47</a> (UNARY_EXPRESSION)
+
+
+
+<b><a name="state70">State</a> <a href="#state70">70</a></b>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN ID
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state106">106</a>-><a href="#state70">70</a>
+    Predecessors: <a href="#state52">52</a>, <a href="#state57">57</a>, <a href="#state60">60</a>, <a href="#state62">62</a>, <a href="#state64">64</a>, <a href="#state67">67</a>, <a href="#state83">83</a>, <a href="#state85">85</a>, <a href="#state87">87</a>, <a href="#state89">89</a>, <a href="#state98">98</a>, <a href="#state106">106</a>, <a href="#state112">112</a>, <a href="#state115">115</a>, <a href="#state117">117</a>, <a href="#state121">121</a>
+
+  <b>Kernel Items</b>
+    49 SIMPLE_TERM: ID .
+	-lookahead: { MULTIPLICATION, DIV, MOD, PLUS, MINUS, COMMA, RIGHT_PAREN, 
+                LINE_END, LT, GT, GTE, LTE, EQUAL, AND, OR }
+    57 THIS_METHOD_CALL: ID . CALL_ARGS
+    58 EXTERNAL_METHOD_CALL: ID . DOT ID CALL_ARGS
+
+  <b>Parser Actions</b>
+    DOT            shift, and go to state <a href="#state49">49</a>
+    LEFT_PAREN     shift, and go to state <a href="#state52">52</a>
+    MULTIPLICATION reduce using <a href="#prod49">rule 49</a> (SIMPLE_TERM)
+    DIV            reduce using <a href="#prod49">rule 49</a> (SIMPLE_TERM)
+    MOD            reduce using <a href="#prod49">rule 49</a> (SIMPLE_TERM)
+    PLUS           reduce using <a href="#prod49">rule 49</a> (SIMPLE_TERM)
+    MINUS          reduce using <a href="#prod49">rule 49</a> (SIMPLE_TERM)
+    COMMA          reduce using <a href="#prod49">rule 49</a> (SIMPLE_TERM)
+    RIGHT_PAREN    reduce using <a href="#prod49">rule 49</a> (SIMPLE_TERM)
+    LINE_END       reduce using <a href="#prod49">rule 49</a> (SIMPLE_TERM)
+    LT             reduce using <a href="#prod49">rule 49</a> (SIMPLE_TERM)
+    GT             reduce using <a href="#prod49">rule 49</a> (SIMPLE_TERM)
+    GTE            reduce using <a href="#prod49">rule 49</a> (SIMPLE_TERM)
+    LTE            reduce using <a href="#prod49">rule 49</a> (SIMPLE_TERM)
+    EQUAL          reduce using <a href="#prod49">rule 49</a> (SIMPLE_TERM)
+    AND            reduce using <a href="#prod49">rule 49</a> (SIMPLE_TERM)
+    OR             reduce using <a href="#prod49">rule 49</a> (SIMPLE_TERM)
+
+  <b>Transitions</b>
+    CALL_ARGS      go to state <a href="#state48">48</a>
+
+
+<b><a name="state71">State</a> <a href="#state71">71</a></b>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN INTEGER_VALUE
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state106">106</a>-><a href="#state71">71</a>
+    Predecessors: <a href="#state52">52</a>, <a href="#state57">57</a>, <a href="#state60">60</a>, <a href="#state62">62</a>, <a href="#state64">64</a>, <a href="#state67">67</a>, <a href="#state83">83</a>, <a href="#state85">85</a>, <a href="#state87">87</a>, <a href="#state89">89</a>, <a href="#state98">98</a>, <a href="#state106">106</a>, <a href="#state112">112</a>, <a href="#state115">115</a>, <a href="#state117">117</a>, <a href="#state121">121</a>
+
+  <b>Kernel Items</b>
+    50 SIMPLE_TERM: INTEGER_VALUE .
+	-lookahead: { MULTIPLICATION, DIV, MOD, PLUS, MINUS, COMMA, RIGHT_PAREN, 
+                LINE_END, LT, GT, GTE, LTE, EQUAL, AND, OR }
+
+  <b>Parser Actions</b>
+    MULTIPLICATION reduce using <a href="#prod50">rule 50</a> (SIMPLE_TERM)
+    DIV            reduce using <a href="#prod50">rule 50</a> (SIMPLE_TERM)
+    MOD            reduce using <a href="#prod50">rule 50</a> (SIMPLE_TERM)
+    PLUS           reduce using <a href="#prod50">rule 50</a> (SIMPLE_TERM)
+    MINUS          reduce using <a href="#prod50">rule 50</a> (SIMPLE_TERM)
+    COMMA          reduce using <a href="#prod50">rule 50</a> (SIMPLE_TERM)
+    RIGHT_PAREN    reduce using <a href="#prod50">rule 50</a> (SIMPLE_TERM)
+    LINE_END       reduce using <a href="#prod50">rule 50</a> (SIMPLE_TERM)
+    LT             reduce using <a href="#prod50">rule 50</a> (SIMPLE_TERM)
+    GT             reduce using <a href="#prod50">rule 50</a> (SIMPLE_TERM)
+    GTE            reduce using <a href="#prod50">rule 50</a> (SIMPLE_TERM)
+    LTE            reduce using <a href="#prod50">rule 50</a> (SIMPLE_TERM)
+    EQUAL          reduce using <a href="#prod50">rule 50</a> (SIMPLE_TERM)
+    AND            reduce using <a href="#prod50">rule 50</a> (SIMPLE_TERM)
+    OR             reduce using <a href="#prod50">rule 50</a> (SIMPLE_TERM)
+
+
+
+<b><a name="state72">State</a> <a href="#state72">72</a></b>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN BOOL_VALUE
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state106">106</a>-><a href="#state72">72</a>
+    Predecessors: <a href="#state52">52</a>, <a href="#state57">57</a>, <a href="#state60">60</a>, <a href="#state62">62</a>, <a href="#state64">64</a>, <a href="#state67">67</a>, <a href="#state83">83</a>, <a href="#state85">85</a>, <a href="#state87">87</a>, <a href="#state89">89</a>, <a href="#state98">98</a>, <a href="#state106">106</a>, <a href="#state112">112</a>, <a href="#state115">115</a>, <a href="#state117">117</a>, <a href="#state121">121</a>
+
+  <b>Kernel Items</b>
+    51 SIMPLE_TERM: BOOL_VALUE .
+	-lookahead: { MULTIPLICATION, DIV, MOD, PLUS, MINUS, COMMA, RIGHT_PAREN, 
+                LINE_END, LT, GT, GTE, LTE, EQUAL, AND, OR }
+
+  <b>Parser Actions</b>
+    MULTIPLICATION reduce using <a href="#prod51">rule 51</a> (SIMPLE_TERM)
+    DIV            reduce using <a href="#prod51">rule 51</a> (SIMPLE_TERM)
+    MOD            reduce using <a href="#prod51">rule 51</a> (SIMPLE_TERM)
+    PLUS           reduce using <a href="#prod51">rule 51</a> (SIMPLE_TERM)
+    MINUS          reduce using <a href="#prod51">rule 51</a> (SIMPLE_TERM)
+    COMMA          reduce using <a href="#prod51">rule 51</a> (SIMPLE_TERM)
+    RIGHT_PAREN    reduce using <a href="#prod51">rule 51</a> (SIMPLE_TERM)
+    LINE_END       reduce using <a href="#prod51">rule 51</a> (SIMPLE_TERM)
+    LT             reduce using <a href="#prod51">rule 51</a> (SIMPLE_TERM)
+    GT             reduce using <a href="#prod51">rule 51</a> (SIMPLE_TERM)
+    GTE            reduce using <a href="#prod51">rule 51</a> (SIMPLE_TERM)
+    LTE            reduce using <a href="#prod51">rule 51</a> (SIMPLE_TERM)
+    EQUAL          reduce using <a href="#prod51">rule 51</a> (SIMPLE_TERM)
+    AND            reduce using <a href="#prod51">rule 51</a> (SIMPLE_TERM)
+    OR             reduce using <a href="#prod51">rule 51</a> (SIMPLE_TERM)
+
+
+
+<b><a name="state73">State</a> <a href="#state73">73</a></b>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN TRUE
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state106">106</a>-><a href="#state73">73</a>
+    Predecessors: <a href="#state52">52</a>, <a href="#state57">57</a>, <a href="#state60">60</a>, <a href="#state62">62</a>, <a href="#state64">64</a>, <a href="#state67">67</a>, <a href="#state83">83</a>, <a href="#state85">85</a>, <a href="#state87">87</a>, <a href="#state89">89</a>, <a href="#state98">98</a>, <a href="#state106">106</a>, <a href="#state112">112</a>, <a href="#state115">115</a>, <a href="#state117">117</a>, <a href="#state121">121</a>
+
+  <b>Kernel Items</b>
+    63 BOOL_VALUE: TRUE .
+	-lookahead: { MULTIPLICATION, DIV, MOD, PLUS, MINUS, COMMA, RIGHT_PAREN, 
+                LINE_END, LT, GT, GTE, LTE, EQUAL, AND, OR }
+
+  <b>Parser Actions</b>
+    MULTIPLICATION reduce using <a href="#prod63">rule 63</a> (BOOL_VALUE)
+    DIV            reduce using <a href="#prod63">rule 63</a> (BOOL_VALUE)
+    MOD            reduce using <a href="#prod63">rule 63</a> (BOOL_VALUE)
+    PLUS           reduce using <a href="#prod63">rule 63</a> (BOOL_VALUE)
+    MINUS          reduce using <a href="#prod63">rule 63</a> (BOOL_VALUE)
+    COMMA          reduce using <a href="#prod63">rule 63</a> (BOOL_VALUE)
+    RIGHT_PAREN    reduce using <a href="#prod63">rule 63</a> (BOOL_VALUE)
+    LINE_END       reduce using <a href="#prod63">rule 63</a> (BOOL_VALUE)
+    LT             reduce using <a href="#prod63">rule 63</a> (BOOL_VALUE)
+    GT             reduce using <a href="#prod63">rule 63</a> (BOOL_VALUE)
+    GTE            reduce using <a href="#prod63">rule 63</a> (BOOL_VALUE)
+    LTE            reduce using <a href="#prod63">rule 63</a> (BOOL_VALUE)
+    EQUAL          reduce using <a href="#prod63">rule 63</a> (BOOL_VALUE)
+    AND            reduce using <a href="#prod63">rule 63</a> (BOOL_VALUE)
+    OR             reduce using <a href="#prod63">rule 63</a> (BOOL_VALUE)
+
+
+
+<b><a name="state74">State</a> <a href="#state74">74</a></b>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN FALSE
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state106">106</a>-><a href="#state74">74</a>
+    Predecessors: <a href="#state52">52</a>, <a href="#state57">57</a>, <a href="#state60">60</a>, <a href="#state62">62</a>, <a href="#state64">64</a>, <a href="#state67">67</a>, <a href="#state83">83</a>, <a href="#state85">85</a>, <a href="#state87">87</a>, <a href="#state89">89</a>, <a href="#state98">98</a>, <a href="#state106">106</a>, <a href="#state112">112</a>, <a href="#state115">115</a>, <a href="#state117">117</a>, <a href="#state121">121</a>
+
+  <b>Kernel Items</b>
+    64 BOOL_VALUE: FALSE .
+	-lookahead: { MULTIPLICATION, DIV, MOD, PLUS, MINUS, COMMA, RIGHT_PAREN, 
+                LINE_END, LT, GT, GTE, LTE, EQUAL, AND, OR }
+
+  <b>Parser Actions</b>
+    MULTIPLICATION reduce using <a href="#prod64">rule 64</a> (BOOL_VALUE)
+    DIV            reduce using <a href="#prod64">rule 64</a> (BOOL_VALUE)
+    MOD            reduce using <a href="#prod64">rule 64</a> (BOOL_VALUE)
+    PLUS           reduce using <a href="#prod64">rule 64</a> (BOOL_VALUE)
+    MINUS          reduce using <a href="#prod64">rule 64</a> (BOOL_VALUE)
+    COMMA          reduce using <a href="#prod64">rule 64</a> (BOOL_VALUE)
+    RIGHT_PAREN    reduce using <a href="#prod64">rule 64</a> (BOOL_VALUE)
+    LINE_END       reduce using <a href="#prod64">rule 64</a> (BOOL_VALUE)
+    LT             reduce using <a href="#prod64">rule 64</a> (BOOL_VALUE)
+    GT             reduce using <a href="#prod64">rule 64</a> (BOOL_VALUE)
+    GTE            reduce using <a href="#prod64">rule 64</a> (BOOL_VALUE)
+    LTE            reduce using <a href="#prod64">rule 64</a> (BOOL_VALUE)
+    EQUAL          reduce using <a href="#prod64">rule 64</a> (BOOL_VALUE)
+    AND            reduce using <a href="#prod64">rule 64</a> (BOOL_VALUE)
+    OR             reduce using <a href="#prod64">rule 64</a> (BOOL_VALUE)
+
+
+
+<b><a name="state75">State</a> <a href="#state75">75</a></b>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN FUNC_CALL
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state106">106</a>-><a href="#state75">75</a>
+    Predecessors: <a href="#state52">52</a>, <a href="#state57">57</a>, <a href="#state60">60</a>, <a href="#state62">62</a>, <a href="#state64">64</a>, <a href="#state67">67</a>, <a href="#state83">83</a>, <a href="#state85">85</a>, <a href="#state87">87</a>, <a href="#state89">89</a>, <a href="#state98">98</a>, <a href="#state106">106</a>, <a href="#state112">112</a>, <a href="#state115">115</a>, <a href="#state117">117</a>, <a href="#state121">121</a>
+
+  <b>Kernel Items</b>
+    52 SIMPLE_TERM: FUNC_CALL .
+	-lookahead: { MULTIPLICATION, DIV, MOD, PLUS, MINUS, COMMA, RIGHT_PAREN, 
+                LINE_END, LT, GT, GTE, LTE, EQUAL, AND, OR }
+
+  <b>Parser Actions</b>
+    MULTIPLICATION reduce using <a href="#prod52">rule 52</a> (SIMPLE_TERM)
+    DIV            reduce using <a href="#prod52">rule 52</a> (SIMPLE_TERM)
+    MOD            reduce using <a href="#prod52">rule 52</a> (SIMPLE_TERM)
+    PLUS           reduce using <a href="#prod52">rule 52</a> (SIMPLE_TERM)
+    MINUS          reduce using <a href="#prod52">rule 52</a> (SIMPLE_TERM)
+    COMMA          reduce using <a href="#prod52">rule 52</a> (SIMPLE_TERM)
+    RIGHT_PAREN    reduce using <a href="#prod52">rule 52</a> (SIMPLE_TERM)
+    LINE_END       reduce using <a href="#prod52">rule 52</a> (SIMPLE_TERM)
+    LT             reduce using <a href="#prod52">rule 52</a> (SIMPLE_TERM)
+    GT             reduce using <a href="#prod52">rule 52</a> (SIMPLE_TERM)
+    GTE            reduce using <a href="#prod52">rule 52</a> (SIMPLE_TERM)
+    LTE            reduce using <a href="#prod52">rule 52</a> (SIMPLE_TERM)
+    EQUAL          reduce using <a href="#prod52">rule 52</a> (SIMPLE_TERM)
+    AND            reduce using <a href="#prod52">rule 52</a> (SIMPLE_TERM)
+    OR             reduce using <a href="#prod52">rule 52</a> (SIMPLE_TERM)
+
+
+
+<b><a name="state76">State</a> <a href="#state76">76</a></b>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START EXTERNAL_METHOD_CALL
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state76">76</a>
+    Predecessors: <a href="#state37">37</a>, <a href="#state41">41</a>, <a href="#state52">52</a>, <a href="#state57">57</a>, <a href="#state60">60</a>, <a href="#state62">62</a>, <a href="#state64">64</a>, <a href="#state67">67</a>, <a href="#state83">83</a>, <a href="#state85">85</a>, <a href="#state87">87</a>, <a href="#state89">89</a>, <a href="#state94">94</a>, <a href="#state98">98</a>, <a href="#state101">101</a>, <a href="#state106">106</a>, 
+                  <a href="#state112">112</a>, <a href="#state115">115</a>, <a href="#state117">117</a>, <a href="#state121">121</a>
+
+  <b>Kernel Items</b>
+    56 FUNC_CALL: EXTERNAL_METHOD_CALL .
+	-lookahead: { LINE_END, MULTIPLICATION, DIV, MOD, PLUS, MINUS, COMMA, 
+                RIGHT_PAREN, LT, GT, GTE, LTE, EQUAL, AND, OR }
+
+  <b>Parser Actions</b>
+    LINE_END       reduce using <a href="#prod56">rule 56</a> (FUNC_CALL)
+    MULTIPLICATION reduce using <a href="#prod56">rule 56</a> (FUNC_CALL)
+    DIV            reduce using <a href="#prod56">rule 56</a> (FUNC_CALL)
+    MOD            reduce using <a href="#prod56">rule 56</a> (FUNC_CALL)
+    PLUS           reduce using <a href="#prod56">rule 56</a> (FUNC_CALL)
+    MINUS          reduce using <a href="#prod56">rule 56</a> (FUNC_CALL)
+    COMMA          reduce using <a href="#prod56">rule 56</a> (FUNC_CALL)
+    RIGHT_PAREN    reduce using <a href="#prod56">rule 56</a> (FUNC_CALL)
+    LT             reduce using <a href="#prod56">rule 56</a> (FUNC_CALL)
+    GT             reduce using <a href="#prod56">rule 56</a> (FUNC_CALL)
+    GTE            reduce using <a href="#prod56">rule 56</a> (FUNC_CALL)
+    LTE            reduce using <a href="#prod56">rule 56</a> (FUNC_CALL)
+    EQUAL          reduce using <a href="#prod56">rule 56</a> (FUNC_CALL)
+    AND            reduce using <a href="#prod56">rule 56</a> (FUNC_CALL)
+    OR             reduce using <a href="#prod56">rule 56</a> (FUNC_CALL)
+
+
+
+<b><a name="state77">State</a> <a href="#state77">77</a></b>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN MUL_EXPRESSION
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state106">106</a>-><a href="#state77">77</a>
+    Predecessors: <a href="#state52">52</a>, <a href="#state57">57</a>, <a href="#state60">60</a>, <a href="#state64">64</a>, <a href="#state67">67</a>, <a href="#state83">83</a>, <a href="#state85">85</a>, <a href="#state87">87</a>, <a href="#state89">89</a>, <a href="#state98">98</a>, <a href="#state106">106</a>, <a href="#state112">112</a>, <a href="#state115">115</a>, <a href="#state117">117</a>, <a href="#state121">121</a>
+
+  <b>Kernel Items</b>
+    40 TERM: MUL_EXPRESSION .
+	-lookahead: { PLUS, MINUS, COMMA, RIGHT_PAREN, LINE_END, LT, GT, GTE, LTE, 
+                EQUAL, AND, OR }
+
+  <b>Parser Actions</b>
+    PLUS           reduce using <a href="#prod40">rule 40</a> (TERM)
+    MINUS          reduce using <a href="#prod40">rule 40</a> (TERM)
+    COMMA          reduce using <a href="#prod40">rule 40</a> (TERM)
+    RIGHT_PAREN    reduce using <a href="#prod40">rule 40</a> (TERM)
+    LINE_END       reduce using <a href="#prod40">rule 40</a> (TERM)
+    LT             reduce using <a href="#prod40">rule 40</a> (TERM)
+    GT             reduce using <a href="#prod40">rule 40</a> (TERM)
+    GTE            reduce using <a href="#prod40">rule 40</a> (TERM)
+    LTE            reduce using <a href="#prod40">rule 40</a> (TERM)
+    EQUAL          reduce using <a href="#prod40">rule 40</a> (TERM)
+    AND            reduce using <a href="#prod40">rule 40</a> (TERM)
+    OR             reduce using <a href="#prod40">rule 40</a> (TERM)
+
+
+
+<b><a name="state78">State</a> <a href="#state78">78</a></b>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN DIV_EXPRESSION
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state106">106</a>-><a href="#state78">78</a>
+    Predecessors: <a href="#state52">52</a>, <a href="#state57">57</a>, <a href="#state60">60</a>, <a href="#state64">64</a>, <a href="#state67">67</a>, <a href="#state83">83</a>, <a href="#state85">85</a>, <a href="#state87">87</a>, <a href="#state89">89</a>, <a href="#state98">98</a>, <a href="#state106">106</a>, <a href="#state112">112</a>, <a href="#state115">115</a>, <a href="#state117">117</a>, <a href="#state121">121</a>
+
+  <b>Kernel Items</b>
+    41 TERM: DIV_EXPRESSION .
 	-lookahead: { PLUS, MINUS, COMMA, RIGHT_PAREN, LINE_END, LT, GT, GTE, LTE, 
                 EQUAL, AND, OR }
 
@@ -1422,274 +1844,71 @@
 
 
 
-<b><a name="state68">State</a> <a href="#state68">68</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN SIMPLE_TERM 
-        SECOND_PREC_OPERATOR
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state102">102</a>-><a href="#state66">66</a>-><a href="#state68">68</a>
-    Predecessors: <a href="#state66">66</a>, <a href="#state69">69</a>
+<b><a name="state79">State</a> <a href="#state79">79</a></b>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN MOD_EXPRESSION
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state106">106</a>-><a href="#state79">79</a>
+    Predecessors: <a href="#state52">52</a>, <a href="#state57">57</a>, <a href="#state60">60</a>, <a href="#state64">64</a>, <a href="#state67">67</a>, <a href="#state83">83</a>, <a href="#state85">85</a>, <a href="#state87">87</a>, <a href="#state89">89</a>, <a href="#state98">98</a>, <a href="#state106">106</a>, <a href="#state112">112</a>, <a href="#state115">115</a>, <a href="#state117">117</a>, <a href="#state121">121</a>
 
   <b>Kernel Items</b>
-    42 TERM_S: SECOND_PREC_OPERATOR . SIMPLE_TERM TERM_S
-
-  <b>Parser Actions</b>
-    LEFT_PAREN     shift, and go to state <a href="#state74">74</a>
-    ID             shift, and go to state <a href="#state84">84</a>
-    INTEGER_VALUE  shift, and go to state <a href="#state78">78</a>
-
-  <b>Transitions</b>
-    SIMPLE_TERM    go to state <a href="#state69">69</a>
-
-
-<b><a name="state69">State</a> <a href="#state69">69</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN SIMPLE_TERM 
-        SECOND_PREC_OPERATOR SIMPLE_TERM
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state102">102</a>-><a href="#state66">66</a>-><a href="#state68">68</a>-><a href="#state69">69</a>
-    Predecessors: <a href="#state68">68</a>
-
-  <b>Kernel Items</b>
-    42 TERM_S: SECOND_PREC_OPERATOR SIMPLE_TERM . TERM_S
-
-  <b>Parser Actions</b>
-    MULTIPLICATION shift, and go to state <a href="#state71">71</a>
-    DIV            shift, and go to state <a href="#state72">72</a>
-    MOD            shift, and go to state <a href="#state73">73</a>
-    PLUS           reduce using <a href="#prod43">rule 43</a> (Erasing TERM_S)
-    MINUS          reduce using <a href="#prod43">rule 43</a> (Erasing TERM_S)
-    COMMA          reduce using <a href="#prod43">rule 43</a> (Erasing TERM_S)
-    RIGHT_PAREN    reduce using <a href="#prod43">rule 43</a> (Erasing TERM_S)
-    LINE_END       reduce using <a href="#prod43">rule 43</a> (Erasing TERM_S)
-    LT             reduce using <a href="#prod43">rule 43</a> (Erasing TERM_S)
-    GT             reduce using <a href="#prod43">rule 43</a> (Erasing TERM_S)
-    GTE            reduce using <a href="#prod43">rule 43</a> (Erasing TERM_S)
-    LTE            reduce using <a href="#prod43">rule 43</a> (Erasing TERM_S)
-    EQUAL          reduce using <a href="#prod43">rule 43</a> (Erasing TERM_S)
-    AND            reduce using <a href="#prod43">rule 43</a> (Erasing TERM_S)
-    OR             reduce using <a href="#prod43">rule 43</a> (Erasing TERM_S)
-
-  <b>Transitions</b>
-    TERM_S         go to state <a href="#state70">70</a>
-    SECOND_PREC_OPERATOR go to state <a href="#state68">68</a>
-
-
-<b><a name="state70">State</a> <a href="#state70">70</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN SIMPLE_TERM 
-        SECOND_PREC_OPERATOR SIMPLE_TERM
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state102">102</a>-><a href="#state66">66</a>-><a href="#state68">68</a>-><a href="#state69">69</a>-><a href="#state70">70</a>
-    Predecessors: <a href="#state69">69</a>
-
-  <b>Kernel Items</b>
-    42 TERM_S: SECOND_PREC_OPERATOR SIMPLE_TERM TERM_S .
+    42 TERM: MOD_EXPRESSION .
 	-lookahead: { PLUS, MINUS, COMMA, RIGHT_PAREN, LINE_END, LT, GT, GTE, LTE, 
                 EQUAL, AND, OR }
 
   <b>Parser Actions</b>
-    PLUS           reduce using <a href="#prod42">rule 42</a> (TERM_S)
-    MINUS          reduce using <a href="#prod42">rule 42</a> (TERM_S)
-    COMMA          reduce using <a href="#prod42">rule 42</a> (TERM_S)
-    RIGHT_PAREN    reduce using <a href="#prod42">rule 42</a> (TERM_S)
-    LINE_END       reduce using <a href="#prod42">rule 42</a> (TERM_S)
-    LT             reduce using <a href="#prod42">rule 42</a> (TERM_S)
-    GT             reduce using <a href="#prod42">rule 42</a> (TERM_S)
-    GTE            reduce using <a href="#prod42">rule 42</a> (TERM_S)
-    LTE            reduce using <a href="#prod42">rule 42</a> (TERM_S)
-    EQUAL          reduce using <a href="#prod42">rule 42</a> (TERM_S)
-    AND            reduce using <a href="#prod42">rule 42</a> (TERM_S)
-    OR             reduce using <a href="#prod42">rule 42</a> (TERM_S)
+    PLUS           reduce using <a href="#prod42">rule 42</a> (TERM)
+    MINUS          reduce using <a href="#prod42">rule 42</a> (TERM)
+    COMMA          reduce using <a href="#prod42">rule 42</a> (TERM)
+    RIGHT_PAREN    reduce using <a href="#prod42">rule 42</a> (TERM)
+    LINE_END       reduce using <a href="#prod42">rule 42</a> (TERM)
+    LT             reduce using <a href="#prod42">rule 42</a> (TERM)
+    GT             reduce using <a href="#prod42">rule 42</a> (TERM)
+    GTE            reduce using <a href="#prod42">rule 42</a> (TERM)
+    LTE            reduce using <a href="#prod42">rule 42</a> (TERM)
+    EQUAL          reduce using <a href="#prod42">rule 42</a> (TERM)
+    AND            reduce using <a href="#prod42">rule 42</a> (TERM)
+    OR             reduce using <a href="#prod42">rule 42</a> (TERM)
 
 
 
-<b><a name="state71">State</a> <a href="#state71">71</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN SIMPLE_TERM 
-        MULTIPLICATION
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state102">102</a>-><a href="#state66">66</a>-><a href="#state71">71</a>
-    Predecessors: <a href="#state66">66</a>, <a href="#state69">69</a>
-
-  <b>Kernel Items</b>
-    49 SECOND_PREC_OPERATOR: MULTIPLICATION .
-	-lookahead: { LEFT_PAREN, ID, INTEGER_VALUE }
-
-  <b>Parser Actions</b>
-    LEFT_PAREN     reduce using <a href="#prod49">rule 49</a> (SECOND_PREC_OPERATOR)
-    ID             reduce using <a href="#prod49">rule 49</a> (SECOND_PREC_OPERATOR)
-    INTEGER_VALUE  reduce using <a href="#prod49">rule 49</a> (SECOND_PREC_OPERATOR)
-
-
-
-<b><a name="state72">State</a> <a href="#state72">72</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN SIMPLE_TERM DIV
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state102">102</a>-><a href="#state66">66</a>-><a href="#state72">72</a>
-    Predecessors: <a href="#state66">66</a>, <a href="#state69">69</a>
+<b><a name="state80">State</a> <a href="#state80">80</a></b>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN TERM
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state106">106</a>-><a href="#state80">80</a>
+    Predecessors: <a href="#state52">52</a>, <a href="#state64">64</a>, <a href="#state87">87</a>, <a href="#state89">89</a>, <a href="#state98">98</a>, <a href="#state106">106</a>, <a href="#state112">112</a>, <a href="#state115">115</a>, <a href="#state117">117</a>, <a href="#state121">121</a>
 
   <b>Kernel Items</b>
-    50 SECOND_PREC_OPERATOR: DIV .
-	-lookahead: { LEFT_PAREN, ID, INTEGER_VALUE }
+    36 EXPRESSION: TERM .
+	-lookahead: { PLUS, MINUS, COMMA, RIGHT_PAREN, LINE_END, LT, GT, GTE, LTE, 
+                EQUAL, AND, OR }
 
   <b>Parser Actions</b>
-    LEFT_PAREN     reduce using <a href="#prod50">rule 50</a> (SECOND_PREC_OPERATOR)
-    ID             reduce using <a href="#prod50">rule 50</a> (SECOND_PREC_OPERATOR)
-    INTEGER_VALUE  reduce using <a href="#prod50">rule 50</a> (SECOND_PREC_OPERATOR)
+    PLUS           reduce using <a href="#prod36">rule 36</a> (EXPRESSION)
+    MINUS          reduce using <a href="#prod36">rule 36</a> (EXPRESSION)
+    COMMA          reduce using <a href="#prod36">rule 36</a> (EXPRESSION)
+    RIGHT_PAREN    reduce using <a href="#prod36">rule 36</a> (EXPRESSION)
+    LINE_END       reduce using <a href="#prod36">rule 36</a> (EXPRESSION)
+    LT             reduce using <a href="#prod36">rule 36</a> (EXPRESSION)
+    GT             reduce using <a href="#prod36">rule 36</a> (EXPRESSION)
+    GTE            reduce using <a href="#prod36">rule 36</a> (EXPRESSION)
+    LTE            reduce using <a href="#prod36">rule 36</a> (EXPRESSION)
+    EQUAL          reduce using <a href="#prod36">rule 36</a> (EXPRESSION)
+    AND            reduce using <a href="#prod36">rule 36</a> (EXPRESSION)
+    OR             reduce using <a href="#prod36">rule 36</a> (EXPRESSION)
 
 
 
-<b><a name="state73">State</a> <a href="#state73">73</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN SIMPLE_TERM MOD
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state102">102</a>-><a href="#state66">66</a>-><a href="#state73">73</a>
-    Predecessors: <a href="#state66">66</a>, <a href="#state69">69</a>
+<b><a name="state81">State</a> <a href="#state81">81</a></b>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN ADD_EXPRESSION
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state106">106</a>-><a href="#state81">81</a>
+    Predecessors: <a href="#state52">52</a>, <a href="#state64">64</a>, <a href="#state87">87</a>, <a href="#state89">89</a>, <a href="#state98">98</a>, <a href="#state106">106</a>, <a href="#state112">112</a>, <a href="#state115">115</a>, <a href="#state117">117</a>, <a href="#state121">121</a>
 
   <b>Kernel Items</b>
-    51 SECOND_PREC_OPERATOR: MOD .
-	-lookahead: { LEFT_PAREN, ID, INTEGER_VALUE }
+    37 EXPRESSION: ADD_EXPRESSION .
+	-lookahead: { PLUS, MINUS, COMMA, RIGHT_PAREN, LINE_END, LT, GT, GTE, LTE, 
+                EQUAL, AND, OR }
 
   <b>Parser Actions</b>
-    LEFT_PAREN     reduce using <a href="#prod51">rule 51</a> (SECOND_PREC_OPERATOR)
-    ID             reduce using <a href="#prod51">rule 51</a> (SECOND_PREC_OPERATOR)
-    INTEGER_VALUE  reduce using <a href="#prod51">rule 51</a> (SECOND_PREC_OPERATOR)
-
-
-
-<b><a name="state74">State</a> <a href="#state74">74</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN LEFT_PAREN
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state102">102</a>-><a href="#state74">74</a>
-    Predecessors: <a href="#state52">52</a>, <a href="#state57">57</a>, <a href="#state61">61</a>, <a href="#state68">68</a>, <a href="#state74">74</a>, <a href="#state85">85</a>, <a href="#state94">94</a>, <a href="#state102">102</a>, <a href="#state108">108</a>, <a href="#state111">111</a>, <a href="#state113">113</a>, <a href="#state117">117</a>
-
-  <b>Kernel Items</b>
-    44 SIMPLE_TERM: LEFT_PAREN . EXPRESSION RIGHT_PAREN
-
-  <b>Parser Actions</b>
-    LEFT_PAREN     shift, and go to state <a href="#state74">74</a>
-    ID             shift, and go to state <a href="#state77">77</a>
-    INTEGER_VALUE  shift, and go to state <a href="#state78">78</a>
-    TRUE           shift, and go to state <a href="#state82">82</a>
-    FALSE          shift, and go to state <a href="#state83">83</a>
-
-  <b>Transitions</b>
-    EXPRESSION     go to state <a href="#state75">75</a>
-    TERM           go to state <a href="#state59">59</a>
-    SIMPLE_TERM    go to state <a href="#state66">66</a>
-    FUNC_CALL      go to state <a href="#state79">79</a>
-    THIS_METHOD_CALL go to state <a href="#state46">46</a>
-    EXTERNAL_METHOD_CALL go to state <a href="#state80">80</a>
-    BOOL_VALUE     go to state <a href="#state81">81</a>
-
-
-<b><a name="state75">State</a> <a href="#state75">75</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN LEFT_PAREN 
-        EXPRESSION
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state102">102</a>-><a href="#state74">74</a>-><a href="#state75">75</a>
-    Predecessors: <a href="#state74">74</a>
-
-  <b>Kernel Items</b>
-    44 SIMPLE_TERM: LEFT_PAREN EXPRESSION . RIGHT_PAREN
-
-  <b>Parser Actions</b>
-    RIGHT_PAREN    shift, and go to state <a href="#state76">76</a>
-
-
-
-<b><a name="state76">State</a> <a href="#state76">76</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN LEFT_PAREN 
-        EXPRESSION RIGHT_PAREN
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state102">102</a>-><a href="#state74">74</a>-><a href="#state75">75</a>-><a href="#state76">76</a>
-    Predecessors: <a href="#state75">75</a>
-
-  <b>Kernel Items</b>
-    44 SIMPLE_TERM: LEFT_PAREN EXPRESSION RIGHT_PAREN .
-	-lookahead: { MULTIPLICATION, DIV, MOD, PLUS, MINUS, COMMA, RIGHT_PAREN, 
-                LINE_END, LT, GT, GTE, LTE, EQUAL, AND, OR }
-
-  <b>Parser Actions</b>
-    MULTIPLICATION reduce using <a href="#prod44">rule 44</a> (SIMPLE_TERM)
-    DIV            reduce using <a href="#prod44">rule 44</a> (SIMPLE_TERM)
-    MOD            reduce using <a href="#prod44">rule 44</a> (SIMPLE_TERM)
-    PLUS           reduce using <a href="#prod44">rule 44</a> (SIMPLE_TERM)
-    MINUS          reduce using <a href="#prod44">rule 44</a> (SIMPLE_TERM)
-    COMMA          reduce using <a href="#prod44">rule 44</a> (SIMPLE_TERM)
-    RIGHT_PAREN    reduce using <a href="#prod44">rule 44</a> (SIMPLE_TERM)
-    LINE_END       reduce using <a href="#prod44">rule 44</a> (SIMPLE_TERM)
-    LT             reduce using <a href="#prod44">rule 44</a> (SIMPLE_TERM)
-    GT             reduce using <a href="#prod44">rule 44</a> (SIMPLE_TERM)
-    GTE            reduce using <a href="#prod44">rule 44</a> (SIMPLE_TERM)
-    LTE            reduce using <a href="#prod44">rule 44</a> (SIMPLE_TERM)
-    EQUAL          reduce using <a href="#prod44">rule 44</a> (SIMPLE_TERM)
-    AND            reduce using <a href="#prod44">rule 44</a> (SIMPLE_TERM)
-    OR             reduce using <a href="#prod44">rule 44</a> (SIMPLE_TERM)
-
-
-
-<b><a name="state77">State</a> <a href="#state77">77</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN ID
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state102">102</a>-><a href="#state77">77</a>
-    Predecessors: <a href="#state52">52</a>, <a href="#state57">57</a>, <a href="#state74">74</a>, <a href="#state85">85</a>, <a href="#state94">94</a>, <a href="#state102">102</a>, <a href="#state108">108</a>, <a href="#state111">111</a>, <a href="#state113">113</a>, <a href="#state117">117</a>
-
-  <b>Kernel Items</b>
-    45 SIMPLE_TERM: ID .
-	-lookahead: { MULTIPLICATION, DIV, MOD, PLUS, MINUS, COMMA, RIGHT_PAREN, 
-                LINE_END, LT, GT, GTE, LTE, EQUAL, AND, OR }
-    54 THIS_METHOD_CALL: ID . CALL_ARGS
-    55 EXTERNAL_METHOD_CALL: ID . DOT ID CALL_ARGS
-
-  <b>Parser Actions</b>
-    DOT            shift, and go to state <a href="#state49">49</a>
-    LEFT_PAREN     shift, and go to state <a href="#state52">52</a>
-    MULTIPLICATION reduce using <a href="#prod45">rule 45</a> (SIMPLE_TERM)
-    DIV            reduce using <a href="#prod45">rule 45</a> (SIMPLE_TERM)
-    MOD            reduce using <a href="#prod45">rule 45</a> (SIMPLE_TERM)
-    PLUS           reduce using <a href="#prod45">rule 45</a> (SIMPLE_TERM)
-    MINUS          reduce using <a href="#prod45">rule 45</a> (SIMPLE_TERM)
-    COMMA          reduce using <a href="#prod45">rule 45</a> (SIMPLE_TERM)
-    RIGHT_PAREN    reduce using <a href="#prod45">rule 45</a> (SIMPLE_TERM)
-    LINE_END       reduce using <a href="#prod45">rule 45</a> (SIMPLE_TERM)
-    LT             reduce using <a href="#prod45">rule 45</a> (SIMPLE_TERM)
-    GT             reduce using <a href="#prod45">rule 45</a> (SIMPLE_TERM)
-    GTE            reduce using <a href="#prod45">rule 45</a> (SIMPLE_TERM)
-    LTE            reduce using <a href="#prod45">rule 45</a> (SIMPLE_TERM)
-    EQUAL          reduce using <a href="#prod45">rule 45</a> (SIMPLE_TERM)
-    AND            reduce using <a href="#prod45">rule 45</a> (SIMPLE_TERM)
-    OR             reduce using <a href="#prod45">rule 45</a> (SIMPLE_TERM)
-
-  <b>Transitions</b>
-    CALL_ARGS      go to state <a href="#state48">48</a>
-
-
-<b><a name="state78">State</a> <a href="#state78">78</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN INTEGER_VALUE
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state102">102</a>-><a href="#state78">78</a>
-    Predecessors: <a href="#state52">52</a>, <a href="#state57">57</a>, <a href="#state61">61</a>, <a href="#state68">68</a>, <a href="#state74">74</a>, <a href="#state85">85</a>, <a href="#state94">94</a>, <a href="#state102">102</a>, <a href="#state108">108</a>, <a href="#state111">111</a>, <a href="#state113">113</a>, <a href="#state117">117</a>
-
-  <b>Kernel Items</b>
-    46 SIMPLE_TERM: INTEGER_VALUE .
-	-lookahead: { MULTIPLICATION, DIV, MOD, PLUS, MINUS, COMMA, RIGHT_PAREN, 
-                LINE_END, LT, GT, GTE, LTE, EQUAL, AND, OR }
-
-  <b>Parser Actions</b>
-    MULTIPLICATION reduce using <a href="#prod46">rule 46</a> (SIMPLE_TERM)
-    DIV            reduce using <a href="#prod46">rule 46</a> (SIMPLE_TERM)
-    MOD            reduce using <a href="#prod46">rule 46</a> (SIMPLE_TERM)
-    PLUS           reduce using <a href="#prod46">rule 46</a> (SIMPLE_TERM)
-    MINUS          reduce using <a href="#prod46">rule 46</a> (SIMPLE_TERM)
-    COMMA          reduce using <a href="#prod46">rule 46</a> (SIMPLE_TERM)
-    RIGHT_PAREN    reduce using <a href="#prod46">rule 46</a> (SIMPLE_TERM)
-    LINE_END       reduce using <a href="#prod46">rule 46</a> (SIMPLE_TERM)
-    LT             reduce using <a href="#prod46">rule 46</a> (SIMPLE_TERM)
-    GT             reduce using <a href="#prod46">rule 46</a> (SIMPLE_TERM)
-    GTE            reduce using <a href="#prod46">rule 46</a> (SIMPLE_TERM)
-    LTE            reduce using <a href="#prod46">rule 46</a> (SIMPLE_TERM)
-    EQUAL          reduce using <a href="#prod46">rule 46</a> (SIMPLE_TERM)
-    AND            reduce using <a href="#prod46">rule 46</a> (SIMPLE_TERM)
-    OR             reduce using <a href="#prod46">rule 46</a> (SIMPLE_TERM)
-
-
-
-<b><a name="state79">State</a> <a href="#state79">79</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN FUNC_CALL
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state102">102</a>-><a href="#state79">79</a>
-    Predecessors: <a href="#state52">52</a>, <a href="#state57">57</a>, <a href="#state74">74</a>, <a href="#state85">85</a>, <a href="#state94">94</a>, <a href="#state102">102</a>, <a href="#state108">108</a>, <a href="#state111">111</a>, <a href="#state113">113</a>, <a href="#state117">117</a>
-
-  <b>Kernel Items</b>
-    37 EXPRESSION: FUNC_CALL .
-	-lookahead: { COMMA, RIGHT_PAREN, LINE_END, LT, GT, GTE, LTE, EQUAL, AND, OR }
-
-  <b>Parser Actions</b>
+    PLUS           reduce using <a href="#prod37">rule 37</a> (EXPRESSION)
+    MINUS          reduce using <a href="#prod37">rule 37</a> (EXPRESSION)
     COMMA          reduce using <a href="#prod37">rule 37</a> (EXPRESSION)
     RIGHT_PAREN    reduce using <a href="#prod37">rule 37</a> (EXPRESSION)
     LINE_END       reduce using <a href="#prod37">rule 37</a> (EXPRESSION)
@@ -1703,39 +1922,19 @@
 
 
 
-<b><a name="state80">State</a> <a href="#state80">80</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START EXTERNAL_METHOD_CALL
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state80">80</a>
-    Predecessors: <a href="#state37">37</a>, <a href="#state41">41</a>, <a href="#state52">52</a>, <a href="#state57">57</a>, <a href="#state74">74</a>, <a href="#state85">85</a>, <a href="#state90">90</a>, <a href="#state94">94</a>, <a href="#state97">97</a>, <a href="#state102">102</a>, <a href="#state108">108</a>, <a href="#state111">111</a>, <a href="#state113">113</a>, <a href="#state117">117</a>
+<b><a name="state82">State</a> <a href="#state82">82</a></b>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN SUB_EXPRESSION
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state106">106</a>-><a href="#state82">82</a>
+    Predecessors: <a href="#state52">52</a>, <a href="#state64">64</a>, <a href="#state87">87</a>, <a href="#state89">89</a>, <a href="#state98">98</a>, <a href="#state106">106</a>, <a href="#state112">112</a>, <a href="#state115">115</a>, <a href="#state117">117</a>, <a href="#state121">121</a>
 
   <b>Kernel Items</b>
-    53 FUNC_CALL: EXTERNAL_METHOD_CALL .
-	-lookahead: { LINE_END, COMMA, RIGHT_PAREN, LT, GT, GTE, LTE, EQUAL, AND, OR }
+    38 EXPRESSION: SUB_EXPRESSION .
+	-lookahead: { PLUS, MINUS, COMMA, RIGHT_PAREN, LINE_END, LT, GT, GTE, LTE, 
+                EQUAL, AND, OR }
 
   <b>Parser Actions</b>
-    LINE_END       reduce using <a href="#prod53">rule 53</a> (FUNC_CALL)
-    COMMA          reduce using <a href="#prod53">rule 53</a> (FUNC_CALL)
-    RIGHT_PAREN    reduce using <a href="#prod53">rule 53</a> (FUNC_CALL)
-    LT             reduce using <a href="#prod53">rule 53</a> (FUNC_CALL)
-    GT             reduce using <a href="#prod53">rule 53</a> (FUNC_CALL)
-    GTE            reduce using <a href="#prod53">rule 53</a> (FUNC_CALL)
-    LTE            reduce using <a href="#prod53">rule 53</a> (FUNC_CALL)
-    EQUAL          reduce using <a href="#prod53">rule 53</a> (FUNC_CALL)
-    AND            reduce using <a href="#prod53">rule 53</a> (FUNC_CALL)
-    OR             reduce using <a href="#prod53">rule 53</a> (FUNC_CALL)
-
-
-
-<b><a name="state81">State</a> <a href="#state81">81</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN BOOL_VALUE
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state102">102</a>-><a href="#state81">81</a>
-    Predecessors: <a href="#state52">52</a>, <a href="#state57">57</a>, <a href="#state74">74</a>, <a href="#state85">85</a>, <a href="#state94">94</a>, <a href="#state102">102</a>, <a href="#state108">108</a>, <a href="#state111">111</a>, <a href="#state113">113</a>, <a href="#state117">117</a>
-
-  <b>Kernel Items</b>
-    38 EXPRESSION: BOOL_VALUE .
-	-lookahead: { COMMA, RIGHT_PAREN, LINE_END, LT, GT, GTE, LTE, EQUAL, AND, OR }
-
-  <b>Parser Actions</b>
+    PLUS           reduce using <a href="#prod38">rule 38</a> (EXPRESSION)
+    MINUS          reduce using <a href="#prod38">rule 38</a> (EXPRESSION)
     COMMA          reduce using <a href="#prod38">rule 38</a> (EXPRESSION)
     RIGHT_PAREN    reduce using <a href="#prod38">rule 38</a> (EXPRESSION)
     LINE_END       reduce using <a href="#prod38">rule 38</a> (EXPRESSION)
@@ -1749,125 +1948,223 @@
 
 
 
-<b><a name="state82">State</a> <a href="#state82">82</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN TRUE
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state102">102</a>-><a href="#state82">82</a>
-    Predecessors: <a href="#state52">52</a>, <a href="#state57">57</a>, <a href="#state74">74</a>, <a href="#state85">85</a>, <a href="#state94">94</a>, <a href="#state102">102</a>, <a href="#state108">108</a>, <a href="#state111">111</a>, <a href="#state113">113</a>, <a href="#state117">117</a>
-
-  <b>Kernel Items</b>
-    60 BOOL_VALUE: TRUE .
-	-lookahead: { COMMA, RIGHT_PAREN, LINE_END, LT, GT, GTE, LTE, EQUAL, AND, OR }
-
-  <b>Parser Actions</b>
-    COMMA          reduce using <a href="#prod60">rule 60</a> (BOOL_VALUE)
-    RIGHT_PAREN    reduce using <a href="#prod60">rule 60</a> (BOOL_VALUE)
-    LINE_END       reduce using <a href="#prod60">rule 60</a> (BOOL_VALUE)
-    LT             reduce using <a href="#prod60">rule 60</a> (BOOL_VALUE)
-    GT             reduce using <a href="#prod60">rule 60</a> (BOOL_VALUE)
-    GTE            reduce using <a href="#prod60">rule 60</a> (BOOL_VALUE)
-    LTE            reduce using <a href="#prod60">rule 60</a> (BOOL_VALUE)
-    EQUAL          reduce using <a href="#prod60">rule 60</a> (BOOL_VALUE)
-    AND            reduce using <a href="#prod60">rule 60</a> (BOOL_VALUE)
-    OR             reduce using <a href="#prod60">rule 60</a> (BOOL_VALUE)
-
-
-
 <b><a name="state83">State</a> <a href="#state83">83</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN FALSE
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state102">102</a>-><a href="#state83">83</a>
-    Predecessors: <a href="#state52">52</a>, <a href="#state57">57</a>, <a href="#state74">74</a>, <a href="#state85">85</a>, <a href="#state94">94</a>, <a href="#state102">102</a>, <a href="#state108">108</a>, <a href="#state111">111</a>, <a href="#state113">113</a>, <a href="#state117">117</a>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN UNARY_EXPRESSION 
+        DIV
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state106">106</a>-><a href="#state59">59</a>-><a href="#state83">83</a>
+    Predecessors: <a href="#state59">59</a>
 
   <b>Kernel Items</b>
-    61 BOOL_VALUE: FALSE .
-	-lookahead: { COMMA, RIGHT_PAREN, LINE_END, LT, GT, GTE, LTE, EQUAL, AND, OR }
+    44 DIV_EXPRESSION: UNARY_EXPRESSION DIV . TERM
 
   <b>Parser Actions</b>
-    COMMA          reduce using <a href="#prod61">rule 61</a> (BOOL_VALUE)
-    RIGHT_PAREN    reduce using <a href="#prod61">rule 61</a> (BOOL_VALUE)
-    LINE_END       reduce using <a href="#prod61">rule 61</a> (BOOL_VALUE)
-    LT             reduce using <a href="#prod61">rule 61</a> (BOOL_VALUE)
-    GT             reduce using <a href="#prod61">rule 61</a> (BOOL_VALUE)
-    GTE            reduce using <a href="#prod61">rule 61</a> (BOOL_VALUE)
-    LTE            reduce using <a href="#prod61">rule 61</a> (BOOL_VALUE)
-    EQUAL          reduce using <a href="#prod61">rule 61</a> (BOOL_VALUE)
-    AND            reduce using <a href="#prod61">rule 61</a> (BOOL_VALUE)
-    OR             reduce using <a href="#prod61">rule 61</a> (BOOL_VALUE)
+    MINUS          shift, and go to state <a href="#state62">62</a>
+    LEFT_PAREN     shift, and go to state <a href="#state64">64</a>
+    ID             shift, and go to state <a href="#state70">70</a>
+    INTEGER_VALUE  shift, and go to state <a href="#state71">71</a>
+    TRUE           shift, and go to state <a href="#state73">73</a>
+    FALSE          shift, and go to state <a href="#state74">74</a>
 
+  <b>Transitions</b>
+    TERM           go to state <a href="#state84">84</a>
+    UNARY_EXPRESSION go to state <a href="#state59">59</a>
+    SIMPLE_TERM    go to state <a href="#state69">69</a>
+    BOOL_VALUE     go to state <a href="#state72">72</a>
+    FUNC_CALL      go to state <a href="#state75">75</a>
+    THIS_METHOD_CALL go to state <a href="#state46">46</a>
+    EXTERNAL_METHOD_CALL go to state <a href="#state76">76</a>
+    MUL_EXPRESSION go to state <a href="#state77">77</a>
+    DIV_EXPRESSION go to state <a href="#state78">78</a>
+    MOD_EXPRESSION go to state <a href="#state79">79</a>
 
 
 <b><a name="state84">State</a> <a href="#state84">84</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN TERM 
-        FIRST_PREC_OPERATOR ID
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state102">102</a>-><a href="#state59">59</a>-><a href="#state61">61</a>-><a href="#state84">84</a>
-    Predecessors: <a href="#state61">61</a>, <a href="#state68">68</a>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN UNARY_EXPRESSION 
+        DIV TERM
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state106">106</a>-><a href="#state59">59</a>-><a href="#state83">83</a>-><a href="#state84">84</a>
+    Predecessors: <a href="#state83">83</a>
 
   <b>Kernel Items</b>
-    45 SIMPLE_TERM: ID .
-	-lookahead: { MULTIPLICATION, DIV, MOD, PLUS, MINUS, COMMA, RIGHT_PAREN, 
-                LINE_END, LT, GT, GTE, LTE, EQUAL, AND, OR }
+    44 DIV_EXPRESSION: UNARY_EXPRESSION DIV TERM .
+	-lookahead: { PLUS, MINUS, COMMA, RIGHT_PAREN, LINE_END, LT, GT, GTE, LTE, 
+                EQUAL, AND, OR }
 
   <b>Parser Actions</b>
-    MULTIPLICATION reduce using <a href="#prod45">rule 45</a> (SIMPLE_TERM)
-    DIV            reduce using <a href="#prod45">rule 45</a> (SIMPLE_TERM)
-    MOD            reduce using <a href="#prod45">rule 45</a> (SIMPLE_TERM)
-    PLUS           reduce using <a href="#prod45">rule 45</a> (SIMPLE_TERM)
-    MINUS          reduce using <a href="#prod45">rule 45</a> (SIMPLE_TERM)
-    COMMA          reduce using <a href="#prod45">rule 45</a> (SIMPLE_TERM)
-    RIGHT_PAREN    reduce using <a href="#prod45">rule 45</a> (SIMPLE_TERM)
-    LINE_END       reduce using <a href="#prod45">rule 45</a> (SIMPLE_TERM)
-    LT             reduce using <a href="#prod45">rule 45</a> (SIMPLE_TERM)
-    GT             reduce using <a href="#prod45">rule 45</a> (SIMPLE_TERM)
-    GTE            reduce using <a href="#prod45">rule 45</a> (SIMPLE_TERM)
-    LTE            reduce using <a href="#prod45">rule 45</a> (SIMPLE_TERM)
-    EQUAL          reduce using <a href="#prod45">rule 45</a> (SIMPLE_TERM)
-    AND            reduce using <a href="#prod45">rule 45</a> (SIMPLE_TERM)
-    OR             reduce using <a href="#prod45">rule 45</a> (SIMPLE_TERM)
+    PLUS           reduce using <a href="#prod44">rule 44</a> (DIV_EXPRESSION)
+    MINUS          reduce using <a href="#prod44">rule 44</a> (DIV_EXPRESSION)
+    COMMA          reduce using <a href="#prod44">rule 44</a> (DIV_EXPRESSION)
+    RIGHT_PAREN    reduce using <a href="#prod44">rule 44</a> (DIV_EXPRESSION)
+    LINE_END       reduce using <a href="#prod44">rule 44</a> (DIV_EXPRESSION)
+    LT             reduce using <a href="#prod44">rule 44</a> (DIV_EXPRESSION)
+    GT             reduce using <a href="#prod44">rule 44</a> (DIV_EXPRESSION)
+    GTE            reduce using <a href="#prod44">rule 44</a> (DIV_EXPRESSION)
+    LTE            reduce using <a href="#prod44">rule 44</a> (DIV_EXPRESSION)
+    EQUAL          reduce using <a href="#prod44">rule 44</a> (DIV_EXPRESSION)
+    AND            reduce using <a href="#prod44">rule 44</a> (DIV_EXPRESSION)
+    OR             reduce using <a href="#prod44">rule 44</a> (DIV_EXPRESSION)
 
 
 
 <b><a name="state85">State</a> <a href="#state85">85</a></b>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN UNARY_EXPRESSION 
+        MOD
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state106">106</a>-><a href="#state59">59</a>-><a href="#state85">85</a>
+    Predecessors: <a href="#state59">59</a>
+
+  <b>Kernel Items</b>
+    45 MOD_EXPRESSION: UNARY_EXPRESSION MOD . TERM
+
+  <b>Parser Actions</b>
+    MINUS          shift, and go to state <a href="#state62">62</a>
+    LEFT_PAREN     shift, and go to state <a href="#state64">64</a>
+    ID             shift, and go to state <a href="#state70">70</a>
+    INTEGER_VALUE  shift, and go to state <a href="#state71">71</a>
+    TRUE           shift, and go to state <a href="#state73">73</a>
+    FALSE          shift, and go to state <a href="#state74">74</a>
+
+  <b>Transitions</b>
+    TERM           go to state <a href="#state86">86</a>
+    UNARY_EXPRESSION go to state <a href="#state59">59</a>
+    SIMPLE_TERM    go to state <a href="#state69">69</a>
+    BOOL_VALUE     go to state <a href="#state72">72</a>
+    FUNC_CALL      go to state <a href="#state75">75</a>
+    THIS_METHOD_CALL go to state <a href="#state46">46</a>
+    EXTERNAL_METHOD_CALL go to state <a href="#state76">76</a>
+    MUL_EXPRESSION go to state <a href="#state77">77</a>
+    DIV_EXPRESSION go to state <a href="#state78">78</a>
+    MOD_EXPRESSION go to state <a href="#state79">79</a>
+
+
+<b><a name="state86">State</a> <a href="#state86">86</a></b>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN UNARY_EXPRESSION 
+        MOD TERM
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state106">106</a>-><a href="#state59">59</a>-><a href="#state85">85</a>-><a href="#state86">86</a>
+    Predecessors: <a href="#state85">85</a>
+
+  <b>Kernel Items</b>
+    45 MOD_EXPRESSION: UNARY_EXPRESSION MOD TERM .
+	-lookahead: { PLUS, MINUS, COMMA, RIGHT_PAREN, LINE_END, LT, GT, GTE, LTE, 
+                EQUAL, AND, OR }
+
+  <b>Parser Actions</b>
+    PLUS           reduce using <a href="#prod45">rule 45</a> (MOD_EXPRESSION)
+    MINUS          reduce using <a href="#prod45">rule 45</a> (MOD_EXPRESSION)
+    COMMA          reduce using <a href="#prod45">rule 45</a> (MOD_EXPRESSION)
+    RIGHT_PAREN    reduce using <a href="#prod45">rule 45</a> (MOD_EXPRESSION)
+    LINE_END       reduce using <a href="#prod45">rule 45</a> (MOD_EXPRESSION)
+    LT             reduce using <a href="#prod45">rule 45</a> (MOD_EXPRESSION)
+    GT             reduce using <a href="#prod45">rule 45</a> (MOD_EXPRESSION)
+    GTE            reduce using <a href="#prod45">rule 45</a> (MOD_EXPRESSION)
+    LTE            reduce using <a href="#prod45">rule 45</a> (MOD_EXPRESSION)
+    EQUAL          reduce using <a href="#prod45">rule 45</a> (MOD_EXPRESSION)
+    AND            reduce using <a href="#prod45">rule 45</a> (MOD_EXPRESSION)
+    OR             reduce using <a href="#prod45">rule 45</a> (MOD_EXPRESSION)
+
+
+
+<b><a name="state87">State</a> <a href="#state87">87</a></b>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START ID LEFT_PAREN EXPRESSION 
+        COMMA
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state47">47</a>-><a href="#state52">52</a>-><a href="#state56">56</a>-><a href="#state87">87</a>
+    Predecessors: <a href="#state56">56</a>
+
+  <b>Kernel Items</b>
+    62 CALL_ARGS_LIST: EXPRESSION COMMA . CALL_ARGS_LIST
+
+  <b>Parser Actions</b>
+    MINUS          shift, and go to state <a href="#state62">62</a>
+    LEFT_PAREN     shift, and go to state <a href="#state64">64</a>
+    ID             shift, and go to state <a href="#state70">70</a>
+    INTEGER_VALUE  shift, and go to state <a href="#state71">71</a>
+    TRUE           shift, and go to state <a href="#state73">73</a>
+    FALSE          shift, and go to state <a href="#state74">74</a>
+
+  <b>Transitions</b>
+    CALL_ARGS_LIST go to state <a href="#state88">88</a>
+    EXPRESSION     go to state <a href="#state56">56</a>
+    TERM           go to state <a href="#state80">80</a>
+    UNARY_EXPRESSION go to state <a href="#state59">59</a>
+    SIMPLE_TERM    go to state <a href="#state69">69</a>
+    BOOL_VALUE     go to state <a href="#state72">72</a>
+    FUNC_CALL      go to state <a href="#state75">75</a>
+    THIS_METHOD_CALL go to state <a href="#state46">46</a>
+    EXTERNAL_METHOD_CALL go to state <a href="#state76">76</a>
+    MUL_EXPRESSION go to state <a href="#state77">77</a>
+    DIV_EXPRESSION go to state <a href="#state78">78</a>
+    MOD_EXPRESSION go to state <a href="#state79">79</a>
+    ADD_EXPRESSION go to state <a href="#state81">81</a>
+    SUB_EXPRESSION go to state <a href="#state82">82</a>
+
+
+<b><a name="state88">State</a> <a href="#state88">88</a></b>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START ID LEFT_PAREN EXPRESSION 
+        COMMA CALL_ARGS_LIST
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state47">47</a>-><a href="#state52">52</a>-><a href="#state56">56</a>-><a href="#state87">87</a>-><a href="#state88">88</a>
+    Predecessors: <a href="#state87">87</a>
+
+  <b>Kernel Items</b>
+    62 CALL_ARGS_LIST: EXPRESSION COMMA CALL_ARGS_LIST .
+	-lookahead: { RIGHT_PAREN }
+
+  <b>Parser Actions</b>
+    RIGHT_PAREN    reduce using <a href="#prod62">rule 62</a> (CALL_ARGS_LIST)
+
+
+
+<b><a name="state89">State</a> <a href="#state89">89</a></b>
     Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START ID ASSIGNMENT
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state47">47</a>-><a href="#state85">85</a>
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state47">47</a>-><a href="#state89">89</a>
     Predecessors: <a href="#state47">47</a>
 
   <b>Kernel Items</b>
     32 ASSIGN_STATEMENT: ID ASSIGNMENT . EXPRESSION
 
   <b>Parser Actions</b>
-    LEFT_PAREN     shift, and go to state <a href="#state74">74</a>
-    ID             shift, and go to state <a href="#state77">77</a>
-    INTEGER_VALUE  shift, and go to state <a href="#state78">78</a>
-    TRUE           shift, and go to state <a href="#state82">82</a>
-    FALSE          shift, and go to state <a href="#state83">83</a>
+    MINUS          shift, and go to state <a href="#state62">62</a>
+    LEFT_PAREN     shift, and go to state <a href="#state64">64</a>
+    ID             shift, and go to state <a href="#state70">70</a>
+    INTEGER_VALUE  shift, and go to state <a href="#state71">71</a>
+    TRUE           shift, and go to state <a href="#state73">73</a>
+    FALSE          shift, and go to state <a href="#state74">74</a>
 
   <b>Transitions</b>
-    EXPRESSION     go to state <a href="#state86">86</a>
-    TERM           go to state <a href="#state59">59</a>
-    SIMPLE_TERM    go to state <a href="#state66">66</a>
-    FUNC_CALL      go to state <a href="#state79">79</a>
+    EXPRESSION     go to state <a href="#state90">90</a>
+    TERM           go to state <a href="#state80">80</a>
+    UNARY_EXPRESSION go to state <a href="#state59">59</a>
+    SIMPLE_TERM    go to state <a href="#state69">69</a>
+    BOOL_VALUE     go to state <a href="#state72">72</a>
+    FUNC_CALL      go to state <a href="#state75">75</a>
     THIS_METHOD_CALL go to state <a href="#state46">46</a>
-    EXTERNAL_METHOD_CALL go to state <a href="#state80">80</a>
-    BOOL_VALUE     go to state <a href="#state81">81</a>
+    EXTERNAL_METHOD_CALL go to state <a href="#state76">76</a>
+    MUL_EXPRESSION go to state <a href="#state77">77</a>
+    DIV_EXPRESSION go to state <a href="#state78">78</a>
+    MOD_EXPRESSION go to state <a href="#state79">79</a>
+    ADD_EXPRESSION go to state <a href="#state81">81</a>
+    SUB_EXPRESSION go to state <a href="#state82">82</a>
 
 
-<b><a name="state86">State</a> <a href="#state86">86</a></b>
+<b><a name="state90">State</a> <a href="#state90">90</a></b>
     Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START ID ASSIGNMENT EXPRESSION
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state47">47</a>-><a href="#state85">85</a>-><a href="#state86">86</a>
-    Predecessors: <a href="#state85">85</a>
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state47">47</a>-><a href="#state89">89</a>-><a href="#state90">90</a>
+    Predecessors: <a href="#state89">89</a>
 
   <b>Kernel Items</b>
     32 ASSIGN_STATEMENT: ID ASSIGNMENT EXPRESSION .
 	-lookahead: { LINE_END }
+    53 ADD_EXPRESSION: EXPRESSION . PLUS TERM
+    54 SUB_EXPRESSION: EXPRESSION . MINUS TERM
 
   <b>Parser Actions</b>
+    PLUS           shift, and go to state <a href="#state57">57</a>
+    MINUS          shift, and go to state <a href="#state67">67</a>
     LINE_END       reduce using <a href="#prod32">rule 32</a> (ASSIGN_STATEMENT)
 
 
 
-<b><a name="state87">State</a> <a href="#state87">87</a></b>
+<b><a name="state91">State</a> <a href="#state91">91</a></b>
     Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF_STATEMENT
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state87">87</a>
-    Predecessors: <a href="#state37">37</a>, <a href="#state41">41</a>, <a href="#state90">90</a>, <a href="#state97">97</a>
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state91">91</a>
+    Predecessors: <a href="#state37">37</a>, <a href="#state41">41</a>, <a href="#state94">94</a>, <a href="#state101">101</a>
 
   <b>Kernel Items</b>
     29 STATEMENT: IF_STATEMENT .
@@ -1881,10 +2178,10 @@
 
 
 
-<b><a name="state88">State</a> <a href="#state88">88</a></b>
+<b><a name="state92">State</a> <a href="#state92">92</a></b>
     Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF_THEN_STATEMENT
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state88">88</a>
-    Predecessors: <a href="#state37">37</a>, <a href="#state41">41</a>, <a href="#state90">90</a>, <a href="#state97">97</a>
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state92">92</a>
+    Predecessors: <a href="#state37">37</a>, <a href="#state41">41</a>, <a href="#state94">94</a>, <a href="#state101">101</a>
 
   <b>Kernel Items</b>
     33 IF_STATEMENT: IF_THEN_STATEMENT .
@@ -1893,7 +2190,7 @@
                        BLOCK_END
 
   <b>Parser Actions</b>
-    ELSE           shift, and go to state <a href="#state89">89</a>
+    ELSE           shift, and go to state <a href="#state93">93</a>
     ID             reduce using <a href="#prod33">rule 33</a> (IF_STATEMENT)
     IF             reduce using <a href="#prod33">rule 33</a> (IF_STATEMENT)
     RETURN         reduce using <a href="#prod33">rule 33</a> (IF_STATEMENT)
@@ -1901,25 +2198,25 @@
 
 
 
-<b><a name="state89">State</a> <a href="#state89">89</a></b>
+<b><a name="state93">State</a> <a href="#state93">93</a></b>
     Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF_THEN_STATEMENT ELSE
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state88">88</a>-><a href="#state89">89</a>
-    Predecessors: <a href="#state88">88</a>
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state92">92</a>-><a href="#state93">93</a>
+    Predecessors: <a href="#state92">92</a>
 
   <b>Kernel Items</b>
     34 IF_STATEMENT: IF_THEN_STATEMENT ELSE . BLOCK_START STATEMENTS_BLOCK 
                        BLOCK_END
 
   <b>Parser Actions</b>
-    BLOCK_START    shift, and go to state <a href="#state90">90</a>
+    BLOCK_START    shift, and go to state <a href="#state94">94</a>
 
 
 
-<b><a name="state90">State</a> <a href="#state90">90</a></b>
+<b><a name="state94">State</a> <a href="#state94">94</a></b>
     Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF_THEN_STATEMENT ELSE 
         BLOCK_START
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state88">88</a>-><a href="#state89">89</a>-><a href="#state90">90</a>
-    Predecessors: <a href="#state89">89</a>
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state92">92</a>-><a href="#state93">93</a>-><a href="#state94">94</a>
+    Predecessors: <a href="#state93">93</a>
 
   <b>Kernel Items</b>
     34 IF_STATEMENT: IF_THEN_STATEMENT ELSE BLOCK_START . STATEMENTS_BLOCK 
@@ -1927,42 +2224,42 @@
 
   <b>Parser Actions</b>
     ID             shift, and go to state <a href="#state47">47</a>
-    IF             shift, and go to state <a href="#state93">93</a>
-    RETURN         shift, and go to state <a href="#state102">102</a>
-    PASS           shift, and go to state <a href="#state105">105</a>
+    IF             shift, and go to state <a href="#state97">97</a>
+    RETURN         shift, and go to state <a href="#state106">106</a>
+    PASS           shift, and go to state <a href="#state109">109</a>
 
   <b>Transitions</b>
-    STATEMENTS_BLOCK go to state <a href="#state91">91</a>
+    STATEMENTS_BLOCK go to state <a href="#state95">95</a>
     STATEMENTS     go to state <a href="#state40">40</a>
     STATEMENT      go to state <a href="#state41">41</a>
     FUNC_CALL      go to state <a href="#state44">44</a>
     THIS_METHOD_CALL go to state <a href="#state46">46</a>
-    EXTERNAL_METHOD_CALL go to state <a href="#state80">80</a>
-    IF_STATEMENT   go to state <a href="#state87">87</a>
-    IF_THEN_STATEMENT go to state <a href="#state88">88</a>
-    ASSIGN_STATEMENT go to state <a href="#state100">100</a>
+    EXTERNAL_METHOD_CALL go to state <a href="#state76">76</a>
+    IF_STATEMENT   go to state <a href="#state91">91</a>
+    IF_THEN_STATEMENT go to state <a href="#state92">92</a>
+    ASSIGN_STATEMENT go to state <a href="#state104">104</a>
 
 
-<b><a name="state91">State</a> <a href="#state91">91</a></b>
+<b><a name="state95">State</a> <a href="#state95">95</a></b>
     Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF_THEN_STATEMENT ELSE 
         BLOCK_START STATEMENTS_BLOCK
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state88">88</a>-><a href="#state89">89</a>-><a href="#state90">90</a>-><a href="#state91">91</a>
-    Predecessors: <a href="#state90">90</a>
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state92">92</a>-><a href="#state93">93</a>-><a href="#state94">94</a>-><a href="#state95">95</a>
+    Predecessors: <a href="#state94">94</a>
 
   <b>Kernel Items</b>
     34 IF_STATEMENT: IF_THEN_STATEMENT ELSE BLOCK_START STATEMENTS_BLOCK . 
                        BLOCK_END
 
   <b>Parser Actions</b>
-    BLOCK_END      shift, and go to state <a href="#state92">92</a>
+    BLOCK_END      shift, and go to state <a href="#state96">96</a>
 
 
 
-<b><a name="state92">State</a> <a href="#state92">92</a></b>
+<b><a name="state96">State</a> <a href="#state96">96</a></b>
     Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF_THEN_STATEMENT ELSE 
         BLOCK_START STATEMENTS_BLOCK BLOCK_END
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state88">88</a>-><a href="#state89">89</a>-><a href="#state90">90</a>-><a href="#state91">91</a>-><a href="#state92">92</a>
-    Predecessors: <a href="#state91">91</a>
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state92">92</a>-><a href="#state93">93</a>-><a href="#state94">94</a>-><a href="#state95">95</a>-><a href="#state96">96</a>
+    Predecessors: <a href="#state95">95</a>
 
   <b>Kernel Items</b>
     34 IF_STATEMENT: IF_THEN_STATEMENT ELSE BLOCK_START STATEMENTS_BLOCK 
@@ -1977,84 +2274,91 @@
 
 
 
-<b><a name="state93">State</a> <a href="#state93">93</a></b>
+<b><a name="state97">State</a> <a href="#state97">97</a></b>
     Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state93">93</a>
-    Predecessors: <a href="#state37">37</a>, <a href="#state41">41</a>, <a href="#state90">90</a>, <a href="#state97">97</a>
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state97">97</a>
+    Predecessors: <a href="#state37">37</a>, <a href="#state41">41</a>, <a href="#state94">94</a>, <a href="#state101">101</a>
 
   <b>Kernel Items</b>
     35 IF_THEN_STATEMENT: IF . LEFT_PAREN OR_TEST RIGHT_PAREN BLOCK_START 
                             STATEMENTS_BLOCK BLOCK_END
 
   <b>Parser Actions</b>
-    LEFT_PAREN     shift, and go to state <a href="#state94">94</a>
+    LEFT_PAREN     shift, and go to state <a href="#state98">98</a>
 
 
 
-<b><a name="state94">State</a> <a href="#state94">94</a></b>
+<b><a name="state98">State</a> <a href="#state98">98</a></b>
     Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF LEFT_PAREN
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state93">93</a>-><a href="#state94">94</a>
-    Predecessors: <a href="#state93">93</a>
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state97">97</a>-><a href="#state98">98</a>
+    Predecessors: <a href="#state97">97</a>
 
   <b>Kernel Items</b>
     35 IF_THEN_STATEMENT: IF LEFT_PAREN . OR_TEST RIGHT_PAREN BLOCK_START 
                             STATEMENTS_BLOCK BLOCK_END
 
   <b>Parser Actions</b>
-    NOT            shift, and go to state <a href="#state113">113</a>
-    LEFT_PAREN     shift, and go to state <a href="#state74">74</a>
-    ID             shift, and go to state <a href="#state77">77</a>
-    INTEGER_VALUE  shift, and go to state <a href="#state78">78</a>
-    TRUE           shift, and go to state <a href="#state82">82</a>
-    FALSE          shift, and go to state <a href="#state83">83</a>
+    NOT            shift, and go to state <a href="#state117">117</a>
+    MINUS          shift, and go to state <a href="#state62">62</a>
+    LEFT_PAREN     shift, and go to state <a href="#state64">64</a>
+    ID             shift, and go to state <a href="#state70">70</a>
+    INTEGER_VALUE  shift, and go to state <a href="#state71">71</a>
+    TRUE           shift, and go to state <a href="#state73">73</a>
+    FALSE          shift, and go to state <a href="#state74">74</a>
 
   <b>Transitions</b>
-    OR_TEST        go to state <a href="#state95">95</a>
-    AND_TEST       go to state <a href="#state107">107</a>
-    NOT_TEST       go to state <a href="#state110">110</a>
-    EXPRESSION     go to state <a href="#state115">115</a>
-    TERM           go to state <a href="#state59">59</a>
-    SIMPLE_TERM    go to state <a href="#state66">66</a>
-    FUNC_CALL      go to state <a href="#state79">79</a>
+    OR_TEST        go to state <a href="#state99">99</a>
+    AND_TEST       go to state <a href="#state111">111</a>
+    NOT_TEST       go to state <a href="#state114">114</a>
+    EXPRESSION     go to state <a href="#state119">119</a>
+    TERM           go to state <a href="#state80">80</a>
+    UNARY_EXPRESSION go to state <a href="#state59">59</a>
+    SIMPLE_TERM    go to state <a href="#state69">69</a>
+    BOOL_VALUE     go to state <a href="#state72">72</a>
+    FUNC_CALL      go to state <a href="#state75">75</a>
     THIS_METHOD_CALL go to state <a href="#state46">46</a>
-    EXTERNAL_METHOD_CALL go to state <a href="#state80">80</a>
-    BOOL_VALUE     go to state <a href="#state81">81</a>
+    EXTERNAL_METHOD_CALL go to state <a href="#state76">76</a>
+    MUL_EXPRESSION go to state <a href="#state77">77</a>
+    DIV_EXPRESSION go to state <a href="#state78">78</a>
+    MOD_EXPRESSION go to state <a href="#state79">79</a>
+    ADD_EXPRESSION go to state <a href="#state81">81</a>
+    SUB_EXPRESSION go to state <a href="#state82">82</a>
 
 
-<b><a name="state95">State</a> <a href="#state95">95</a></b>
+<b><a name="state99">State</a> <a href="#state99">99</a></b>
     Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF LEFT_PAREN OR_TEST
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state93">93</a>-><a href="#state94">94</a>-><a href="#state95">95</a>
-    Predecessors: <a href="#state94">94</a>
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state97">97</a>-><a href="#state98">98</a>-><a href="#state99">99</a>
+    Predecessors: <a href="#state98">98</a>
 
   <b>Kernel Items</b>
     35 IF_THEN_STATEMENT: IF LEFT_PAREN OR_TEST . RIGHT_PAREN BLOCK_START 
                             STATEMENTS_BLOCK BLOCK_END
 
   <b>Parser Actions</b>
-    RIGHT_PAREN    shift, and go to state <a href="#state96">96</a>
+    RIGHT_PAREN    shift, and go to state <a href="#state100">100</a>
 
 
 
-<b><a name="state96">State</a> <a href="#state96">96</a></b>
+<b><a name="state100">State</a> <a href="#state100">100</a></b>
     Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF LEFT_PAREN OR_TEST 
         RIGHT_PAREN
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state93">93</a>-><a href="#state94">94</a>-><a href="#state95">95</a>-><a href="#state96">96</a>
-    Predecessors: <a href="#state95">95</a>
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state97">97</a>-><a href="#state98">98</a>-><a href="#state99">99</a>-><a href="#state100">100</a>
+    Predecessors: <a href="#state99">99</a>
 
   <b>Kernel Items</b>
     35 IF_THEN_STATEMENT: IF LEFT_PAREN OR_TEST RIGHT_PAREN . BLOCK_START 
                             STATEMENTS_BLOCK BLOCK_END
 
   <b>Parser Actions</b>
-    BLOCK_START    shift, and go to state <a href="#state97">97</a>
+    BLOCK_START    shift, and go to state <a href="#state101">101</a>
 
 
 
-<b><a name="state97">State</a> <a href="#state97">97</a></b>
+<b><a name="state101">State</a> <a href="#state101">101</a></b>
     Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF LEFT_PAREN OR_TEST 
         RIGHT_PAREN BLOCK_START
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state93">93</a>-><a href="#state94">94</a>-><a href="#state95">95</a>-><a href="#state96">96</a>-><a href="#state97">97</a>
-    Predecessors: <a href="#state96">96</a>
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state97">97</a>-><a href="#state98">98</a>-><a href="#state99">99</a>-><a href="#state100">100</a>-><a href="#state101">101</a>
+    Predecessors: <a href="#state100">100</a>
 
   <b>Kernel Items</b>
     35 IF_THEN_STATEMENT: IF LEFT_PAREN OR_TEST RIGHT_PAREN BLOCK_START . 
@@ -2062,42 +2366,42 @@
 
   <b>Parser Actions</b>
     ID             shift, and go to state <a href="#state47">47</a>
-    IF             shift, and go to state <a href="#state93">93</a>
-    RETURN         shift, and go to state <a href="#state102">102</a>
-    PASS           shift, and go to state <a href="#state105">105</a>
+    IF             shift, and go to state <a href="#state97">97</a>
+    RETURN         shift, and go to state <a href="#state106">106</a>
+    PASS           shift, and go to state <a href="#state109">109</a>
 
   <b>Transitions</b>
-    STATEMENTS_BLOCK go to state <a href="#state98">98</a>
+    STATEMENTS_BLOCK go to state <a href="#state102">102</a>
     STATEMENTS     go to state <a href="#state40">40</a>
     STATEMENT      go to state <a href="#state41">41</a>
     FUNC_CALL      go to state <a href="#state44">44</a>
     THIS_METHOD_CALL go to state <a href="#state46">46</a>
-    EXTERNAL_METHOD_CALL go to state <a href="#state80">80</a>
-    IF_STATEMENT   go to state <a href="#state87">87</a>
-    IF_THEN_STATEMENT go to state <a href="#state88">88</a>
-    ASSIGN_STATEMENT go to state <a href="#state100">100</a>
+    EXTERNAL_METHOD_CALL go to state <a href="#state76">76</a>
+    IF_STATEMENT   go to state <a href="#state91">91</a>
+    IF_THEN_STATEMENT go to state <a href="#state92">92</a>
+    ASSIGN_STATEMENT go to state <a href="#state104">104</a>
 
 
-<b><a name="state98">State</a> <a href="#state98">98</a></b>
+<b><a name="state102">State</a> <a href="#state102">102</a></b>
     Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF LEFT_PAREN OR_TEST 
         RIGHT_PAREN BLOCK_START STATEMENTS_BLOCK
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state93">93</a>-><a href="#state94">94</a>-><a href="#state95">95</a>-><a href="#state96">96</a>-><a href="#state97">97</a>-><a href="#state98">98</a>
-    Predecessors: <a href="#state97">97</a>
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state97">97</a>-><a href="#state98">98</a>-><a href="#state99">99</a>-><a href="#state100">100</a>-><a href="#state101">101</a>-><a href="#state102">102</a>
+    Predecessors: <a href="#state101">101</a>
 
   <b>Kernel Items</b>
     35 IF_THEN_STATEMENT: IF LEFT_PAREN OR_TEST RIGHT_PAREN BLOCK_START 
                             STATEMENTS_BLOCK . BLOCK_END
 
   <b>Parser Actions</b>
-    BLOCK_END      shift, and go to state <a href="#state99">99</a>
+    BLOCK_END      shift, and go to state <a href="#state103">103</a>
 
 
 
-<b><a name="state99">State</a> <a href="#state99">99</a></b>
+<b><a name="state103">State</a> <a href="#state103">103</a></b>
     Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF LEFT_PAREN OR_TEST 
         RIGHT_PAREN BLOCK_START STATEMENTS_BLOCK BLOCK_END
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state93">93</a>-><a href="#state94">94</a>-><a href="#state95">95</a>-><a href="#state96">96</a>-><a href="#state97">97</a>-><a href="#state98">98</a>-><a href="#state99">99</a>
-    Predecessors: <a href="#state98">98</a>
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state97">97</a>-><a href="#state98">98</a>-><a href="#state99">99</a>-><a href="#state100">100</a>-><a href="#state101">101</a>-><a href="#state102">102</a>-><a href="#state103">103</a>
+    Predecessors: <a href="#state102">102</a>
 
   <b>Kernel Items</b>
     35 IF_THEN_STATEMENT: IF LEFT_PAREN OR_TEST RIGHT_PAREN BLOCK_START 
@@ -2113,24 +2417,24 @@
 
 
 
-<b><a name="state100">State</a> <a href="#state100">100</a></b>
+<b><a name="state104">State</a> <a href="#state104">104</a></b>
     Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START ASSIGN_STATEMENT
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state100">100</a>
-    Predecessors: <a href="#state37">37</a>, <a href="#state41">41</a>, <a href="#state90">90</a>, <a href="#state97">97</a>
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state104">104</a>
+    Predecessors: <a href="#state37">37</a>, <a href="#state41">41</a>, <a href="#state94">94</a>, <a href="#state101">101</a>
 
   <b>Kernel Items</b>
     30 STATEMENT: ASSIGN_STATEMENT . LINE_END
 
   <b>Parser Actions</b>
-    LINE_END       shift, and go to state <a href="#state101">101</a>
+    LINE_END       shift, and go to state <a href="#state105">105</a>
 
 
 
-<b><a name="state101">State</a> <a href="#state101">101</a></b>
+<b><a name="state105">State</a> <a href="#state105">105</a></b>
     Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START ASSIGN_STATEMENT 
         LINE_END
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state100">100</a>-><a href="#state101">101</a>
-    Predecessors: <a href="#state100">100</a>
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state104">104</a>-><a href="#state105">105</a>
+    Predecessors: <a href="#state104">104</a>
 
   <b>Kernel Items</b>
     30 STATEMENT: ASSIGN_STATEMENT LINE_END .
@@ -2144,49 +2448,60 @@
 
 
 
-<b><a name="state102">State</a> <a href="#state102">102</a></b>
+<b><a name="state106">State</a> <a href="#state106">106</a></b>
     Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state102">102</a>
-    Predecessors: <a href="#state37">37</a>, <a href="#state41">41</a>, <a href="#state90">90</a>, <a href="#state97">97</a>
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state106">106</a>
+    Predecessors: <a href="#state37">37</a>, <a href="#state41">41</a>, <a href="#state94">94</a>, <a href="#state101">101</a>
 
   <b>Kernel Items</b>
     31 STATEMENT: RETURN . EXPRESSION LINE_END
 
   <b>Parser Actions</b>
-    LEFT_PAREN     shift, and go to state <a href="#state74">74</a>
-    ID             shift, and go to state <a href="#state77">77</a>
-    INTEGER_VALUE  shift, and go to state <a href="#state78">78</a>
-    TRUE           shift, and go to state <a href="#state82">82</a>
-    FALSE          shift, and go to state <a href="#state83">83</a>
+    MINUS          shift, and go to state <a href="#state62">62</a>
+    LEFT_PAREN     shift, and go to state <a href="#state64">64</a>
+    ID             shift, and go to state <a href="#state70">70</a>
+    INTEGER_VALUE  shift, and go to state <a href="#state71">71</a>
+    TRUE           shift, and go to state <a href="#state73">73</a>
+    FALSE          shift, and go to state <a href="#state74">74</a>
 
   <b>Transitions</b>
-    EXPRESSION     go to state <a href="#state103">103</a>
-    TERM           go to state <a href="#state59">59</a>
-    SIMPLE_TERM    go to state <a href="#state66">66</a>
-    FUNC_CALL      go to state <a href="#state79">79</a>
+    EXPRESSION     go to state <a href="#state107">107</a>
+    TERM           go to state <a href="#state80">80</a>
+    UNARY_EXPRESSION go to state <a href="#state59">59</a>
+    SIMPLE_TERM    go to state <a href="#state69">69</a>
+    BOOL_VALUE     go to state <a href="#state72">72</a>
+    FUNC_CALL      go to state <a href="#state75">75</a>
     THIS_METHOD_CALL go to state <a href="#state46">46</a>
-    EXTERNAL_METHOD_CALL go to state <a href="#state80">80</a>
-    BOOL_VALUE     go to state <a href="#state81">81</a>
+    EXTERNAL_METHOD_CALL go to state <a href="#state76">76</a>
+    MUL_EXPRESSION go to state <a href="#state77">77</a>
+    DIV_EXPRESSION go to state <a href="#state78">78</a>
+    MOD_EXPRESSION go to state <a href="#state79">79</a>
+    ADD_EXPRESSION go to state <a href="#state81">81</a>
+    SUB_EXPRESSION go to state <a href="#state82">82</a>
 
 
-<b><a name="state103">State</a> <a href="#state103">103</a></b>
+<b><a name="state107">State</a> <a href="#state107">107</a></b>
     Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN EXPRESSION
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state102">102</a>-><a href="#state103">103</a>
-    Predecessors: <a href="#state102">102</a>
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state106">106</a>-><a href="#state107">107</a>
+    Predecessors: <a href="#state106">106</a>
 
   <b>Kernel Items</b>
     31 STATEMENT: RETURN EXPRESSION . LINE_END
+    53 ADD_EXPRESSION: EXPRESSION . PLUS TERM
+    54 SUB_EXPRESSION: EXPRESSION . MINUS TERM
 
   <b>Parser Actions</b>
-    LINE_END       shift, and go to state <a href="#state104">104</a>
+    LINE_END       shift, and go to state <a href="#state108">108</a>
+    PLUS           shift, and go to state <a href="#state57">57</a>
+    MINUS          shift, and go to state <a href="#state67">67</a>
 
 
 
-<b><a name="state104">State</a> <a href="#state104">104</a></b>
+<b><a name="state108">State</a> <a href="#state108">108</a></b>
     Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START RETURN EXPRESSION 
         LINE_END
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state102">102</a>-><a href="#state103">103</a>-><a href="#state104">104</a>
-    Predecessors: <a href="#state103">103</a>
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state106">106</a>-><a href="#state107">107</a>-><a href="#state108">108</a>
+    Predecessors: <a href="#state107">107</a>
 
   <b>Kernel Items</b>
     31 STATEMENT: RETURN EXPRESSION LINE_END .
@@ -2200,23 +2515,23 @@
 
 
 
-<b><a name="state105">State</a> <a href="#state105">105</a></b>
+<b><a name="state109">State</a> <a href="#state109">109</a></b>
     Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START PASS
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state105">105</a>
-    Predecessors: <a href="#state37">37</a>, <a href="#state90">90</a>, <a href="#state97">97</a>
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state109">109</a>
+    Predecessors: <a href="#state37">37</a>, <a href="#state94">94</a>, <a href="#state101">101</a>
 
   <b>Kernel Items</b>
     24 STATEMENTS_BLOCK: PASS . LINE_END
 
   <b>Parser Actions</b>
-    LINE_END       shift, and go to state <a href="#state106">106</a>
+    LINE_END       shift, and go to state <a href="#state110">110</a>
 
 
 
-<b><a name="state106">State</a> <a href="#state106">106</a></b>
+<b><a name="state110">State</a> <a href="#state110">110</a></b>
     Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START PASS LINE_END
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state105">105</a>-><a href="#state106">106</a>
-    Predecessors: <a href="#state105">105</a>
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state109">109</a>-><a href="#state110">110</a>
+    Predecessors: <a href="#state109">109</a>
 
   <b>Kernel Items</b>
     24 STATEMENTS_BLOCK: PASS LINE_END .
@@ -2227,323 +2542,303 @@
 
 
 
-<b><a name="state107">State</a> <a href="#state107">107</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF LEFT_PAREN AND_TEST
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state93">93</a>-><a href="#state94">94</a>-><a href="#state107">107</a>
-    Predecessors: <a href="#state94">94</a>, <a href="#state108">108</a>
-
-  <b>Kernel Items</b>
-    62 OR_TEST: AND_TEST .
-	-lookahead: { RIGHT_PAREN }
-    63 OR_TEST: AND_TEST . OR OR_TEST
-
-  <b>Parser Actions</b>
-    OR             shift, and go to state <a href="#state108">108</a>
-    RIGHT_PAREN    reduce using <a href="#prod62">rule 62</a> (OR_TEST)
-
-
-
-<b><a name="state108">State</a> <a href="#state108">108</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF LEFT_PAREN AND_TEST 
-        OR
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state93">93</a>-><a href="#state94">94</a>-><a href="#state107">107</a>-><a href="#state108">108</a>
-    Predecessors: <a href="#state107">107</a>
-
-  <b>Kernel Items</b>
-    63 OR_TEST: AND_TEST OR . OR_TEST
-
-  <b>Parser Actions</b>
-    NOT            shift, and go to state <a href="#state113">113</a>
-    LEFT_PAREN     shift, and go to state <a href="#state74">74</a>
-    ID             shift, and go to state <a href="#state77">77</a>
-    INTEGER_VALUE  shift, and go to state <a href="#state78">78</a>
-    TRUE           shift, and go to state <a href="#state82">82</a>
-    FALSE          shift, and go to state <a href="#state83">83</a>
-
-  <b>Transitions</b>
-    OR_TEST        go to state <a href="#state109">109</a>
-    AND_TEST       go to state <a href="#state107">107</a>
-    NOT_TEST       go to state <a href="#state110">110</a>
-    EXPRESSION     go to state <a href="#state115">115</a>
-    TERM           go to state <a href="#state59">59</a>
-    SIMPLE_TERM    go to state <a href="#state66">66</a>
-    FUNC_CALL      go to state <a href="#state79">79</a>
-    THIS_METHOD_CALL go to state <a href="#state46">46</a>
-    EXTERNAL_METHOD_CALL go to state <a href="#state80">80</a>
-    BOOL_VALUE     go to state <a href="#state81">81</a>
-
-
-<b><a name="state109">State</a> <a href="#state109">109</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF LEFT_PAREN AND_TEST 
-        OR OR_TEST
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state93">93</a>-><a href="#state94">94</a>-><a href="#state107">107</a>-><a href="#state108">108</a>-><a href="#state109">109</a>
-    Predecessors: <a href="#state108">108</a>
-
-  <b>Kernel Items</b>
-    63 OR_TEST: AND_TEST OR OR_TEST .
-	-lookahead: { RIGHT_PAREN }
-
-  <b>Parser Actions</b>
-    RIGHT_PAREN    reduce using <a href="#prod63">rule 63</a> (OR_TEST)
-
-
-
-<b><a name="state110">State</a> <a href="#state110">110</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF LEFT_PAREN NOT_TEST
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state93">93</a>-><a href="#state94">94</a>-><a href="#state110">110</a>
-    Predecessors: <a href="#state94">94</a>, <a href="#state108">108</a>, <a href="#state111">111</a>
-
-  <b>Kernel Items</b>
-    64 AND_TEST: NOT_TEST .
-	-lookahead: { OR, RIGHT_PAREN }
-    65 AND_TEST: NOT_TEST . AND AND_TEST
-
-  <b>Parser Actions</b>
-    AND            shift, and go to state <a href="#state111">111</a>
-    OR             reduce using <a href="#prod64">rule 64</a> (AND_TEST)
-    RIGHT_PAREN    reduce using <a href="#prod64">rule 64</a> (AND_TEST)
-
-
-
 <b><a name="state111">State</a> <a href="#state111">111</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF LEFT_PAREN NOT_TEST 
-        AND
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state93">93</a>-><a href="#state94">94</a>-><a href="#state110">110</a>-><a href="#state111">111</a>
-    Predecessors: <a href="#state110">110</a>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF LEFT_PAREN AND_TEST
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state97">97</a>-><a href="#state98">98</a>-><a href="#state111">111</a>
+    Predecessors: <a href="#state98">98</a>, <a href="#state112">112</a>
 
   <b>Kernel Items</b>
-    65 AND_TEST: NOT_TEST AND . AND_TEST
+    65 OR_TEST: AND_TEST .
+	-lookahead: { RIGHT_PAREN }
+    66 OR_TEST: AND_TEST . OR OR_TEST
 
   <b>Parser Actions</b>
-    NOT            shift, and go to state <a href="#state113">113</a>
-    LEFT_PAREN     shift, and go to state <a href="#state74">74</a>
-    ID             shift, and go to state <a href="#state77">77</a>
-    INTEGER_VALUE  shift, and go to state <a href="#state78">78</a>
-    TRUE           shift, and go to state <a href="#state82">82</a>
-    FALSE          shift, and go to state <a href="#state83">83</a>
+    OR             shift, and go to state <a href="#state112">112</a>
+    RIGHT_PAREN    reduce using <a href="#prod65">rule 65</a> (OR_TEST)
 
-  <b>Transitions</b>
-    AND_TEST       go to state <a href="#state112">112</a>
-    NOT_TEST       go to state <a href="#state110">110</a>
-    EXPRESSION     go to state <a href="#state115">115</a>
-    TERM           go to state <a href="#state59">59</a>
-    SIMPLE_TERM    go to state <a href="#state66">66</a>
-    FUNC_CALL      go to state <a href="#state79">79</a>
-    THIS_METHOD_CALL go to state <a href="#state46">46</a>
-    EXTERNAL_METHOD_CALL go to state <a href="#state80">80</a>
-    BOOL_VALUE     go to state <a href="#state81">81</a>
 
 
 <b><a name="state112">State</a> <a href="#state112">112</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF LEFT_PAREN NOT_TEST 
-        AND AND_TEST
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state93">93</a>-><a href="#state94">94</a>-><a href="#state110">110</a>-><a href="#state111">111</a>-><a href="#state112">112</a>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF LEFT_PAREN AND_TEST 
+        OR
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state97">97</a>-><a href="#state98">98</a>-><a href="#state111">111</a>-><a href="#state112">112</a>
     Predecessors: <a href="#state111">111</a>
 
   <b>Kernel Items</b>
-    65 AND_TEST: NOT_TEST AND AND_TEST .
-	-lookahead: { OR, RIGHT_PAREN }
+    66 OR_TEST: AND_TEST OR . OR_TEST
 
   <b>Parser Actions</b>
-    OR             reduce using <a href="#prod65">rule 65</a> (AND_TEST)
-    RIGHT_PAREN    reduce using <a href="#prod65">rule 65</a> (AND_TEST)
+    NOT            shift, and go to state <a href="#state117">117</a>
+    MINUS          shift, and go to state <a href="#state62">62</a>
+    LEFT_PAREN     shift, and go to state <a href="#state64">64</a>
+    ID             shift, and go to state <a href="#state70">70</a>
+    INTEGER_VALUE  shift, and go to state <a href="#state71">71</a>
+    TRUE           shift, and go to state <a href="#state73">73</a>
+    FALSE          shift, and go to state <a href="#state74">74</a>
 
+  <b>Transitions</b>
+    OR_TEST        go to state <a href="#state113">113</a>
+    AND_TEST       go to state <a href="#state111">111</a>
+    NOT_TEST       go to state <a href="#state114">114</a>
+    EXPRESSION     go to state <a href="#state119">119</a>
+    TERM           go to state <a href="#state80">80</a>
+    UNARY_EXPRESSION go to state <a href="#state59">59</a>
+    SIMPLE_TERM    go to state <a href="#state69">69</a>
+    BOOL_VALUE     go to state <a href="#state72">72</a>
+    FUNC_CALL      go to state <a href="#state75">75</a>
+    THIS_METHOD_CALL go to state <a href="#state46">46</a>
+    EXTERNAL_METHOD_CALL go to state <a href="#state76">76</a>
+    MUL_EXPRESSION go to state <a href="#state77">77</a>
+    DIV_EXPRESSION go to state <a href="#state78">78</a>
+    MOD_EXPRESSION go to state <a href="#state79">79</a>
+    ADD_EXPRESSION go to state <a href="#state81">81</a>
+    SUB_EXPRESSION go to state <a href="#state82">82</a>
 
 
 <b><a name="state113">State</a> <a href="#state113">113</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF LEFT_PAREN NOT
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state93">93</a>-><a href="#state94">94</a>-><a href="#state113">113</a>
-    Predecessors: <a href="#state94">94</a>, <a href="#state108">108</a>, <a href="#state111">111</a>, <a href="#state113">113</a>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF LEFT_PAREN AND_TEST 
+        OR OR_TEST
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state97">97</a>-><a href="#state98">98</a>-><a href="#state111">111</a>-><a href="#state112">112</a>-><a href="#state113">113</a>
+    Predecessors: <a href="#state112">112</a>
 
   <b>Kernel Items</b>
-    66 NOT_TEST: NOT . NOT_TEST
+    66 OR_TEST: AND_TEST OR OR_TEST .
+	-lookahead: { RIGHT_PAREN }
 
   <b>Parser Actions</b>
-    NOT            shift, and go to state <a href="#state113">113</a>
-    LEFT_PAREN     shift, and go to state <a href="#state74">74</a>
-    ID             shift, and go to state <a href="#state77">77</a>
-    INTEGER_VALUE  shift, and go to state <a href="#state78">78</a>
-    TRUE           shift, and go to state <a href="#state82">82</a>
-    FALSE          shift, and go to state <a href="#state83">83</a>
+    RIGHT_PAREN    reduce using <a href="#prod66">rule 66</a> (OR_TEST)
 
-  <b>Transitions</b>
-    NOT_TEST       go to state <a href="#state114">114</a>
-    EXPRESSION     go to state <a href="#state115">115</a>
-    TERM           go to state <a href="#state59">59</a>
-    SIMPLE_TERM    go to state <a href="#state66">66</a>
-    FUNC_CALL      go to state <a href="#state79">79</a>
-    THIS_METHOD_CALL go to state <a href="#state46">46</a>
-    EXTERNAL_METHOD_CALL go to state <a href="#state80">80</a>
-    BOOL_VALUE     go to state <a href="#state81">81</a>
 
 
 <b><a name="state114">State</a> <a href="#state114">114</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF LEFT_PAREN NOT 
-        NOT_TEST
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state93">93</a>-><a href="#state94">94</a>-><a href="#state113">113</a>-><a href="#state114">114</a>
-    Predecessors: <a href="#state113">113</a>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF LEFT_PAREN NOT_TEST
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state97">97</a>-><a href="#state98">98</a>-><a href="#state114">114</a>
+    Predecessors: <a href="#state98">98</a>, <a href="#state112">112</a>, <a href="#state115">115</a>
 
   <b>Kernel Items</b>
-    66 NOT_TEST: NOT NOT_TEST .
-	-lookahead: { AND, OR, RIGHT_PAREN }
+    67 AND_TEST: NOT_TEST .
+	-lookahead: { OR, RIGHT_PAREN }
+    68 AND_TEST: NOT_TEST . AND AND_TEST
 
   <b>Parser Actions</b>
-    AND            reduce using <a href="#prod66">rule 66</a> (NOT_TEST)
-    OR             reduce using <a href="#prod66">rule 66</a> (NOT_TEST)
-    RIGHT_PAREN    reduce using <a href="#prod66">rule 66</a> (NOT_TEST)
+    AND            shift, and go to state <a href="#state115">115</a>
+    OR             reduce using <a href="#prod67">rule 67</a> (AND_TEST)
+    RIGHT_PAREN    reduce using <a href="#prod67">rule 67</a> (AND_TEST)
 
 
 
 <b><a name="state115">State</a> <a href="#state115">115</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF LEFT_PAREN EXPRESSION
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state93">93</a>-><a href="#state94">94</a>-><a href="#state115">115</a>
-    Predecessors: <a href="#state94">94</a>, <a href="#state108">108</a>, <a href="#state111">111</a>, <a href="#state113">113</a>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF LEFT_PAREN NOT_TEST 
+        AND
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state97">97</a>-><a href="#state98">98</a>-><a href="#state114">114</a>-><a href="#state115">115</a>
+    Predecessors: <a href="#state114">114</a>
 
   <b>Kernel Items</b>
-    67 NOT_TEST: EXPRESSION . COMPARISON_S
+    68 AND_TEST: NOT_TEST AND . AND_TEST
 
   <b>Parser Actions</b>
-    LT             shift, and go to state <a href="#state119">119</a>
-    GT             shift, and go to state <a href="#state120">120</a>
-    GTE            shift, and go to state <a href="#state121">121</a>
-    LTE            shift, and go to state <a href="#state122">122</a>
-    EQUAL          shift, and go to state <a href="#state123">123</a>
-    AND            reduce using <a href="#prod69">rule 69</a> (Erasing COMPARISON_S)
-    OR             reduce using <a href="#prod69">rule 69</a> (Erasing COMPARISON_S)
-    RIGHT_PAREN    reduce using <a href="#prod69">rule 69</a> (Erasing COMPARISON_S)
+    NOT            shift, and go to state <a href="#state117">117</a>
+    MINUS          shift, and go to state <a href="#state62">62</a>
+    LEFT_PAREN     shift, and go to state <a href="#state64">64</a>
+    ID             shift, and go to state <a href="#state70">70</a>
+    INTEGER_VALUE  shift, and go to state <a href="#state71">71</a>
+    TRUE           shift, and go to state <a href="#state73">73</a>
+    FALSE          shift, and go to state <a href="#state74">74</a>
 
   <b>Transitions</b>
-    COMPARISON_S   go to state <a href="#state116">116</a>
-    COMPARE_OPERATION go to state <a href="#state117">117</a>
+    AND_TEST       go to state <a href="#state116">116</a>
+    NOT_TEST       go to state <a href="#state114">114</a>
+    EXPRESSION     go to state <a href="#state119">119</a>
+    TERM           go to state <a href="#state80">80</a>
+    UNARY_EXPRESSION go to state <a href="#state59">59</a>
+    SIMPLE_TERM    go to state <a href="#state69">69</a>
+    BOOL_VALUE     go to state <a href="#state72">72</a>
+    FUNC_CALL      go to state <a href="#state75">75</a>
+    THIS_METHOD_CALL go to state <a href="#state46">46</a>
+    EXTERNAL_METHOD_CALL go to state <a href="#state76">76</a>
+    MUL_EXPRESSION go to state <a href="#state77">77</a>
+    DIV_EXPRESSION go to state <a href="#state78">78</a>
+    MOD_EXPRESSION go to state <a href="#state79">79</a>
+    ADD_EXPRESSION go to state <a href="#state81">81</a>
+    SUB_EXPRESSION go to state <a href="#state82">82</a>
 
 
 <b><a name="state116">State</a> <a href="#state116">116</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF LEFT_PAREN EXPRESSION
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state93">93</a>-><a href="#state94">94</a>-><a href="#state115">115</a>-><a href="#state116">116</a>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF LEFT_PAREN NOT_TEST 
+        AND AND_TEST
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state97">97</a>-><a href="#state98">98</a>-><a href="#state114">114</a>-><a href="#state115">115</a>-><a href="#state116">116</a>
     Predecessors: <a href="#state115">115</a>
 
   <b>Kernel Items</b>
-    67 NOT_TEST: EXPRESSION COMPARISON_S .
-	-lookahead: { AND, OR, RIGHT_PAREN }
+    68 AND_TEST: NOT_TEST AND AND_TEST .
+	-lookahead: { OR, RIGHT_PAREN }
 
   <b>Parser Actions</b>
-    AND            reduce using <a href="#prod67">rule 67</a> (NOT_TEST)
-    OR             reduce using <a href="#prod67">rule 67</a> (NOT_TEST)
-    RIGHT_PAREN    reduce using <a href="#prod67">rule 67</a> (NOT_TEST)
+    OR             reduce using <a href="#prod68">rule 68</a> (AND_TEST)
+    RIGHT_PAREN    reduce using <a href="#prod68">rule 68</a> (AND_TEST)
 
 
 
 <b><a name="state117">State</a> <a href="#state117">117</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF LEFT_PAREN EXPRESSION 
-        COMPARE_OPERATION
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state93">93</a>-><a href="#state94">94</a>-><a href="#state115">115</a>-><a href="#state117">117</a>
-    Predecessors: <a href="#state115">115</a>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF LEFT_PAREN NOT
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state97">97</a>-><a href="#state98">98</a>-><a href="#state117">117</a>
+    Predecessors: <a href="#state98">98</a>, <a href="#state112">112</a>, <a href="#state115">115</a>, <a href="#state117">117</a>
 
   <b>Kernel Items</b>
-    68 COMPARISON_S: COMPARE_OPERATION . EXPRESSION
+    69 NOT_TEST: NOT . NOT_TEST
 
   <b>Parser Actions</b>
-    LEFT_PAREN     shift, and go to state <a href="#state74">74</a>
-    ID             shift, and go to state <a href="#state77">77</a>
-    INTEGER_VALUE  shift, and go to state <a href="#state78">78</a>
-    TRUE           shift, and go to state <a href="#state82">82</a>
-    FALSE          shift, and go to state <a href="#state83">83</a>
+    NOT            shift, and go to state <a href="#state117">117</a>
+    MINUS          shift, and go to state <a href="#state62">62</a>
+    LEFT_PAREN     shift, and go to state <a href="#state64">64</a>
+    ID             shift, and go to state <a href="#state70">70</a>
+    INTEGER_VALUE  shift, and go to state <a href="#state71">71</a>
+    TRUE           shift, and go to state <a href="#state73">73</a>
+    FALSE          shift, and go to state <a href="#state74">74</a>
 
   <b>Transitions</b>
-    EXPRESSION     go to state <a href="#state118">118</a>
-    TERM           go to state <a href="#state59">59</a>
-    SIMPLE_TERM    go to state <a href="#state66">66</a>
-    FUNC_CALL      go to state <a href="#state79">79</a>
+    NOT_TEST       go to state <a href="#state118">118</a>
+    EXPRESSION     go to state <a href="#state119">119</a>
+    TERM           go to state <a href="#state80">80</a>
+    UNARY_EXPRESSION go to state <a href="#state59">59</a>
+    SIMPLE_TERM    go to state <a href="#state69">69</a>
+    BOOL_VALUE     go to state <a href="#state72">72</a>
+    FUNC_CALL      go to state <a href="#state75">75</a>
     THIS_METHOD_CALL go to state <a href="#state46">46</a>
-    EXTERNAL_METHOD_CALL go to state <a href="#state80">80</a>
-    BOOL_VALUE     go to state <a href="#state81">81</a>
+    EXTERNAL_METHOD_CALL go to state <a href="#state76">76</a>
+    MUL_EXPRESSION go to state <a href="#state77">77</a>
+    DIV_EXPRESSION go to state <a href="#state78">78</a>
+    MOD_EXPRESSION go to state <a href="#state79">79</a>
+    ADD_EXPRESSION go to state <a href="#state81">81</a>
+    SUB_EXPRESSION go to state <a href="#state82">82</a>
 
 
 <b><a name="state118">State</a> <a href="#state118">118</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF LEFT_PAREN EXPRESSION 
-        COMPARE_OPERATION EXPRESSION
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state93">93</a>-><a href="#state94">94</a>-><a href="#state115">115</a>-><a href="#state117">117</a>-><a href="#state118">118</a>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF LEFT_PAREN NOT 
+        NOT_TEST
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state97">97</a>-><a href="#state98">98</a>-><a href="#state117">117</a>-><a href="#state118">118</a>
     Predecessors: <a href="#state117">117</a>
 
   <b>Kernel Items</b>
-    68 COMPARISON_S: COMPARE_OPERATION EXPRESSION .
+    69 NOT_TEST: NOT NOT_TEST .
 	-lookahead: { AND, OR, RIGHT_PAREN }
 
   <b>Parser Actions</b>
-    AND            reduce using <a href="#prod68">rule 68</a> (COMPARISON_S)
-    OR             reduce using <a href="#prod68">rule 68</a> (COMPARISON_S)
-    RIGHT_PAREN    reduce using <a href="#prod68">rule 68</a> (COMPARISON_S)
+    AND            reduce using <a href="#prod69">rule 69</a> (NOT_TEST)
+    OR             reduce using <a href="#prod69">rule 69</a> (NOT_TEST)
+    RIGHT_PAREN    reduce using <a href="#prod69">rule 69</a> (NOT_TEST)
 
 
 
 <b><a name="state119">State</a> <a href="#state119">119</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF LEFT_PAREN EXPRESSION 
-        LT
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state93">93</a>-><a href="#state94">94</a>-><a href="#state115">115</a>-><a href="#state119">119</a>
-    Predecessors: <a href="#state115">115</a>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF LEFT_PAREN EXPRESSION
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state97">97</a>-><a href="#state98">98</a>-><a href="#state119">119</a>
+    Predecessors: <a href="#state98">98</a>, <a href="#state112">112</a>, <a href="#state115">115</a>, <a href="#state117">117</a>
 
   <b>Kernel Items</b>
-    70 COMPARE_OPERATION: LT .
-	-lookahead: { LEFT_PAREN, ID, INTEGER_VALUE, TRUE, FALSE }
+    70 NOT_TEST: EXPRESSION . COMPARISON_S
+    53 ADD_EXPRESSION: EXPRESSION . PLUS TERM
+    54 SUB_EXPRESSION: EXPRESSION . MINUS TERM
 
   <b>Parser Actions</b>
-    LEFT_PAREN     reduce using <a href="#prod70">rule 70</a> (COMPARE_OPERATION)
-    ID             reduce using <a href="#prod70">rule 70</a> (COMPARE_OPERATION)
-    INTEGER_VALUE  reduce using <a href="#prod70">rule 70</a> (COMPARE_OPERATION)
-    TRUE           reduce using <a href="#prod70">rule 70</a> (COMPARE_OPERATION)
-    FALSE          reduce using <a href="#prod70">rule 70</a> (COMPARE_OPERATION)
+    PLUS           shift, and go to state <a href="#state57">57</a>
+    MINUS          shift, and go to state <a href="#state67">67</a>
+    LT             shift, and go to state <a href="#state123">123</a>
+    GT             shift, and go to state <a href="#state124">124</a>
+    GTE            shift, and go to state <a href="#state125">125</a>
+    LTE            shift, and go to state <a href="#state126">126</a>
+    EQUAL          shift, and go to state <a href="#state127">127</a>
+    AND            reduce using <a href="#prod72">rule 72</a> (Erasing COMPARISON_S)
+    OR             reduce using <a href="#prod72">rule 72</a> (Erasing COMPARISON_S)
+    RIGHT_PAREN    reduce using <a href="#prod72">rule 72</a> (Erasing COMPARISON_S)
 
+  <b>Transitions</b>
+    COMPARISON_S   go to state <a href="#state120">120</a>
+    COMPARE_OPERATION go to state <a href="#state121">121</a>
 
 
 <b><a name="state120">State</a> <a href="#state120">120</a></b>
-    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF LEFT_PAREN EXPRESSION 
-        GT
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state93">93</a>-><a href="#state94">94</a>-><a href="#state115">115</a>-><a href="#state120">120</a>
-    Predecessors: <a href="#state115">115</a>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF LEFT_PAREN EXPRESSION
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state97">97</a>-><a href="#state98">98</a>-><a href="#state119">119</a>-><a href="#state120">120</a>
+    Predecessors: <a href="#state119">119</a>
 
   <b>Kernel Items</b>
-    71 COMPARE_OPERATION: GT .
-	-lookahead: { LEFT_PAREN, ID, INTEGER_VALUE, TRUE, FALSE }
+    70 NOT_TEST: EXPRESSION COMPARISON_S .
+	-lookahead: { AND, OR, RIGHT_PAREN }
 
   <b>Parser Actions</b>
-    LEFT_PAREN     reduce using <a href="#prod71">rule 71</a> (COMPARE_OPERATION)
-    ID             reduce using <a href="#prod71">rule 71</a> (COMPARE_OPERATION)
-    INTEGER_VALUE  reduce using <a href="#prod71">rule 71</a> (COMPARE_OPERATION)
-    TRUE           reduce using <a href="#prod71">rule 71</a> (COMPARE_OPERATION)
-    FALSE          reduce using <a href="#prod71">rule 71</a> (COMPARE_OPERATION)
+    AND            reduce using <a href="#prod70">rule 70</a> (NOT_TEST)
+    OR             reduce using <a href="#prod70">rule 70</a> (NOT_TEST)
+    RIGHT_PAREN    reduce using <a href="#prod70">rule 70</a> (NOT_TEST)
 
 
 
 <b><a name="state121">State</a> <a href="#state121">121</a></b>
     Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF LEFT_PAREN EXPRESSION 
-        GTE
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state93">93</a>-><a href="#state94">94</a>-><a href="#state115">115</a>-><a href="#state121">121</a>
-    Predecessors: <a href="#state115">115</a>
+        COMPARE_OPERATION
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state97">97</a>-><a href="#state98">98</a>-><a href="#state119">119</a>-><a href="#state121">121</a>
+    Predecessors: <a href="#state119">119</a>
 
   <b>Kernel Items</b>
-    72 COMPARE_OPERATION: GTE .
-	-lookahead: { LEFT_PAREN, ID, INTEGER_VALUE, TRUE, FALSE }
+    71 COMPARISON_S: COMPARE_OPERATION . EXPRESSION
 
   <b>Parser Actions</b>
-    LEFT_PAREN     reduce using <a href="#prod72">rule 72</a> (COMPARE_OPERATION)
-    ID             reduce using <a href="#prod72">rule 72</a> (COMPARE_OPERATION)
-    INTEGER_VALUE  reduce using <a href="#prod72">rule 72</a> (COMPARE_OPERATION)
-    TRUE           reduce using <a href="#prod72">rule 72</a> (COMPARE_OPERATION)
-    FALSE          reduce using <a href="#prod72">rule 72</a> (COMPARE_OPERATION)
+    MINUS          shift, and go to state <a href="#state62">62</a>
+    LEFT_PAREN     shift, and go to state <a href="#state64">64</a>
+    ID             shift, and go to state <a href="#state70">70</a>
+    INTEGER_VALUE  shift, and go to state <a href="#state71">71</a>
+    TRUE           shift, and go to state <a href="#state73">73</a>
+    FALSE          shift, and go to state <a href="#state74">74</a>
 
+  <b>Transitions</b>
+    EXPRESSION     go to state <a href="#state122">122</a>
+    TERM           go to state <a href="#state80">80</a>
+    UNARY_EXPRESSION go to state <a href="#state59">59</a>
+    SIMPLE_TERM    go to state <a href="#state69">69</a>
+    BOOL_VALUE     go to state <a href="#state72">72</a>
+    FUNC_CALL      go to state <a href="#state75">75</a>
+    THIS_METHOD_CALL go to state <a href="#state46">46</a>
+    EXTERNAL_METHOD_CALL go to state <a href="#state76">76</a>
+    MUL_EXPRESSION go to state <a href="#state77">77</a>
+    DIV_EXPRESSION go to state <a href="#state78">78</a>
+    MOD_EXPRESSION go to state <a href="#state79">79</a>
+    ADD_EXPRESSION go to state <a href="#state81">81</a>
+    SUB_EXPRESSION go to state <a href="#state82">82</a>
 
 
 <b><a name="state122">State</a> <a href="#state122">122</a></b>
     Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF LEFT_PAREN EXPRESSION 
-        LTE
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state93">93</a>-><a href="#state94">94</a>-><a href="#state115">115</a>-><a href="#state122">122</a>
-    Predecessors: <a href="#state115">115</a>
+        COMPARE_OPERATION EXPRESSION
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state97">97</a>-><a href="#state98">98</a>-><a href="#state119">119</a>-><a href="#state121">121</a>-><a href="#state122">122</a>
+    Predecessors: <a href="#state121">121</a>
 
   <b>Kernel Items</b>
-    73 COMPARE_OPERATION: LTE .
-	-lookahead: { LEFT_PAREN, ID, INTEGER_VALUE, TRUE, FALSE }
+    71 COMPARISON_S: COMPARE_OPERATION EXPRESSION .
+	-lookahead: { AND, OR, RIGHT_PAREN }
+    53 ADD_EXPRESSION: EXPRESSION . PLUS TERM
+    54 SUB_EXPRESSION: EXPRESSION . MINUS TERM
 
   <b>Parser Actions</b>
+    PLUS           shift, and go to state <a href="#state57">57</a>
+    MINUS          shift, and go to state <a href="#state67">67</a>
+    AND            reduce using <a href="#prod71">rule 71</a> (COMPARISON_S)
+    OR             reduce using <a href="#prod71">rule 71</a> (COMPARISON_S)
+    RIGHT_PAREN    reduce using <a href="#prod71">rule 71</a> (COMPARISON_S)
+
+
+
+<b><a name="state123">State</a> <a href="#state123">123</a></b>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF LEFT_PAREN EXPRESSION 
+        LT
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state97">97</a>-><a href="#state98">98</a>-><a href="#state119">119</a>-><a href="#state123">123</a>
+    Predecessors: <a href="#state119">119</a>
+
+  <b>Kernel Items</b>
+    73 COMPARE_OPERATION: LT .
+	-lookahead: { MINUS, LEFT_PAREN, ID, INTEGER_VALUE, TRUE, FALSE }
+
+  <b>Parser Actions</b>
+    MINUS          reduce using <a href="#prod73">rule 73</a> (COMPARE_OPERATION)
     LEFT_PAREN     reduce using <a href="#prod73">rule 73</a> (COMPARE_OPERATION)
     ID             reduce using <a href="#prod73">rule 73</a> (COMPARE_OPERATION)
     INTEGER_VALUE  reduce using <a href="#prod73">rule 73</a> (COMPARE_OPERATION)
@@ -2552,22 +2847,83 @@
 
 
 
-<b><a name="state123">State</a> <a href="#state123">123</a></b>
+<b><a name="state124">State</a> <a href="#state124">124</a></b>
     Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF LEFT_PAREN EXPRESSION 
-        EQUAL
-    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state93">93</a>-><a href="#state94">94</a>-><a href="#state115">115</a>-><a href="#state123">123</a>
-    Predecessors: <a href="#state115">115</a>
+        GT
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state97">97</a>-><a href="#state98">98</a>-><a href="#state119">119</a>-><a href="#state124">124</a>
+    Predecessors: <a href="#state119">119</a>
 
   <b>Kernel Items</b>
-    74 COMPARE_OPERATION: EQUAL .
-	-lookahead: { LEFT_PAREN, ID, INTEGER_VALUE, TRUE, FALSE }
+    74 COMPARE_OPERATION: GT .
+	-lookahead: { MINUS, LEFT_PAREN, ID, INTEGER_VALUE, TRUE, FALSE }
 
   <b>Parser Actions</b>
+    MINUS          reduce using <a href="#prod74">rule 74</a> (COMPARE_OPERATION)
     LEFT_PAREN     reduce using <a href="#prod74">rule 74</a> (COMPARE_OPERATION)
     ID             reduce using <a href="#prod74">rule 74</a> (COMPARE_OPERATION)
     INTEGER_VALUE  reduce using <a href="#prod74">rule 74</a> (COMPARE_OPERATION)
     TRUE           reduce using <a href="#prod74">rule 74</a> (COMPARE_OPERATION)
     FALSE          reduce using <a href="#prod74">rule 74</a> (COMPARE_OPERATION)
+
+
+
+<b><a name="state125">State</a> <a href="#state125">125</a></b>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF LEFT_PAREN EXPRESSION 
+        GTE
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state97">97</a>-><a href="#state98">98</a>-><a href="#state119">119</a>-><a href="#state125">125</a>
+    Predecessors: <a href="#state119">119</a>
+
+  <b>Kernel Items</b>
+    75 COMPARE_OPERATION: GTE .
+	-lookahead: { MINUS, LEFT_PAREN, ID, INTEGER_VALUE, TRUE, FALSE }
+
+  <b>Parser Actions</b>
+    MINUS          reduce using <a href="#prod75">rule 75</a> (COMPARE_OPERATION)
+    LEFT_PAREN     reduce using <a href="#prod75">rule 75</a> (COMPARE_OPERATION)
+    ID             reduce using <a href="#prod75">rule 75</a> (COMPARE_OPERATION)
+    INTEGER_VALUE  reduce using <a href="#prod75">rule 75</a> (COMPARE_OPERATION)
+    TRUE           reduce using <a href="#prod75">rule 75</a> (COMPARE_OPERATION)
+    FALSE          reduce using <a href="#prod75">rule 75</a> (COMPARE_OPERATION)
+
+
+
+<b><a name="state126">State</a> <a href="#state126">126</a></b>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF LEFT_PAREN EXPRESSION 
+        LTE
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state97">97</a>-><a href="#state98">98</a>-><a href="#state119">119</a>-><a href="#state126">126</a>
+    Predecessors: <a href="#state119">119</a>
+
+  <b>Kernel Items</b>
+    76 COMPARE_OPERATION: LTE .
+	-lookahead: { MINUS, LEFT_PAREN, ID, INTEGER_VALUE, TRUE, FALSE }
+
+  <b>Parser Actions</b>
+    MINUS          reduce using <a href="#prod76">rule 76</a> (COMPARE_OPERATION)
+    LEFT_PAREN     reduce using <a href="#prod76">rule 76</a> (COMPARE_OPERATION)
+    ID             reduce using <a href="#prod76">rule 76</a> (COMPARE_OPERATION)
+    INTEGER_VALUE  reduce using <a href="#prod76">rule 76</a> (COMPARE_OPERATION)
+    TRUE           reduce using <a href="#prod76">rule 76</a> (COMPARE_OPERATION)
+    FALSE          reduce using <a href="#prod76">rule 76</a> (COMPARE_OPERATION)
+
+
+
+<b><a name="state127">State</a> <a href="#state127">127</a></b>
+    Shortest prefix: CLASS ID BLOCK_START METHOD_HEADER BLOCK_START IF LEFT_PAREN EXPRESSION 
+        EQUAL
+    Shortest path: <a href="#state0">0</a>-><a href="#state5">5</a>-><a href="#state6">6</a>-><a href="#state8">8</a>-><a href="#state36">36</a>-><a href="#state37">37</a>-><a href="#state97">97</a>-><a href="#state98">98</a>-><a href="#state119">119</a>-><a href="#state127">127</a>
+    Predecessors: <a href="#state119">119</a>
+
+  <b>Kernel Items</b>
+    77 COMPARE_OPERATION: EQUAL .
+	-lookahead: { MINUS, LEFT_PAREN, ID, INTEGER_VALUE, TRUE, FALSE }
+
+  <b>Parser Actions</b>
+    MINUS          reduce using <a href="#prod77">rule 77</a> (COMPARE_OPERATION)
+    LEFT_PAREN     reduce using <a href="#prod77">rule 77</a> (COMPARE_OPERATION)
+    ID             reduce using <a href="#prod77">rule 77</a> (COMPARE_OPERATION)
+    INTEGER_VALUE  reduce using <a href="#prod77">rule 77</a> (COMPARE_OPERATION)
+    TRUE           reduce using <a href="#prod77">rule 77</a> (COMPARE_OPERATION)
+    FALSE          reduce using <a href="#prod77">rule 77</a> (COMPARE_OPERATION)
 
 
 

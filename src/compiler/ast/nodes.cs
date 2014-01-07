@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace compiler
 {
-    class AstProgram : AstNode
+    public class AstProgram : AstNode
     {
         public AstClass Class { get; protected set; }
 
@@ -16,7 +16,7 @@ namespace compiler
         }
     }
 
-    class AstClass : AstNode
+    public class AstClass : AstNode
     {
         public AstIdExpression Name { get; protected set; }
         public AstClassBody Body { get; protected set; }
@@ -28,7 +28,7 @@ namespace compiler
         }
     }
 
-    class AstClassBody : AstNode
+    public class AstClassBody : AstNode
     {
         public List<AstClassField> ClassFields { get; protected set; }
         public List<AstClassMethod> ClassMethods { get; protected set; }
@@ -40,7 +40,7 @@ namespace compiler
         }
     }
 
-    class AstVisibilityModifier : AstNode
+    public class AstVisibilityModifier : AstNode
     {
         public VisibilityModifier Value { get; protected set; }
 
@@ -50,7 +50,7 @@ namespace compiler
         }
     }
 
-    class AstStaticModifier : AstNode
+    public class AstStaticModifier : AstNode
     {
         public StaticModifier Value { get; protected set; }
 
@@ -60,7 +60,7 @@ namespace compiler
         }
     }
 
-    class AstClassField : AstNode
+    public class AstClassField : AstNode
     {
         public AstVisibilityModifier Visibility { get; protected set; }
         public AstStaticModifier Static { get; protected set; }
@@ -81,7 +81,7 @@ namespace compiler
         }
     }
 
-    class AstClassMethod : AstNode
+    public class AstClassMethod : AstNode
     {
         public AstVisibilityModifier Visibility { get; protected set; }
         public AstStaticModifier Static { get; protected set; }
@@ -108,7 +108,7 @@ namespace compiler
         }
     }
 
-    class AstArgumentsDefList : AstNode
+    public class AstArgumentsDefList : AstNode
     {
         public List<AstArgumentDef> ArgumentsDefinition { get; protected set; }
 
@@ -118,7 +118,7 @@ namespace compiler
         }
     }
 
-    class AstArgumentDef : AstNode
+    public class AstArgumentDef : AstNode
     {
         public AstIdExpression TypeDef { get; protected set; }
         public AstIdExpression Name { get; protected set; }
@@ -130,7 +130,7 @@ namespace compiler
         }
     }
 
-    class AstStatementsBlock : AstNode
+    public class AstStatementsBlock : AstNode
     {
         public AstStatementsList Statements { get; protected set; }
 
@@ -140,7 +140,7 @@ namespace compiler
         }
     }
 
-    class AstStatementsList : AstNode
+    public class AstStatementsList : AstNode
     {
         public List<AstStatement> Statements { get; protected set; }
 
@@ -150,19 +150,19 @@ namespace compiler
         }
     }
 
-    abstract class AstStatement : AstNode
+    abstract public class AstStatement : AstNode
     {
     }
     
-    abstract class AstExpression : AstNode
+    abstract public class AstExpression : AstNode
     {
     }
 
-    abstract class AstFunctionCallExpression : AstExpression
+    abstract public class AstFunctionCallExpression : AstExpression
     {
     }
 
-    class AstThisMethodCallExpression : AstFunctionCallExpression
+    public class AstThisMethodCallExpression : AstFunctionCallExpression
     {
         public AstIdExpression Name { get; protected set; }
         public AstArgumentsCallList CallArgs { get; protected set; }
@@ -174,7 +174,7 @@ namespace compiler
         }
     }
 
-    class AstThisMethodCallStatement : AstStatement
+    public class AstThisMethodCallStatement : AstStatement
     {
         public AstThisMethodCallExpression Expr { get; protected set; }
 
@@ -184,7 +184,7 @@ namespace compiler
         }
     }
 
-    class AstExternalMethodCallExpression : AstFunctionCallExpression
+    public class AstExternalMethodCallExpression : AstFunctionCallExpression
     {
         public AstIdExpression Target { get; protected set; }
         public AstIdExpression Name { get; protected set; }
@@ -198,7 +198,7 @@ namespace compiler
         }
     }
 
-    class AstExternalMethodCallStatement : AstStatement
+    public class AstExternalMethodCallStatement : AstStatement
     {
         public AstExternalMethodCallExpression Expr { get; protected set; }
 
@@ -208,7 +208,7 @@ namespace compiler
         }
     }
 
-    class AstReturnStatement : AstStatement
+    public class AstReturnStatement : AstStatement
     {
         public AstExpression Expression { get; protected set; }
 
@@ -218,7 +218,7 @@ namespace compiler
         }
     }
 
-    class AstIfStatement : AstStatement
+    public class AstIfStatement : AstStatement
     {
         public AstExpression Condition { get; protected set; }
         public AstStatementsBlock ThenBlock { get; protected set; }
@@ -232,7 +232,7 @@ namespace compiler
         }
     }
 
-    class AstAssignStatement : AstStatement
+    public class AstAssignStatement : AstStatement
     {
         public AstIdExpression Variable { get; protected set; }
         public AstExpression NewValue { get; protected set; }
@@ -243,18 +243,8 @@ namespace compiler
             NewValue = newValue;
         }
     }
-
-    class AstTerm : AstExpression
-    {
-        public AstExpression Expression { get; protected set; }
-
-        public AstTerm(AstExpression expr)
-        {
-            Expression = expr;
-        }
-    }
-
-    class AstBoolValueExpression : AstExpression
+    
+    public class AstBoolValueExpression : AstExpression
     {
         public BoolValue Value { get; protected set; }
 
@@ -264,7 +254,7 @@ namespace compiler
         }
     }
 
-    class AstIntegerValueExpression : AstExpression
+    public class AstIntegerValueExpression : AstExpression
     {
         public string Value { get; protected set; }
 
@@ -274,7 +264,7 @@ namespace compiler
         }
     }
 
-    class AstIdExpression : AstExpression
+    public class AstIdExpression : AstExpression
     {
         public string Id { get; protected set; }
 
@@ -284,7 +274,7 @@ namespace compiler
         }
     }
 
-    class AstArgumentsCallList : AstNode
+    public class AstArgumentsCallList : AstNode
     {
         public List<AstCallArgument> Arguments { get; protected set; }
 
@@ -294,7 +284,7 @@ namespace compiler
         }
     }
 
-    class AstCallArgument : AstExpression
+    public class AstCallArgument : AstExpression
     {
         public AstExpression Expr { get; protected set; }
 
@@ -304,7 +294,7 @@ namespace compiler
         }
     }
 
-    class AstCompareOperation : AstExpression
+    public class AstCompareOperation : AstExpression
     {
         public CompareOp Value { get; protected set; }
 
@@ -313,8 +303,95 @@ namespace compiler
             Value = val;
         }
     }
-    
 
+    public class AstMulExpression : AstExpression
+    {
+        public AstUnaryExpr Left { get; protected set; }
+        public AstExpression Right { get; protected set; }
 
+        public AstMulExpression(AstUnaryExpr left, AstExpression right)
+        {
+            Left = left;
+            Right = right;
+        }
+    }
 
+    public class AstDivExpression : AstExpression
+    {
+        public AstUnaryExpr Left { get; protected set; }
+        public AstExpression Right { get; protected set; }
+
+        public AstDivExpression(AstUnaryExpr left, AstExpression right)
+        {
+            Left = left;
+            Right = right;
+        }
+    }
+
+    public class AstModExpression : AstExpression
+    {
+        public AstUnaryExpr Left { get; protected set; }
+        public AstExpression Right { get; protected set; }
+
+        public AstModExpression(AstUnaryExpr left, AstExpression right)
+        {
+            Left = left;
+            Right = right;
+        }
+    }
+
+    public class AstAddExpression : AstExpression
+    {
+        public AstExpression Left { get; protected set; }
+        public AstExpression Right { get; protected set; }
+
+        public AstAddExpression(AstExpression left, AstExpression right)
+        {
+            Left = left;
+            Right = right;
+        }
+    }
+
+    public class AstSubExpression : AstExpression
+    {
+        public AstExpression Left { get; protected set; }
+        public AstExpression Right { get; protected set; }
+
+        public AstSubExpression(AstExpression left, AstExpression right)
+        {
+            Left = left;
+            Right = right;
+        }
+    }
+
+    abstract public class AstUnaryExpr : AstExpression
+    {
+        public AstSimpleTermExpr SimpleTerm { get; protected set; }
+    }
+
+    public class AstNegateUnaryExpr : AstUnaryExpr
+    {
+        public AstNegateUnaryExpr(AstSimpleTermExpr expr)
+        {
+            SimpleTerm = expr;
+        }
+    }
+
+    public class AstSimpleUnaryExpr : AstUnaryExpr
+    {
+        public AstSimpleUnaryExpr(AstSimpleTermExpr expr)
+        {
+            SimpleTerm = expr;
+        }
+    }
+
+    public class AstSimpleTermExpr : AstExpression
+    {
+        public AstExpression Expr { get; protected set; }
+
+        public AstSimpleTermExpr(AstExpression expr)
+        {
+            Expr = expr;
+        }
+    }
 }

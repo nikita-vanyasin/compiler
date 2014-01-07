@@ -86,11 +86,11 @@ namespace compiler
             {
                 if (curr is AstClassField)
                 {
-                    fieldsList.Add(curr as AstClassField);
+                    fieldsList.Insert(0, curr as AstClassField);
                 }
                 else
                 {
-                    methodsList.Add(curr as AstClassMethod);
+                    methodsList.Insert(0, curr as AstClassMethod);
                 }
                 nodes.Pop();
                 curr = nodes.Peek() as AstNode;
@@ -211,7 +211,7 @@ namespace compiler
             while (curr is AstArgumentDef)
             {
                 nodes.Pop();
-                argumentsDefList.Add(curr as AstArgumentDef);
+                argumentsDefList.Insert(0, curr as AstArgumentDef);
                 curr = nodes.Peek() as AstNode;
             }
 
@@ -271,7 +271,7 @@ namespace compiler
             var list = nodes.Pop() as AstStatementsList;
             var oneMore = nodes.Pop() as AstStatement;
 
-            list.Statements.Add(oneMore);
+            list.Statements.Insert(0, oneMore);
             nodes.Push(list);
         }
 
@@ -359,99 +359,90 @@ namespace compiler
             nodes.Push(ifThenStmt);
         }
 
-        // #EXPRESSION #TERM #EXPRESSION_S
-        private void ConstructTermExpression()
+        // #EXPRESSION (#TERM|#ADD_EXPRESSION|#SUB_EXPRESSION)
+        private void ConstructExpression()
         {
         }
 
-        // #EXPRESSION #FUNC_CALL
-        private void ConstructFuncCallExpression()
-        {
-        }
 
-        // #EXPRESSION #BOOL_VALUE
-        private void ConstructBoolValueExpression()
-        {
-        }
-
-        // #EXPRESSION_S #FIRST_PREC_OPERATOR #TERM #EXPRESSION_S
-        private void ConstructExpressionS()
-        {
-
-        }
-
-        // #EXPRESSION_S
-        private void ConstructEmptyExpressionS()
-        {
-
-        }
-
-        // #TERM #SIMPLE_TERM #TERM_S
+        // #TERM (#UNARY_EXPRESSION|#MUL_EXPRESSION|#DIV_EXPRESSION|#MOD_EXPRESSION)
         private void ConstructTerm()
         {
-
         }
 
-        // #TERM_S #SECOND_PREC_OPERATOR #SIMPLE_TERM #TERM_S
-        private void ConstructTermS()
+        // #MUL_EXPRESSION #UNARY_EXPRESSION MULTIPLICATION #TERM
+        private void ConstructMulExpr()
         {
+            var right = nodes.Pop() as AstExpression;
+            var left = nodes.Pop() as AstUnaryExpr;
 
+            var mulExpr = new AstMulExpression(left, right);
+            nodes.Push(mulExpr);
         }
 
-        // #TERM_S
-        private void ConstructEmptyTermS()
+        // #DIV_EXPRESSION #UNARY_EXPRESSION DIV #TERM
+        private void ConstructDivExpr()
         {
+            var right = nodes.Pop() as AstExpression;
+            var left = nodes.Pop() as AstUnaryExpr;
 
+            var mulExpr = new AstDivExpression(left, right);
+            nodes.Push(mulExpr);
         }
 
-        // #SIMPLE_TERM LEFT_PAREN #EXPRESSION RIGHT_PAREN
-        private void ConstructSimpleParenTerm()
+        // #MOD_EXPRESSION #UNARY_EXPRESSION MOD #TERM
+        private void ConstructModExpr()
         {
+            var right = nodes.Pop() as AstExpression;
+            var left = nodes.Pop() as AstUnaryExpr;
 
+            var mulExpr = new AstModExpression(left, right);
+            nodes.Push(mulExpr);
         }
 
-        // #SIMPLE_TERM ID
-        private void ConstructSimpleIdTerm()
+        // #UNARY_EXPRESSION MINUS #SIMPLE_TERM
+        private void ConstructNegateUnaryExpr()
         {
-
+            var simpleTerm = nodes.Pop() as AstSimpleTermExpr;
+            var unExpr = new AstNegateUnaryExpr(simpleTerm);
+            nodes.Push(unExpr);
         }
 
-        // #SIMPLE_TERM INTEGER_VALUE
-        private void ConstructSimpleIntValTerm()
+        // #UNARY_EXPRESSION #SIMPLE_TERM
+        private void ConstructUnaryExpr()
         {
-
+            var simpleTerm = nodes.Pop() as AstSimpleTermExpr;
+            var unExpr = new AstSimpleUnaryExpr(simpleTerm);
+            nodes.Push(unExpr);
         }
 
-        // #FIRST_PREC_OPERATOR PLUS
-        private void ConstructFirstPrecedancePlusOperator()
+        private void ConstructSimpleTerm()
         {
-
+            var expr = nodes.Pop() as AstExpression;
+            var simpleTerm = new AstSimpleTermExpr(expr);
+            nodes.Push(expr);
         }
 
-        // #FIRST_PREC_OPERATOR MINUS
-        private void ConstructFirstPrecedanceMinusOperator()
+        // #ADD_EXPRESSION #EXPRESSION PLUS #TERM
+        private void ConstructAddExpr()
         {
+            var right = nodes.Pop() as AstExpression;
+            var left = nodes.Pop() as AstExpression;
 
+            var expr = new AstAddExpression(left, right);
+            nodes.Push(expr);
         }
 
-        // #SECOND_PREC_OPERATOR MULTIPLICATION
-        private void ConstructSecondPrecedanceMulOperator()
+        // #SUB_EXPRESSION #EXPRESSION MINUS #TERM
+        private void ConstructSubExpr()
         {
+            var right = nodes.Pop() as AstExpression;
+            var left = nodes.Pop() as AstExpression;
 
+            var expr = new AstSubExpression(left, right);
+            nodes.Push(expr);
         }
-
-        // #SECOND_PREC_OPERATOR DIV
-        private void ConstructSecondPrecedanceDivOperator()
-        {
-
-        }
-
-        // #SECOND_PREC_OPERATOR MOD
-        private void ConstructSecondPrecedanceModOperator()
-        {
-
-        }
-
+        
         // #FUNC_CALL #THIS_METHOD_CALL
         private void ConstructFuncCall()
         {
@@ -492,7 +483,7 @@ namespace compiler
             while (curr is AstCallArgument)
             {
                 nodes.Pop();
-                callArgs.Add(curr as AstCallArgument);
+                callArgs.Insert(0, curr as AstCallArgument);
                 curr = nodes.Peek() as AstNode;
             }
 

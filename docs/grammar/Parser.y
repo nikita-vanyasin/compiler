@@ -84,35 +84,43 @@ IF_STATEMENT : IF_THEN_STATEMENT
 IF_THEN_STATEMENT : IF LEFT_PAREN OR_TEST RIGHT_PAREN BLOCK_START STATEMENTS_BLOCK BLOCK_END
                   ;
 
-EXPRESSION : TERM EXPRESSION_S
-           | FUNC_CALL
-           | BOOL_VALUE
+EXPRESSION : TERM
+           | ADD_EXPRESSION
+           | SUB_EXPRESSION
            ;
-
-EXPRESSION_S : FIRST_PREC_OPERATOR TERM EXPRESSION_S
-             | /* eps */
-             ;
-
-TERM : SIMPLE_TERM TERM_S
+                 
+TERM : UNARY_EXPRESSION
+     | MUL_EXPRESSION
+     | DIV_EXPRESSION
+     | MOD_EXPRESSION
      ;
 
-TERM_S : SECOND_PREC_OPERATOR SIMPLE_TERM TERM_S
-       | /* eps */
-       ;
+MUL_EXPRESSION : UNARY_EXPRESSION MULTIPLICATION TERM
+               ;
+
+DIV_EXPRESSION : UNARY_EXPRESSION DIV TERM
+               ;
+
+MOD_EXPRESSION : UNARY_EXPRESSION MOD TERM
+               ;
+
+UNARY_EXPRESSION : MINUS SIMPLE_TERM
+                 | SIMPLE_TERM
+                 ;
+                 
 
 SIMPLE_TERM : LEFT_PAREN EXPRESSION RIGHT_PAREN
             | ID
             | INTEGER_VALUE
+            | BOOL_VALUE
+            | FUNC_CALL
             ;
+                 
+ADD_EXPRESSION : EXPRESSION PLUS TERM
+               ;
 
-FIRST_PREC_OPERATOR : PLUS
-                    | MINUS
-                    ;
-
-SECOND_PREC_OPERATOR : MULTIPLICATION
-                     | DIV
-                     | MOD
-                     ;
+SUB_EXPRESSION : EXPRESSION MINUS TERM
+               ;
 
 FUNC_CALL : THIS_METHOD_CALL
           | EXTERNAL_METHOD_CALL
