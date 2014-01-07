@@ -46,13 +46,8 @@ namespace Test
         {
             throw new InvalidAstException();
         }
-
-        public bool Visit(AstNode node)
-        {
-            throw new Exception("You must implement Visit method for each node. Thie code should be unreacheble");
-        }
-
-        public bool Visit(AstProgram node)
+        
+        override public bool Visit(AstProgram node)
         {
             ErrorIfIsNull(node);
             ErrorIfIsNull(node.Class);
@@ -60,36 +55,36 @@ namespace Test
             return true;
         }
 
-        public bool Visit(AstClass node)
+        override public bool Visit(AstClass node)
         {
             ErrorIfIsNull(node.Body);
             ErrorIfIsNull(node.Name);
             return true;
         }
 
-        public bool Visit(AstClassBody node)
+        override public bool Visit(AstClassBody node)
         {
             return true;
         }
 
-        public bool Visit(AstVisibilityModifier node)
+        override public bool Visit(AstVisibilityModifier node)
         {
             return true;
         }
 
-        public bool Visit(AstStaticModifier node)
+        override public bool Visit(AstStaticModifier node)
         {
             return true;
         }
 
-        public bool Visit(AstClassField node)
+        override public bool Visit(AstClassField node)
         {
             ErrorIfIsNull(node.Name);
             ErrorIfIsNull(node.TypeDef);
             return true;
         }
 
-        public bool Visit(AstClassMethod node)
+        override public bool Visit(AstClassMethod node)
         {
             ErrorIfIsNull(node.ArgumentsDefinition);
             ErrorIfIsNull(node.Name);
@@ -98,45 +93,45 @@ namespace Test
             return true;
         }
 
-        public bool Visit(AstArgumentsDefList node)
+        override public bool Visit(AstArgumentsDefList node)
         {
             ErrorIfIsNull(node.ArgumentsDefinition);
             return true;
         }
 
-        public bool Visit(AstArgumentDef node)
+        override public bool Visit(AstArgumentDef node)
         {
             ErrorIfIsNull(node.Name);
             ErrorIfIsNull(node.TypeDef);
             return true;
         }
 
-        public bool Visit(AstStatementsBlock node)
+        override public bool Visit(AstStatementsBlock node)
         {
             ErrorIfIsNull(node.Statements);
             return true;
         }
 
-        public bool Visit(AstStatementsList node)
+        override public bool Visit(AstStatementsList node)
         {
             ErrorIfIsNull(node.Statements);
             return true;
         }
 
-        public bool Visit(AstThisMethodCallExpression node)
+        override public bool Visit(AstThisMethodCallExpression node)
         {
             ErrorIfIsNull(node.CallArgs);
             ErrorIfIsNull(node.Name);
             return true;
         }
 
-        public bool Visit(AstThisMethodCallStatement node)
+        override public bool Visit(AstThisMethodCallStatement node)
         {
             ErrorIfIsNull(node.Expr);
             return true;
         }
 
-        public bool Visit(AstExternalMethodCallExpression node)
+        override public bool Visit(AstExternalMethodCallExpression node)
         {
             ErrorIfIsNull(node.CallArgs);
             ErrorIfIsNull(node.Name);
@@ -144,19 +139,19 @@ namespace Test
             return true;
         }
 
-        public bool Visit(AstExternalMethodCallStatement node)
+        override public bool Visit(AstExternalMethodCallStatement node)
         {
             ErrorIfIsNull(node.Expr);
             return true;
         }
 
-        public bool Visit(AstReturnStatement node)
+        override public bool Visit(AstReturnStatement node)
         {
             ErrorIfIsNull(node.Expression);
             return true;
         }
 
-        public bool Visit(AstIfStatement node)
+        override public bool Visit(AstIfStatement node)
         {
             ErrorIfIsNull(node.Condition);
             ErrorIfIsNull(node.ThenBlock);
@@ -164,97 +159,97 @@ namespace Test
             return true;
         }
 
-        public bool Visit(AstAssignStatement node)
+        override public bool Visit(AstAssignStatement node)
         {
             ErrorIfIsNull(node.NewValue);
             ErrorIfIsNull(node.Variable);
             return true;
         }
         
-        public bool Visit(AstBoolValueExpression node)
+        override public bool Visit(AstBoolValueExpression node)
         {
             ErrorIfIsNull(node.Value);
             return true;
         }
 
-        public bool Visit(AstIntegerValueExpression node)
+        override public bool Visit(AstIntegerValueExpression node)
         {
             ErrorIfIsNull(node.Value);
             return true;
         }
 
-        public bool Visit(AstIdExpression node)
+        override public bool Visit(AstIdExpression node)
         {
             ErrorIfIsNull(node.Id);
             return true;
         }
 
-        public bool Visit(AstArgumentsCallList node)
+        override public bool Visit(AstArgumentsCallList node)
         {
             ErrorIfIsNull(node.Arguments);
             return true;
         }
 
-        public bool Visit(AstCallArgument node)
+        override public bool Visit(AstCallArgument node)
         {
             ErrorIfIsNull(node.Expr);
             return true;
         }
 
-        public bool Visit(AstCompareOperation node)
+        override public bool Visit(AstCompareOperation node)
         {
             ErrorIfIsNull(node.Value);
             return true;
         }
 
-        public bool Visit(AstMulExpression node)
+        override public bool Visit(AstMulExpression node)
         {
             ErrorIfIsNull(node.Left);
             ErrorIfIsNull(node.Right);
             return true;
         }
 
-        public bool Visit(AstDivExpression node)
+        override public bool Visit(AstDivExpression node)
         {
             ErrorIfIsNull(node.Left);
             ErrorIfIsNull(node.Right);
             return true;
         }
 
-        public bool Visit(AstModExpression node)
+        override public bool Visit(AstModExpression node)
         {
             ErrorIfIsNull(node.Left);
             ErrorIfIsNull(node.Right);
             return true;
         }
 
-        public bool Visit(AstAddExpression node)
+        override public bool Visit(AstAddExpression node)
         {
             ErrorIfIsNull(node.Left);
             ErrorIfIsNull(node.Right);
             return true;
         }
 
-        public bool Visit(AstSubExpression node)
+        override public bool Visit(AstSubExpression node)
         {
             ErrorIfIsNull(node.Left);
             ErrorIfIsNull(node.Right);
             return true;
         }
 
-        public bool Visit(AstNegateUnaryExpr node)
+        override public bool Visit(AstNegateUnaryExpr node)
         {
             ErrorIfIsNull(node.SimpleTerm);
             return true;
         }
 
-        public bool Visit(AstSimpleUnaryExpr node)
+        override public bool Visit(AstSimpleUnaryExpr node)
         {
             ErrorIfIsNull(node.SimpleTerm);
             return true;
         }
 
-        public bool Visit(AstSimpleTermExpr node)
+        override public bool Visit(AstSimpleTermExpr node)
         {
             ErrorIfIsNull(node.Expr);
             return true;

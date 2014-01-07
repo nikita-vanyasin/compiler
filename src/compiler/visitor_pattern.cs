@@ -1,159 +1,159 @@
-public bool Visit(AstProgram node)
+override public bool Visit(AstProgram node)
 {
 	
 }
 
-public bool Visit(AstClass node)
+override public bool Visit(AstClass node)
 {
 	
 }
 
-public bool Visit(AstClassBody node)
+override public bool Visit(AstClassBody node)
 {
 	
 }
 
-public bool Visit(AstVisibilityModifier node)
+override public bool Visit(AstVisibilityModifier node)
 {
 	
 }
 
-public bool Visit(AstStaticModifier node)
+override public bool Visit(AstStaticModifier node)
 {
 	
 }
 
-public bool Visit(AstClassField node)
+override public bool Visit(AstClassField node)
 {
 	
 }
 
-public bool Visit(AstClassMethod node)
+override public bool Visit(AstClassMethod node)
 {
 	
 }
 
-public bool Visit(AstArgumentsDefList node)
+override public bool Visit(AstArgumentsDefList node)
 {
 	
 }
 
-public bool Visit(AstArgumentDef node)
+override public bool Visit(AstArgumentDef node)
 {
 	
 }
 
-public bool Visit(AstStatementsBlock node)
+override public bool Visit(AstStatementsBlock node)
 {
 	
 }
 
-public bool Visit(AstStatementsList node)
+override public bool Visit(AstStatementsList node)
 {
 	
 }
 
-public bool Visit(AstThisMethodCallExpression node)
+override public bool Visit(AstThisMethodCallExpression node)
 {
 	
 }
 
-public bool Visit(AstThisMethodCallStatement node)
+override public bool Visit(AstThisMethodCallStatement node)
 {
 	
 }
 
-public bool Visit(AstExternalMethodCallExpression node)
+override public bool Visit(AstExternalMethodCallExpression node)
 {
 	
 }
 
-public bool Visit(AstExternalMethodCallStatement node)
+override public bool Visit(AstExternalMethodCallStatement node)
 {
 	
 }
 
-public bool Visit(AstReturnStatement node)
+override public bool Visit(AstReturnStatement node)
 {
 	
 }
 
-public bool Visit(AstIfStatement node)
+override public bool Visit(AstIfStatement node)
 {
 	
 }
 
-public bool Visit(AstAssignStatement node)
+override public bool Visit(AstAssignStatement node)
 {
 	
 }
 
-public bool Visit(AstBoolValueExpression node)
+override public bool Visit(AstBoolValueExpression node)
 {
 	
 }
 
-public bool Visit(AstIntegerValueExpression node)
+override public bool Visit(AstIntegerValueExpression node)
 {
 	
 }
 
-public bool Visit(AstIdExpression node)
+override public bool Visit(AstIdExpression node)
 {
 	
 }
 
-public bool Visit(AstArgumentsCallList node)
+override public bool Visit(AstArgumentsCallList node)
 {
 	
 }
 
-public bool Visit(AstCallArgument node)
+override public bool Visit(AstCallArgument node)
 {
 	
 }
 
-public bool Visit(AstCompareOperation node)
+override public bool Visit(AstCompareOperation node)
 {
 	
 }
 
-public bool Visit(AstMulExpression node)
+override public bool Visit(AstMulExpression node)
 {
 	
 }
 
-public bool Visit(AstDivExpression node)
+override public bool Visit(AstDivExpression node)
 {
 	
 }
 
-public bool Visit(AstModExpression node)
+override public bool Visit(AstModExpression node)
 {
 	
 }
 
-public bool Visit(AstAddExpression node)
+override public bool Visit(AstAddExpression node)
 {
 	
 }
 
-public bool Visit(AstSubExpression node)
+override public bool Visit(AstSubExpression node)
 {
 	
 }
 
-public bool Visit(AstNegateUnaryExpr node)
+override public bool Visit(AstNegateUnaryExpr node)
 {
 	
 }
 
-public bool Visit(AstSimpleUnaryExpr node)
+override public bool Visit(AstSimpleUnaryExpr node)
 {
 	
 }
 
-public bool Visit(AstSimpleTermExpr node)
+override public bool Visit(AstSimpleTermExpr node)
 {
 	
 }
