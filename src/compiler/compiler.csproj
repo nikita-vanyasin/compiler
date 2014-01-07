@@ -70,6 +70,10 @@
     <Compile Include="parser\ParseTable.cs" />
     <Compile Include="parser\ParseTableBuilder.cs" />
     <Compile Include="parser\ProductionInfo.cs" />
+    <Compile Include="symbols\CallableSymbol.cs" />
+    <Compile Include="symbols\Symbol.cs" />
+    <Compile Include="symbols\SymbolTable.cs" />
+    <Compile Include="TypeEvaluator.cs" />
     <Compile Include="utils\ErrorEvent.cs" />
     <Compile Include="utils\ErrorsContainer.cs" />
     <Compile Include="utils\ErrorsEventDispatcher.cs" />
@@ -131,6 +135,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

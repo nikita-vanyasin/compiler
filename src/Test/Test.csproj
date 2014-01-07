@@ -55,6 +55,7 @@
     <Compile Include="BaseScannerTest.cs" />
     <Compile Include="ParserTest.cs" />
     <Compile Include="TestAstValidVisitor.cs" />
+    <Compile Include="CallableSymbolTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\compiler\compiler.csproj">

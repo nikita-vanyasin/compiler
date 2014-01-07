@@ -22,12 +22,19 @@ namespace compiler
 
             Parser parser = new Parser();
             parser.Error += this.OnErrorOccurred;
-
+           
             if (parser.Parse(inputText))
             {
-                LLVMCodeGenerator generator = new LLVMCodeGenerator();
-                generator.ErrorDispatcher.Error += this.OnErrorOccurred;
-                return generator.Generate(parser.GetRootNode(), outStream);
+                TypeEvaluator checker = new TypeEvaluator();
+                checker.ErrorDispatcher.Error += this.OnErrorOccurred;
+
+                if (checker.Evaluate(parser.GetRootNode()))
+                {
+                    LLVMCodeGenerator generator = new LLVMCodeGenerator();
+                    generator.SetSymbolTable(checker.GetSymbolTable());
+                    generator.ErrorDispatcher.Error += this.OnErrorOccurred;
+                    return generator.Generate(parser.GetRootNode(), outStream);
+                }
             }
 
             return false;
