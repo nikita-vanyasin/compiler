@@ -27,7 +27,6 @@ namespace compiler
             {
                 LLVMCodeGenerator generator = new LLVMCodeGenerator();
                 generator.ErrorDispatcher.Error += this.OnErrorOccurred;
-
                 return generator.Generate(parser.GetRootNode(), outStream);
             }
 

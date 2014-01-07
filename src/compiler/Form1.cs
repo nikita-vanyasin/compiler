@@ -23,7 +23,7 @@ namespace compiler
             logListBox.Items.Clear();
 
             var text = File.ReadAllText(filePath);
-            var outStream = new FileStream("result.1", FileMode.OpenOrCreate);
+            var outStream = new FileStream("result.s", FileMode.OpenOrCreate);
 
             var compiler = new Compiler();
             if (!compiler.Compile(text, outStream))
@@ -34,7 +34,7 @@ namespace compiler
             else
             {
                 logListBox.Items.Add("Compiled successfully!");
-            }
+            }            
             outStream.Close();
         }
 
