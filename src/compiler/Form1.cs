@@ -35,6 +35,7 @@ namespace compiler
             {
                 logListBox.Items.Add("Compiled successfully!");
             }
+            outStream.Close();
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
