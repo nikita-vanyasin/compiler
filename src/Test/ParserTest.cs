@@ -43,10 +43,6 @@ class Program:
 ";
             var res = p.Parse(text);
             Assert.IsFalse(res);
-
-            var testVisitor = new TestAstValidVisitor();
-            res = testVisitor.TestTree(p.GetRootNode());
-            Assert.IsFalse(res);
         }
 
         [TestMethod]
@@ -112,10 +108,6 @@ class Program:
 
 ";
             var res = p.Parse(text);
-            Assert.IsFalse(res);
-
-            var testVisitor = new TestAstValidVisitor();
-            res = testVisitor.TestTree(p.GetRootNode());
             Assert.IsFalse(res);
         }
 

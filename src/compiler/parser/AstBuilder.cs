@@ -420,7 +420,7 @@ namespace compiler
         {
             var expr = nodes.Pop() as AstExpression;
             var simpleTerm = new AstSimpleTermExpr(expr);
-            nodes.Push(expr);
+            nodes.Push(simpleTerm);
         }
 
         // #ADD_EXPRESSION #EXPRESSION PLUS #TERM
