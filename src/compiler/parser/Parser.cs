@@ -53,7 +53,7 @@ namespace compiler
                 }
 
                 ParseAction action = table.GetAction(s, a.Type);
-
+                astBuilder.SetSoursePosition(scanner.GetSourcePosition());
                 if (action.Kind == ParseActionKind.SHIFT)
                 {
                     stack.Push(action.Number);

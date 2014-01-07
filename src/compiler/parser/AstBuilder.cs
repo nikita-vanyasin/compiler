@@ -11,12 +11,18 @@ namespace compiler
     {
         private AstProgram rootNode;
         private Stack<AstNode> nodes;
+        private SourcePosition tokenCurrPosition = null;
 
         // http://en.wikipedia.org/wiki/Shunting-yard_algorithm
         public AstBuilder()
         {
             rootNode = null;
             nodes = new Stack<AstNode>();
+        }
+
+        public void SetSoursePosition(SourcePosition position)
+        {
+            tokenCurrPosition = position;
         }
 
         public AstProgram GetRootNode()
@@ -43,13 +49,21 @@ namespace compiler
         public void AddAstIdNode(Token t)
         {
             var node = new AstIdExpression(t.Attribute);
-            nodes.Push(node);
+            PushNode(node);
+            //nodes.Push(node);
         }
 
         public void AddAstIntegerValueNode(Token t)
         {
             var node = new AstIntegerValueExpression(t.Attribute);
             nodes.Push(node);
+        }
+
+        private void PushNode(AstNode node)
+        {
+            node.SetTextPosition(tokenCurrPosition);
+            nodes.Push(node);
+            tokenCurrPosition = null;
         }
 
         // #PS_PROGRAM #CLASS_DEF EOF
@@ -72,7 +86,7 @@ namespace compiler
             var id = nodes.Pop() as AstIdExpression;
 
             var klass = new AstClass(id, classBody);
-            nodes.Push(klass);
+            PushNode(klass);
         }
 
         // #CLASS_BODY BLOCK_START #CLASS_DECLARATIONS BLOCK_END
@@ -97,7 +111,7 @@ namespace compiler
             }
 
             var classBody = new AstClassBody(fieldsList, methodsList);
-            nodes.Push(classBody);
+            PushNode(classBody);
         }
 
         // #CLASS_DECLARATIONS #FIELD_DECLARATION #CLASS_DECLARATIONS
@@ -124,56 +138,56 @@ namespace compiler
             var visibilityModifier = nodes.Pop() as AstVisibilityModifier;
             
             var fieldDeclaration = new AstClassField(visibilityModifier, staticModifier, typeDef, name);
-            nodes.Push(fieldDeclaration);
+            PushNode(fieldDeclaration);
         }
 
         // #VISIBILITY_MODIFIER PUBLIC
         private void ConstructPublicVisibilityModifier()
         {
             var mod = new AstVisibilityModifier(VisibilityModifier.PUBLIC);
-            nodes.Push(mod);
+            PushNode(mod);
         }
 
         // #VISIBILITY_MODIFIER PRIVATE
         private void ConstructPrivateVisibilityModifier()
         {
             var mod = new AstVisibilityModifier(VisibilityModifier.PRIVATE);
-            nodes.Push(mod);
+            PushNode(mod);
         }
 
         // #STATIC_MODIFIER STATIC
         private void ConstructStaticModifier()
         {
             var mod = new AstStaticModifier(StaticModifier.STATIC);
-            nodes.Push(mod);
+            PushNode(mod);
         }
 
         // #STATIC_MODIFIER
         private void ConstructEmptyStaticModifier()
         {
             var mod = new AstStaticModifier(StaticModifier.INSTANCE);
-            nodes.Push(mod);
+            PushNode(mod);
         }
 
         // #TYPE_DEFINITION BOOL
         private void ConstructBoolTypeDefinition()
         {
             var typeDef = new AstIdExpression("bool");
-            nodes.Push(typeDef);
+            PushNode(typeDef);
         }
 
         // #TYPE_DEFINITION CHAR
         private void ConstructCharTypeDefinition()
         {
             var typeDef = new AstIdExpression("char");
-            nodes.Push(typeDef);
+            PushNode(typeDef);
         }
 
         // #TYPE_DEFINITION INT
         private void ConstructIntTypeDefinition()
         {
             var typeDef = new AstIdExpression("int");
-            nodes.Push(typeDef);
+            PushNode(typeDef);
         }
         
         // #METHOD_DECLARATION #METHOD_HEADER BLOCK_START #STATEMENTS_BLOCK BLOCK_END
@@ -195,7 +209,7 @@ namespace compiler
                 argumentsDefList,
                 statementsBlock
             );
-            nodes.Push(method);
+            PushNode(method);
         }
 
         // #METHOD_HEADER #VISIBILITY_MODIFIER #STATIC_MODIFIER #TYPE_DEFINITION ID #METHOD_ARGS
@@ -216,14 +230,14 @@ namespace compiler
             }
 
             var argsDefList = new AstArgumentsDefList(argumentsDefList);
-            nodes.Push(argsDefList);
+            PushNode(argsDefList);
         }
 
         // #METHOD_ARGS LEFT_PAREN RIGHT_PAREN
         private void ConstructEmptyMethodArgs()
         {
             var argsDefList = new AstArgumentsDefList(new List<AstArgumentDef>());
-            nodes.Push(argsDefList);
+            PushNode(argsDefList);
         }
 
         // #ARGUMENTS_DEFINITION #ARGUMENT_DEFINITION
@@ -244,7 +258,7 @@ namespace compiler
             var typeDef = nodes.Pop() as AstIdExpression;
             var argDef = new AstArgumentDef(typeDef, argName);
 
-            nodes.Push(argDef);
+            PushNode(argDef);
         }
 
         // #STATEMENTS_BLOCK #STATEMENTS
@@ -253,7 +267,7 @@ namespace compiler
             var astStatementsList = nodes.Pop() as AstStatementsList;
 
             var block = new AstStatementsBlock(astStatementsList);
-            nodes.Push(block);
+            PushNode(block);
         }
 
         // #STATEMENTS_BLOCK PASS LINE_END
@@ -262,7 +276,7 @@ namespace compiler
             var statementsList = new List<AstStatement>();
             var astStatementsList = new AstStatementsList(statementsList);
             var block = new AstStatementsBlock(astStatementsList);
-            nodes.Push(block);
+            PushNode(block);
         }
 
         // #STATEMENTS #STATEMENT #STATEMENTS_S
@@ -272,7 +286,7 @@ namespace compiler
             var oneMore = nodes.Pop() as AstStatement;
 
             list.Statements.Insert(0, oneMore);
-            nodes.Push(list);
+            PushNode(list);
         }
 
         // #STATEMENTS_S #STATEMENTS
@@ -283,7 +297,7 @@ namespace compiler
         // #STATEMENTS_S
         private void ConstructStatementsEmptyS()
         {
-            nodes.Push(new AstStatementsList(new List<AstStatement>()));
+            PushNode(new AstStatementsList(new List<AstStatement>()));
         }
 
         // #STATEMENT ////////////////
@@ -298,12 +312,12 @@ namespace compiler
             if (funcCallExpr is AstThisMethodCallExpression)
             {
                 var stmt = new AstThisMethodCallStatement(funcCallExpr as AstThisMethodCallExpression);
-                nodes.Push(stmt);
+                PushNode(stmt);
             }
             else if (funcCallExpr is AstExternalMethodCallExpression)
             {
                 var stmt = new AstExternalMethodCallStatement(funcCallExpr as AstExternalMethodCallExpression);
-                nodes.Push(stmt);
+                PushNode(stmt);
             }
             else
             {
@@ -316,7 +330,7 @@ namespace compiler
         {
             var expr = nodes.Pop() as AstExpression;
             var returnStmt = new AstReturnStatement(expr);
-            nodes.Push(returnStmt);
+            PushNode(returnStmt);
         }
 
         // #ASSIGN_STATEMENT ID ASSIGNMENT #EXPRESSION
@@ -325,7 +339,7 @@ namespace compiler
             var expr = nodes.Pop() as AstExpression;
             var variable = nodes.Pop() as AstIdExpression;
             var assignStmt = new AstAssignStatement(variable, expr);
-            nodes.Push(assignStmt);
+            PushNode(assignStmt);
         }
 
         // #IF_STATEMENT #IF_THEN_STATEMENT
@@ -345,7 +359,7 @@ namespace compiler
                 elseBlock
             );
 
-            nodes.Push(thenElseStmt);
+            PushNode(thenElseStmt);
         }
 
         // #IF_THEN_STATEMENT IF LEFT_PAREN #OR_TEST RIGHT_PAREN BLOCK_START #STATEMENTS_BLOCK BLOCK_END
@@ -356,7 +370,7 @@ namespace compiler
 
             var elseBlock = new AstStatementsBlock(new AstStatementsList(new List<AstStatement>()));
             var ifThenStmt = new AstIfStatement(orTest, thenBlock, elseBlock);
-            nodes.Push(ifThenStmt);
+            PushNode(ifThenStmt);
         }
 
         // #EXPRESSION (#TERM|#ADD_EXPRESSION|#SUB_EXPRESSION)
@@ -377,7 +391,7 @@ namespace compiler
             var left = nodes.Pop() as AstUnaryExpr;
 
             var mulExpr = new AstMulExpression(left, right);
-            nodes.Push(mulExpr);
+            PushNode(mulExpr);
         }
 
         // #DIV_EXPRESSION #UNARY_EXPRESSION DIV #TERM
@@ -387,7 +401,7 @@ namespace compiler
             var left = nodes.Pop() as AstUnaryExpr;
 
             var mulExpr = new AstDivExpression(left, right);
-            nodes.Push(mulExpr);
+            PushNode(mulExpr);
         }
 
         // #MOD_EXPRESSION #UNARY_EXPRESSION MOD #TERM
@@ -397,7 +411,7 @@ namespace compiler
             var left = nodes.Pop() as AstUnaryExpr;
 
             var mulExpr = new AstModExpression(left, right);
-            nodes.Push(mulExpr);
+            PushNode(mulExpr);
         }
 
         // #UNARY_EXPRESSION MINUS #SIMPLE_TERM
@@ -405,7 +419,7 @@ namespace compiler
         {
             var simpleTerm = nodes.Pop() as AstSimpleTermExpr;
             var unExpr = new AstNegateUnaryExpr(simpleTerm);
-            nodes.Push(unExpr);
+            PushNode(unExpr);
         }
 
         // #UNARY_EXPRESSION #SIMPLE_TERM
@@ -413,14 +427,14 @@ namespace compiler
         {
             var simpleTerm = nodes.Pop() as AstSimpleTermExpr;
             var unExpr = new AstSimpleUnaryExpr(simpleTerm);
-            nodes.Push(unExpr);
+            PushNode(unExpr);
         }
 
         private void ConstructSimpleTerm()
         {
             var expr = nodes.Pop() as AstExpression;
             var simpleTerm = new AstSimpleTermExpr(expr);
-            nodes.Push(simpleTerm);
+            PushNode(simpleTerm);
         }
 
         // #ADD_EXPRESSION #EXPRESSION PLUS #TERM
@@ -430,7 +444,7 @@ namespace compiler
             var left = nodes.Pop() as AstExpression;
 
             var expr = new AstAddExpression(left, right);
-            nodes.Push(expr);
+            PushNode(expr);
         }
 
         // #SUB_EXPRESSION #EXPRESSION MINUS #TERM
@@ -440,7 +454,7 @@ namespace compiler
             var left = nodes.Pop() as AstExpression;
 
             var expr = new AstSubExpression(left, right);
-            nodes.Push(expr);
+            PushNode(expr);
         }
         
         // #FUNC_CALL #THIS_METHOD_CALL
@@ -461,7 +475,7 @@ namespace compiler
             var name = nodes.Pop() as AstIdExpression;
 
             var thisMethodCall = new AstThisMethodCallExpression(name, callArgs);
-            nodes.Push(thisMethodCall);
+            PushNode(thisMethodCall);
         }
 
         // #EXTERNAL_METHOD_CALL ID DOT ID #CALL_ARGS
@@ -472,7 +486,7 @@ namespace compiler
             var target = nodes.Pop() as AstIdExpression;           
 
             var thisMethodCall = new AstExternalMethodCallExpression(target, name, callArgs);
-            nodes.Push(thisMethodCall);
+            PushNode(thisMethodCall);
         }
 
         // #CALL_ARGS LEFT_PAREN #CALL_ARGS_LIST RIGHT_PAREN
@@ -488,14 +502,14 @@ namespace compiler
             }
 
             var astArgumentsCallList = new AstArgumentsCallList(callArgs);
-            nodes.Push(astArgumentsCallList);
+            PushNode(astArgumentsCallList);
         }
 
         // #CALL_ARGS LEFT_PAREN RIGHT_PAREN
         private void ConstructEmptyCallArgs()
         {
             var astArgumentsCallList = new AstArgumentsCallList(new List<AstCallArgument>());
-            nodes.Push(astArgumentsCallList);
+            PushNode(astArgumentsCallList);
         }
 
         // #CALL_ARGS_LIST #EXPRESSION
@@ -503,7 +517,7 @@ namespace compiler
         {
             var expr = nodes.Pop() as AstExpression;
             var callArg = new AstCallArgument(expr);
-            nodes.Push(callArg);
+            PushNode(callArg);
         }
 
         // #CALL_ARGS_LIST #EXPRESSION COMMA #CALL_ARGS_LIST
@@ -512,22 +526,22 @@ namespace compiler
             var some = nodes.Pop();
             var expr = nodes.Pop() as AstExpression;
             var callArg = new AstCallArgument(expr);
-            nodes.Push(callArg);
-            nodes.Push(some);
+            PushNode(callArg);
+            PushNode(some);
         }
 
         // #BOOL_VALUE TRUE
         private void ConstructBoolTrueValue()
         {
             var boolVal = new AstBoolValueExpression(BoolValue.TRUE);
-            nodes.Push(boolVal);
+            PushNode(boolVal);
         }
 
         // #BOOL_VALUE FALSE
         private void ConstructBoolFalseValue()
         {
             var boolVal = new AstBoolValueExpression(BoolValue.FALSE);
-            nodes.Push(boolVal);
+            PushNode(boolVal);
         }
 
         // #OR_TEST #AND_TEST
@@ -542,7 +556,7 @@ namespace compiler
             var right = nodes.Pop() as AstExpression;
             var left = nodes.Pop() as AstExpression;
             var orExpr = new AstOrExpression(left, right);
-            nodes.Push(orExpr);
+            PushNode(orExpr);
         }
 
         // #AND_TEST #NOT_TEST
@@ -557,7 +571,7 @@ namespace compiler
             var right = nodes.Pop() as AstExpression;
             var left = nodes.Pop() as AstExpression;
             var andExpr = new AstAndExpression(left, right);
-            nodes.Push(andExpr);
+            PushNode(andExpr);
         }
 
         // #NOT_TEST NOT #NOT_TEST
@@ -565,7 +579,7 @@ namespace compiler
         {
             var expr = nodes.Pop() as AstExpression;
             var notExpr = new AstNotExpression(expr);
-            nodes.Push(notExpr);
+            PushNode(notExpr);
         }
 
         // #NOT_TEST #EXPRESSION
