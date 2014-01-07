@@ -22,7 +22,7 @@ namespace compiler
         {
             logListBox.Items.Clear();
 
-            var text = File.ReadAllText(filePath);
+            var text = File.ReadAllText(filePath) + "\n";
             var outStream = new FileStream("result.s", FileMode.OpenOrCreate);
 
             var compiler = new Compiler();

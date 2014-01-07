@@ -17,7 +17,7 @@ namespace compiler
         public void SetText(string text)
         {
             Reset();
-            this.text = text;
+            this.text = text; ;
         }
 
         public Token GetNextToken()

@@ -156,7 +156,6 @@ namespace compiler
             }
 
             EnterBlock();
-
             try
             {
                 ReadIndents();

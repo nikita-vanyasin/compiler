@@ -170,7 +170,8 @@ class Program:
                 if (false && !true && true):
                     if(!true && true || false ):
                         if(!true && Console.ReadBool() || false):
-                            return c";
+                            return c
+";
             var res = p.Parse(text);
             Assert.IsTrue(res);
 
