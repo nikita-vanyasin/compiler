@@ -78,6 +78,13 @@ namespace compiler
         {
             Value = value;
         }
+
+        public override void Accept(AstNodeVisitor visitor)
+        {
+            if (visitor.Visit(this))
+            {
+            }
+        }
     }
 
     public class AstStaticModifier : AstNode
@@ -87,6 +94,13 @@ namespace compiler
         public AstStaticModifier(StaticModifier value)
         {
             Value = value;
+        }
+
+        public override void Accept(AstNodeVisitor visitor)
+        {
+            if (visitor.Visit(this))
+            {
+            }
         }
     }
 
@@ -113,7 +127,12 @@ namespace compiler
         public override void Accept(AstNodeVisitor visitor)
         {
             if (visitor.Visit(this))
-            { }
+            {
+                Visibility.Accept(visitor);
+                Static.Accept(visitor);
+                TypeDef.Accept(visitor);
+                Name.Accept(visitor);
+            }
         }
     }
 
@@ -147,6 +166,10 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
+                Visibility.Accept(visitor);
+                Static.Accept(visitor);
+                TypeDef.Accept(visitor);
+                Name.Accept(visitor);
                 ArgumentsDefinition.Accept(visitor);
                 StatementsBlock.Accept(visitor);
             }
@@ -165,7 +188,12 @@ namespace compiler
         public override void Accept(AstNodeVisitor visitor)
         {
             if (visitor.Visit(this))
-            { }
+            {
+                foreach (var argument in ArgumentsDefinition)
+                {
+                    argument.Accept(visitor);
+                }
+            }
         }
     }
 
@@ -178,6 +206,15 @@ namespace compiler
         {
             TypeDef = typeDef;
             Name = name;
+        }
+
+        public override void Accept(AstNodeVisitor visitor)
+        {
+            if (visitor.Visit(this))
+            {
+                TypeDef.Accept(visitor);
+                Name.Accept(visitor);
+            }
         }
     }
 
@@ -194,6 +231,7 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
+                Statements.Accept(visitor);
             }
         }
     }
@@ -238,6 +276,15 @@ namespace compiler
             Name = name;
             CallArgs = callArgs;
         }
+
+        public override void Accept(AstNodeVisitor visitor)
+        {
+            if (visitor.Visit(this))
+            {
+                Name.Accept(visitor);
+                CallArgs.Accept(visitor);
+            }
+        }
     }
 
     public class AstThisMethodCallStatement : AstStatement
@@ -247,6 +294,14 @@ namespace compiler
         public AstThisMethodCallStatement(AstThisMethodCallExpression expr)
         {
             Expr = expr;
+        }
+
+        public override void Accept(AstNodeVisitor visitor)
+        {
+            if (visitor.Visit(this))
+            {
+                Expr.Accept(visitor);
+            }
         }
     }
 
@@ -262,6 +317,16 @@ namespace compiler
             Name = name;
             CallArgs = callArgs;
         }
+
+        public override void Accept(AstNodeVisitor visitor)
+        {
+            if (visitor.Visit(this))
+            {
+                Target.Accept(visitor);
+                Name.Accept(visitor);
+                CallArgs.Accept(visitor);
+            }
+        }
     }
 
     public class AstExternalMethodCallStatement : AstStatement
@@ -271,6 +336,14 @@ namespace compiler
         public AstExternalMethodCallStatement(AstExternalMethodCallExpression expr)
         {
             Expr = expr;
+        }
+
+        public override void Accept(AstNodeVisitor visitor)
+        {
+            if (visitor.Visit(this))
+            {
+                Expr.Accept(visitor);
+            }
         }
     }
 
@@ -287,7 +360,7 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
-               // Expression.Accept(visitor);
+                Expression.Accept(visitor);
             }
         }
     }
@@ -304,6 +377,16 @@ namespace compiler
             ThenBlock = thenBlock;
             ElseBlock = elseBlock;
         }
+
+        public override void Accept(AstNodeVisitor visitor)
+        {
+            if (visitor.Visit(this))
+            {
+                Condition.Accept(visitor);
+                ThenBlock.Accept(visitor);
+                ElseBlock.Accept(visitor);
+            }
+        }
     }
 
     public class AstAssignStatement : AstStatement
@@ -316,6 +399,15 @@ namespace compiler
             Variable = var;
             NewValue = newValue;
         }
+
+        public override void Accept(AstNodeVisitor visitor)
+        {
+            if (visitor.Visit(this))
+            {
+                Variable.Accept(visitor);
+                NewValue.Accept(visitor);
+            }
+        }
     }
     
     public class AstBoolValueExpression : AstExpression
@@ -325,6 +417,13 @@ namespace compiler
         public AstBoolValueExpression(BoolValue val)
         {
             Value = val;
+        }
+
+        public override void Accept(AstNodeVisitor visitor)
+        {
+            if (visitor.Visit(this))
+            {
+            }
         }
     }
 
@@ -336,6 +435,13 @@ namespace compiler
         {
             Value = val;
         }
+
+        public override void Accept(AstNodeVisitor visitor)
+        {
+            if (visitor.Visit(this))
+            {
+            }
+        }
     }
 
     public class AstIdExpression : AstExpression
@@ -345,6 +451,13 @@ namespace compiler
         public AstIdExpression(string id)
         {
             Id = id;
+        }
+
+        public override void Accept(AstNodeVisitor visitor)
+        {
+            if (visitor.Visit(this))
+            {
+            }
         }
     }
 
@@ -356,6 +469,17 @@ namespace compiler
         {
             Arguments = list;
         }
+
+        public override void Accept(AstNodeVisitor visitor)
+        {
+            if (visitor.Visit(this))
+            {
+                foreach (var argument in Arguments)
+                {
+                    argument.Accept(visitor);
+                }
+            }
+        }
     }
 
     public class AstCallArgument : AstExpression
@@ -366,6 +490,14 @@ namespace compiler
         {
             Expr = expr;
         }
+
+        public override void Accept(AstNodeVisitor visitor)
+        {
+            if (visitor.Visit(this))
+            {
+                Expr.Accept(visitor);
+            }
+        }
     }
 
     public class AstCompareOperation : AstExpression
@@ -375,6 +507,13 @@ namespace compiler
         public AstCompareOperation(CompareOp val)
         {
             Value = val;
+        }
+
+        public override void Accept(AstNodeVisitor visitor)
+        {
+            if (visitor.Visit(this))
+            {
+            }
         }
     }
 
@@ -388,6 +527,15 @@ namespace compiler
             Left = left;
             Right = right;
         }
+
+        public override void Accept(AstNodeVisitor visitor)
+        {
+            if (visitor.Visit(this))
+            {
+                Left.Accept(visitor);
+                Right.Accept(visitor);
+            }
+        }
     }
 
     public class AstDivExpression : AstExpression
@@ -399,6 +547,15 @@ namespace compiler
         {
             Left = left;
             Right = right;
+        }
+
+        public override void Accept(AstNodeVisitor visitor)
+        {
+            if (visitor.Visit(this))
+            {
+                Left.Accept(visitor);
+                Right.Accept(visitor);
+            }
         }
     }
 
@@ -412,6 +569,15 @@ namespace compiler
             Left = left;
             Right = right;
         }
+
+        public override void Accept(AstNodeVisitor visitor)
+        {
+            if (visitor.Visit(this))
+            {
+                Left.Accept(visitor);
+                Right.Accept(visitor);
+            }
+        }
     }
 
     public class AstAddExpression : AstExpression
@@ -424,6 +590,15 @@ namespace compiler
             Left = left;
             Right = right;
         }
+
+        public override void Accept(AstNodeVisitor visitor)
+        {
+            if (visitor.Visit(this))
+            {
+                Left.Accept(visitor);
+                Right.Accept(visitor);
+            }
+        }
     }
 
     public class AstSubExpression : AstExpression
@@ -435,6 +610,15 @@ namespace compiler
         {
             Left = left;
             Right = right;
+        }
+
+        public override void Accept(AstNodeVisitor visitor)
+        {
+            if (visitor.Visit(this))
+            {
+                Left.Accept(visitor);
+                Right.Accept(visitor);
+            }
         }
     }
 
@@ -449,6 +633,13 @@ namespace compiler
         {
             SimpleTerm = expr;
         }
+
+        public override void Accept(AstNodeVisitor visitor)
+        {
+            if (visitor.Visit(this))
+            {
+            }
+        }
     }
 
     public class AstSimpleUnaryExpr : AstUnaryExpr
@@ -456,6 +647,13 @@ namespace compiler
         public AstSimpleUnaryExpr(AstSimpleTermExpr expr)
         {
             SimpleTerm = expr;
+        }
+
+        public override void Accept(AstNodeVisitor visitor)
+        {
+            if (visitor.Visit(this))
+            {
+            }
         }
 
     }
@@ -467,6 +665,14 @@ namespace compiler
         public AstSimpleTermExpr(AstExpression expr)
         {
             Expr = expr;
+        }
+
+        public override void Accept(AstNodeVisitor visitor)
+        {
+            if (visitor.Visit(this))
+            {
+                Expr.Accept(visitor);
+            }
         }
     }
 }
