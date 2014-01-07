@@ -91,6 +91,7 @@ namespace compiler
                 case '\n': return NewLineBranch();
                 case '\r': return CarriageReturnBranch();
                 case '&': return AmpersandSwitchBranch();
+                case '|': return PipeSwitchBranch();
 
                 default: return DefaultSwitchBranch();
             }
@@ -120,6 +121,17 @@ namespace compiler
             {
                 PeekNext();
                 return new Token(TokenType.AND, "&&");
+            }
+
+            return GetErrorToken();
+        }
+
+        private Token PipeSwitchBranch()
+        {
+            if (GetNextChar() == '|')
+            {
+                PeekNext();
+                return new Token(TokenType.OR, "||");
             }
 
             return GetErrorToken();

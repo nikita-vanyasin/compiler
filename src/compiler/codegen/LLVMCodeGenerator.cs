@@ -194,12 +194,7 @@ namespace compiler
         {
             return true;
         }
-
-        override public bool Visit(AstCompareOperation node)
-        {
-            return true;
-        }
-
+        
         override public bool Visit(AstMulExpression node)
         {
             return true;
@@ -236,6 +231,22 @@ namespace compiler
         }
 
         override public bool Visit(AstSimpleTermExpr node)
+        {
+            return true;
+        }
+
+
+        public override bool Visit(AstOrExpression node)
+        {
+            return true;
+        }
+
+        public override bool Visit(AstAndExpression node)
+        {
+            return true;
+        }
+
+        public override bool Visit(AstNotExpression node)
         {
             return true;
         }

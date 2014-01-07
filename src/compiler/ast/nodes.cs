@@ -500,23 +500,6 @@ namespace compiler
         }
     }
 
-    public class AstCompareOperation : AstExpression
-    {
-        public CompareOp Value { get; protected set; }
-
-        public AstCompareOperation(CompareOp val)
-        {
-            Value = val;
-        }
-
-        public override void Accept(AstNodeVisitor visitor)
-        {
-            if (visitor.Visit(this))
-            {
-            }
-        }
-    }
-
     public class AstMulExpression : AstExpression
     {
         public AstUnaryExpr Left { get; protected set; }
@@ -675,4 +658,66 @@ namespace compiler
             }
         }
     }
+
+
+    public class AstOrExpression : AstExpression
+    {
+        public AstExpression Left { get; protected set; }
+        public AstExpression Right { get; protected set; }
+
+        public AstOrExpression(AstExpression left, AstExpression right)
+        {
+            Left = left;
+            Right = right;
+        }
+
+        public override void Accept(AstNodeVisitor visitor)
+        {
+            if (visitor.Visit(this))
+            {
+                Left.Accept(visitor);
+                Right.Accept(visitor);
+            }
+        }
+    }
+
+    public class AstAndExpression : AstExpression
+    {
+        public AstExpression Left { get; protected set; }
+        public AstExpression Right { get; protected set; }
+
+        public AstAndExpression(AstExpression left, AstExpression right)
+        {
+            Left = left;
+            Right = right;
+        }
+
+        public override void Accept(AstNodeVisitor visitor)
+        {
+            if (visitor.Visit(this))
+            {
+                Left.Accept(visitor);
+                Right.Accept(visitor);
+            }
+        }
+    }
+
+    public class AstNotExpression : AstExpression
+    {
+        public AstExpression Expr { get; protected set; }
+
+        public AstNotExpression(AstExpression expr)
+        {
+            Expr = expr;
+        }
+
+        public override void Accept(AstNodeVisitor visitor)
+        {
+            if (visitor.Visit(this))
+            {
+                Expr.Accept(visitor);
+            }
+        }
+    }
+
 }

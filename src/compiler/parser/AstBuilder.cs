@@ -539,7 +539,10 @@ namespace compiler
         // #OR_TEST #AND_TEST OR #OR_TEST
         private void ConstructOrCompoundTest()
         {
-
+            var right = nodes.Pop() as AstExpression;
+            var left = nodes.Pop() as AstExpression;
+            var orExpr = new AstOrExpression(left, right);
+            nodes.Push(orExpr);
         }
 
         // #AND_TEST #NOT_TEST
@@ -551,15 +554,29 @@ namespace compiler
         // #AND_TEST #NOT_TEST AND #AND_TEST
         private void ConstructAndCompoundTest()
         {
-
+            var right = nodes.Pop() as AstExpression;
+            var left = nodes.Pop() as AstExpression;
+            var andExpr = new AstAndExpression(left, right);
+            nodes.Push(andExpr);
         }
 
         // #NOT_TEST NOT #NOT_TEST
         private void ConstructNotTest()
         {
+            var expr = nodes.Pop() as AstExpression;
+            var notExpr = new AstNotExpression(expr);
+            nodes.Push(notExpr);
+        }
+
+        // #NOT_TEST #EXPRESSION
+        private void ConstructNotExpressionTest()
+        {
 
         }
 
+
+
+        /* comparisions temporary disabled. see next iteration tasks.
         // #NOT_TEST #EXPRESSION #COMPARISON_S
         private void ConstructNotCompoundTest()
         {
@@ -605,12 +622,13 @@ namespace compiler
             var op = new AstCompareOperation(CompareOp.GTE);
             nodes.Push(op);
         }
-
+        
         // #COMPARE_OPERATION EQUAL
         private void ConstructCompareOperationEqual()
         {
             var op = new AstCompareOperation(CompareOp.EQUAL);
             nodes.Push(op);
         }
+        */
     }
 }

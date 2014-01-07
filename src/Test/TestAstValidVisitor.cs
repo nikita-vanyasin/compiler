@@ -195,13 +195,7 @@ namespace Test
             ErrorIfIsNull(node.Expr);
             return true;
         }
-
-        override public bool Visit(AstCompareOperation node)
-        {
-            ErrorIfIsNull(node.Value);
-            return true;
-        }
-
+        
         override public bool Visit(AstMulExpression node)
         {
             ErrorIfIsNull(node.Left);
@@ -250,6 +244,26 @@ namespace Test
         }
 
         override public bool Visit(AstSimpleTermExpr node)
+        {
+            ErrorIfIsNull(node.Expr);
+            return true;
+        }
+
+        public override bool Visit(AstOrExpression node)
+        {
+            ErrorIfIsNull(node.Left);
+            ErrorIfIsNull(node.Right);
+            return true;
+        }
+
+        public override bool Visit(AstAndExpression node)
+        {
+            ErrorIfIsNull(node.Left);
+            ErrorIfIsNull(node.Right);
+            return true;
+        }
+
+        public override bool Visit(AstNotExpression node)
         {
             ErrorIfIsNull(node.Expr);
             return true;

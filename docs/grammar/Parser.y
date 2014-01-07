@@ -153,12 +153,18 @@ AND_TEST : NOT_TEST
          ;
 
 NOT_TEST : NOT NOT_TEST
+         | EXPRESSION
+         ;           
+
+/*  temporary disabled
+NOT_TEST : NOT NOT_TEST
          | EXPRESSION COMPARISON_S
          ;
 
 COMPARISON_S : COMPARE_OPERATION EXPRESSION
-             | /* eps */
+             | 
              ;
 
 COMPARE_OPERATION : LT | GT | GTE | LTE | EQUAL
                   ;
+*/

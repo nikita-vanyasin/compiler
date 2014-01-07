@@ -113,12 +113,12 @@ namespace compiler
 
         private void Log(string message)
         {
-        //    Trace.Write(message);
+       //     Trace.Write(message);
         }
 
         private void LogLine(string message = "")
         {
-          //  Trace.WriteLine(message);
+      //      Trace.WriteLine(message);
         }
     }
 }

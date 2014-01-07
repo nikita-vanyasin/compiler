@@ -1,10 +1,10 @@
 
 // ==========================================================================
-//  GPPG error listing for yacc source file <Parser.y - 07.01.2014 12:03:21>
+//  GPPG error listing for yacc source file <Parser.y - 07.01.2014 18:23:33>
 // ==========================================================================
 //  Version:  1.5.0
 //  Machine:  MYCOMPUTER
-//  DateTime: 07.01.2014 12:03:51
+//  DateTime: 07.01.2014 19:17:17
 //  UserName: User
 // ==========================================================================
 
@@ -164,14 +164,19 @@ AND_TEST : NOT_TEST
          ;
 
 NOT_TEST : NOT NOT_TEST
+         | EXPRESSION
+         ;           
+
+/*  temporary disabled
+NOT_TEST : NOT NOT_TEST
          | EXPRESSION COMPARISON_S
          ;
 
 COMPARISON_S : COMPARE_OPERATION EXPRESSION
-             | /* eps */
+             | 
              ;
 
 COMPARE_OPERATION : LT | GT | GTE | LTE | EQUAL
                   ;
-// ==========================================================================
+*/// ==========================================================================
 

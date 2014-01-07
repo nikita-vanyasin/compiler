@@ -107,6 +107,8 @@ class Program:
         return 0  
 
 ";
+
+            // there is no comparision operations support
             var res = p.Parse(text);
             Assert.IsFalse(res);
         }
@@ -146,6 +148,29 @@ class Program:
         i = 1 + a
         return i  
 ";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var testVisitor = new TestAstValidVisitor();
+            res = testVisitor.TestTree(p.GetRootNode());
+            Assert.IsTrue(res);
+        }
+
+        [TestMethod]
+        public void TestConditions()
+        {
+            Parser p = new Parser();
+            var text = @"  
+class Program:   
+    private int a
+    private int i
+    public static int Main():   
+        if (true && false):
+            if (false && !true && true):
+                if (false && !true && true):
+                    if(!true && true || false ):
+                        if(!true && Console.ReadBool() || false):
+                            return c";
             var res = p.Parse(text);
             Assert.IsTrue(res);
 

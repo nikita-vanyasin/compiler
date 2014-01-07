@@ -157,3 +157,18 @@ override public bool Visit(AstSimpleTermExpr node)
 {
 	
 }
+
+        public override bool Visit(AstOrExpression node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override bool Visit(AstAndExpression node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override bool Visit(AstNotExpression node)
+        {
+            throw new NotImplementedException();
+        }

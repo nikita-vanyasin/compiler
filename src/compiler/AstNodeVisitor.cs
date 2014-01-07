@@ -31,7 +31,6 @@ namespace compiler
         abstract public bool Visit(AstIdExpression node);
         abstract public bool Visit(AstArgumentsCallList node);
         abstract public bool Visit(AstCallArgument node);
-        abstract public bool Visit(AstCompareOperation node);
         abstract public bool Visit(AstMulExpression node);
         abstract public bool Visit(AstDivExpression node);
         abstract public bool Visit(AstModExpression node);
@@ -39,6 +38,9 @@ namespace compiler
         abstract public bool Visit(AstSubExpression node);
         abstract public bool Visit(AstNegateUnaryExpr node);
         abstract public bool Visit(AstSimpleUnaryExpr node);
-        abstract public bool Visit(AstSimpleTermExpr node);     
+        abstract public bool Visit(AstSimpleTermExpr node);
+        abstract public bool Visit(AstOrExpression node);
+        abstract public bool Visit(AstAndExpression node);
+        abstract public bool Visit(AstNotExpression node);
     }
 }
