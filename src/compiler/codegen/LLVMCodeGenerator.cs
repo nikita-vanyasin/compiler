@@ -9,24 +9,60 @@ namespace compiler
 {
     class LLVMCodeGenerator : CodeGenerator
     {
+        private uint unnamedVariable = 0;
         private StreamWriter codeStream;
-        private Dictionary<string, string> symbolTable = new Dictionary<string, string>();
+        private string currReturnType = "";
+        private List<string> classVariables = new List<string>();
 
-       /* private string CreateLLVMMOdule(string name)
+
+        private void DefineLocalClassVariables()
         {
+            foreach (var variable in classVariables)
+            {
+                var symbolTableVariable = table.Lookup(variable);
+                codeStream.WriteLine("%" + variable + "= load " + GetLLVMType(symbolTableVariable.Type) + "* @" + variable);
+            }
+        }
 
-        }*/
-
-        private string GetLLVMType(AstIdExpression node)
+        private void CreateLLVMBuiltIn()
         {
-            switch (node.Id)
+            codeStream.WriteLine("declare i32 @puts(i8*)\n");
+        }
+
+        private string CreateUnnamedVariable()
+        {
+            unnamedVariable++;
+            return "%" + unnamedVariable.ToString();
+        }
+
+        private string GetCurrUnnamedVariable()
+        {
+            return "%" + unnamedVariable.ToString();
+        }
+
+        private string GetLLVMType(string type)
+        {
+            switch (type)
             {
                 case "int":
                     return "i32";
                 case "bool":
-                    return "i0";
+                    return "i1";
                 default:
-                    return node.Id;
+                    throw new NotImplementedException();
+            }
+        }
+
+        private string GetDefaultTypeValue(AstIdExpression node)
+        {
+            switch (node.Id)
+            {
+                case "int":
+                    return "0";
+                case "bool":
+                    return "0";
+                default:
+                    throw new NotImplementedException();
             }
         }
 
@@ -59,7 +95,8 @@ namespace compiler
         }
 
         override public bool Visit(AstProgram node)
-        {           
+        {
+            CreateLLVMBuiltIn();
             return true;
         }
 
@@ -87,16 +124,19 @@ namespace compiler
 
         override public bool Visit(AstClassField node)
         {
-           // codeStream.WriteLine("@" + node.Name.Id + " = " + GetLLVMVisibility(node.Visibility) + " global alloca " + GetLLVMType(node.TypeDef));
-            symbolTable.Add(node.Name.Id, "variable");
+            codeStream.WriteLine("@" + node.Name.Id + " = " + GetLLVMVisibility(node.Visibility) + " global " + GetLLVMType(node.TypeDef.Id) + " " + GetDefaultTypeValue(node.TypeDef));
+            classVariables.Add(node.Name.Id);
             return true;
         }
 
         override public bool Visit(AstClassMethod node)
         {
-            codeStream.Write("define " + GetLLVMType(node.TypeDef) + " @" + node.Name.Id.ToLower());
-            symbolTable.Add(node.Name.Id.ToLower(), "method");
-            return true;
+            codeStream.Write("define " + GetLLVMType(node.TypeDef.Id) + " @" + node.Name.Id.ToLower());
+            currReturnType = GetLLVMType(node.TypeDef.Id);
+            node.ArgumentsDefinition.Accept(this);
+            node.StatementsBlock.Accept(this);
+            codeStream.WriteLine("}");
+            return false;
         }
 
         override public bool Visit(AstArgumentsDefList node)
@@ -105,11 +145,11 @@ namespace compiler
             List<string> LLWMArgDefList = new List<string>();
             foreach(var argument in node.ArgumentsDefinition)
             {
-                LLWMArgDefList.Add(GetLLVMType(argument.TypeDef) + " %" + argument.Name.Id);
-              //  symbolTable.Add(argument.Name.Id + , "variable");            
+                LLWMArgDefList.Add(GetLLVMType(argument.TypeDef.Id) + " %" + argument.Name.Id);    
             }
             codeStream.Write(string.Join(",", LLWMArgDefList.ToArray()));
-            codeStream.Write(")");
+            codeStream.Write("){\n");
+            DefineLocalClassVariables();
             return true;
         }
 
@@ -120,11 +160,11 @@ namespace compiler
 
         override public bool Visit(AstStatementsBlock node)
         {
-            codeStream.Write("{\n");
+           /* codeStream.Write("{\n");
             
             node.Statements.Accept(this);
 
-            codeStream.Write("}\n");
+            codeStream.Write("}\n");*/
             return true;
         }
 
@@ -155,8 +195,9 @@ namespace compiler
 
         override public bool Visit(AstReturnStatement node)
         {
-           // codeStream.Write("ret " + node.Expression);
-            return true;
+            node.Expression.Accept(this);
+            codeStream.WriteLine("ret " + currReturnType + " " + GetCurrUnnamedVariable());
+            return false;
         }
 
         override public bool Visit(AstIfStatement node)
@@ -166,7 +207,9 @@ namespace compiler
 
         override public bool Visit(AstAssignStatement node)
         {
-            return true;
+            node.NewValue.Accept(this);
+            codeStream.Write("%" + node.Variable.Id + " = " + GetCurrUnnamedVariable());
+            return false;
         }
 
         override public bool Visit(AstBoolValueExpression node)
@@ -212,7 +255,8 @@ namespace compiler
 
         override public bool Visit(AstAddExpression node)
         {
-            return true;
+            codeStream.Write(CreateUnnamedVariable() + " = add i32 ");
+            return false;
         }
 
         override public bool Visit(AstSubExpression node)

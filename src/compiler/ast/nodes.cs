@@ -247,9 +247,12 @@ namespace compiler
 
         public override void Accept(AstNodeVisitor visitor)
         {
-            foreach (var statement in Statements)
+            if (visitor.Visit(this))
             {
-                statement.Accept(visitor);
+                foreach (var statement in Statements)
+                {
+                    statement.Accept(visitor);
+                }
             }
         }
     }
