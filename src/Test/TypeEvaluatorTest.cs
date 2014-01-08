@@ -317,8 +317,8 @@ class Program:
         temp[5] = temp[0] - 1
         foo(temp[3])
         return a  
-    public static int foo(int a):
-        Console.WriteInt(a)
+    public static int foo(int b):
+        Console.WriteInt(b)
         return 0
 
 ";
@@ -592,6 +592,82 @@ class Program:
             var checker = new TypeEvaluator();
             res = checker.Evaluate(p.GetRootNode());
             Assert.IsFalse(res);
+        }
+
+
+        [TestMethod]
+        public void TestParentScopeRedefinBad()
+        {
+            Parser p = new Parser();
+            var text = @"
+
+class Program:
+    private int a
+    public static int Main():
+        a = 3
+        foo(4)
+        return 0
+    private static int foo(int a):
+        Console.WriteInt(a)
+        return 0
+
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var checker = new TypeEvaluator();
+            res = checker.Evaluate(p.GetRootNode());
+            Assert.IsFalse(res);
+
+        }
+
+        [TestMethod]
+        public void TestSameScopeRedefinBad()
+        {
+            Parser p = new Parser();
+            var text = @"
+
+class Program:
+    private int a
+    private int a
+    public static int Main():
+        a = 3
+
+        return 0
+
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var checker = new TypeEvaluator();
+            res = checker.Evaluate(p.GetRootNode());
+            Assert.IsFalse(res);
+
+        }
+
+        public void TestSameScopeRedefinBadFunc()
+        {
+            Parser p = new Parser();
+            var text = @"
+
+class Program:
+    private int a
+    public static int Main():
+        a = 3
+        return 0
+    private static bool Foo():
+       return false
+    private static int Foo():
+       return 1
+
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var checker = new TypeEvaluator();
+            res = checker.Evaluate(p.GetRootNode());
+            Assert.IsFalse(res);
+
         }
     }
 }

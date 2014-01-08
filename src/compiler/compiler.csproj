@@ -77,6 +77,7 @@
     <Compile Include="parser\ParseTableBuilder.cs" />
     <Compile Include="parser\ProductionInfo.cs" />
     <Compile Include="symbols\CallableSymbol.cs" />
+    <Compile Include="symbols\exceptions.cs" />
     <Compile Include="symbols\Symbol.cs" />
     <Compile Include="symbols\SymbolsScope.cs" />
     <Compile Include="symbols\SymbolTable.cs" />

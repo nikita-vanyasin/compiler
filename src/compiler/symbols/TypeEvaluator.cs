@@ -37,7 +37,21 @@ namespace compiler
             var tableBuilder = new SymbolTableBuilder();
 
             result = true;
-            table = tableBuilder.Build(node);
+            try
+            {
+                table = tableBuilder.Build(node);
+            }
+            catch (CallableSymbolAlreadyDefinedException e)
+            {
+                DispatchError(new SourcePosition(), "Function already defined: " + e.Message);
+                return false;
+            }
+            catch (SymbolAlreadyDefinedException e)
+            {
+                DispatchError(new SourcePosition(), "Variable already defined: " + e.Message);
+                return false;
+            }
+
             table.UseGlobalScope();
             resolver = new TypeResolver(table);
             currFunctionReturnType = null;
@@ -122,6 +136,12 @@ namespace compiler
             {
                 DispatchError(node.TypeDef.TextPosition, "Passing arrays to functions is not implemented in current version.");
                 return false;
+            }
+
+            var s = table.LookupParent(node.Name.Id);
+            if (s != null)
+            {
+                DispatchError(node.Name.TextPosition, "this variable name already used in parent scope. Ambigious variables is forbidden.");
             }
 
             return true;

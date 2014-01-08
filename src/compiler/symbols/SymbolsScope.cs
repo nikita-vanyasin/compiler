@@ -54,12 +54,22 @@ namespace compiler
         
         public void EnterFunction(string target, string name, string type, List<string> callArgTypes)
         {
+            if (table.ContainsKey(name))
+            {
+                throw new CallableSymbolAlreadyDefinedException(name);
+            }
+
             var s = new CallableSymbol(target, name, type, callArgTypes);
             functionsTable[target + name] = s;
         }
 
         public void EnterSymbol(string name, string type = "", int size = -1)
         {
+            if (table.ContainsKey(name))
+            {
+                throw new SymbolAlreadyDefinedException(name);
+            }
+
             Symbol s = new Symbol(name, type, size);
             table[name] = s;
         }

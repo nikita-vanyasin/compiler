@@ -75,5 +75,10 @@ namespace compiler
         {
             return currScope.Lookup(name);
         }
+
+        public Symbol LookupParent(string name)
+        {
+            return currScope.Parent.Lookup(name);
+        }
     }
 }
