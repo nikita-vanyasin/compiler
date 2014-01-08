@@ -9,7 +9,7 @@ namespace compiler
 {
     class LLVMCodeGenerator : CodeGenerator
     {
-        private uint unnamedVariable = 0;
+        private uint unnamedVariable = 1;
         private StreamWriter codeStream;
         private string currReturnType = "";
         private List<string> classVariables = new List<string>();
@@ -32,7 +32,9 @@ namespace compiler
         private string CreateUnnamedVariable()
         {
             unnamedVariable++;
-            return "%" + unnamedVariable.ToString();
+            string returnVal = "%" + unnamedVariable.ToString();
+            
+            return returnVal;
         }
 
         private string GetCurrUnnamedVariable()
@@ -103,7 +105,8 @@ namespace compiler
         override public bool Visit(AstClass node)
         {
            //TODO something
-            return true;
+            node.Body.Accept(this);
+            return false;
         }
 
         override public bool Visit(AstClassBody node)
@@ -114,19 +117,19 @@ namespace compiler
 
         override public bool Visit(AstVisibilityModifier node)
         {
-            return true;
+            return false;
         }
 
         override public bool Visit(AstStaticModifier node)
         {
-            return true;
+            return false;
         }
 
         override public bool Visit(AstClassField node)
         {
             codeStream.WriteLine("@" + node.Name.Id + " = " + GetLLVMVisibility(node.Visibility) + " global " + GetLLVMType(node.TypeDef.Id) + " " + GetDefaultTypeValue(node.TypeDef));
             classVariables.Add(node.Name.Id);
-            return true;
+            return false;
         }
 
         override public bool Visit(AstClassMethod node)
@@ -150,12 +153,12 @@ namespace compiler
             codeStream.Write(string.Join(",", LLWMArgDefList.ToArray()));
             codeStream.Write("){\n");
             DefineLocalClassVariables();
-            return true;
+            return false;
         }
 
         override public bool Visit(AstArgumentDef node)
         {            
-            return true;
+            return false;
         }
 
         override public bool Visit(AstStatementsBlock node)
@@ -196,7 +199,7 @@ namespace compiler
         override public bool Visit(AstReturnStatement node)
         {
             node.Expression.Accept(this);
-            codeStream.WriteLine("ret " + currReturnType + " " + GetCurrUnnamedVariable());
+            codeStream.WriteLine("\nret " + currReturnType + " " + GetCurrUnnamedVariable());
             return false;
         }
 
@@ -208,23 +211,26 @@ namespace compiler
         override public bool Visit(AstAssignStatement node)
         {
             node.NewValue.Accept(this);
-            codeStream.Write("%" + node.Variable.Id + " = " + GetCurrUnnamedVariable());
+            codeStream.WriteLine("\n%" + node.Variable.Id + " = " + GetCurrUnnamedVariable());
             return false;
         }
 
         override public bool Visit(AstBoolValueExpression node)
         {
+           // codeStream.Write(" " + node.Value.ToString());
             return true;
         }
 
         override public bool Visit(AstIntegerValueExpression node)
         {
+            codeStream.WriteLine(CreateUnnamedVariable() + " = " + node.Value);
             return true;
         }
 
         override public bool Visit(AstIdExpression node)
         {
             //symbolTable.Add("id", );
+            codeStream.WriteLine(CreateUnnamedVariable() + " = %" + node.Id);
             return true;
         }
 
@@ -255,7 +261,13 @@ namespace compiler
 
         override public bool Visit(AstAddExpression node)
         {
-            codeStream.Write(CreateUnnamedVariable() + " = add i32 ");
+            node.Left.Accept(this);
+            string addLine = " = add i32 " + GetCurrUnnamedVariable();
+            node.Right.Accept(this);
+            addLine += ", " + GetCurrUnnamedVariable() + "\n";
+            codeStream.Write(CreateUnnamedVariable() + addLine);
+            
+          //  codeStream.Write("\n");
             return false;
         }
 

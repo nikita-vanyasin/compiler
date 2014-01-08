@@ -629,6 +629,7 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
+                SimpleTerm.Accept(visitor);
             }
         }
     }
@@ -644,6 +645,7 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
+                SimpleTerm.Accept(visitor);
             }
         }
 
