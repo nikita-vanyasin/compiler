@@ -500,7 +500,12 @@ namespace compiler
         }
     }
 
-    public class AstMulExpression : AstExpression
+    public abstract class AstMathExpression : AstExpression
+    {
+
+    }
+
+    public class AstMulExpression : AstMathExpression
     {
         public AstUnaryExpr Left { get; protected set; }
         public AstExpression Right { get; protected set; }
@@ -521,7 +526,7 @@ namespace compiler
         }
     }
 
-    public class AstDivExpression : AstExpression
+    public class AstDivExpression : AstMathExpression
     {
         public AstUnaryExpr Left { get; protected set; }
         public AstExpression Right { get; protected set; }
@@ -542,7 +547,7 @@ namespace compiler
         }
     }
 
-    public class AstModExpression : AstExpression
+    public class AstModExpression : AstMathExpression
     {
         public AstUnaryExpr Left { get; protected set; }
         public AstExpression Right { get; protected set; }
@@ -563,7 +568,7 @@ namespace compiler
         }
     }
 
-    public class AstAddExpression : AstExpression
+    public class AstAddExpression : AstMathExpression
     {
         public AstExpression Left { get; protected set; }
         public AstExpression Right { get; protected set; }
@@ -584,7 +589,7 @@ namespace compiler
         }
     }
 
-    public class AstSubExpression : AstExpression
+    public class AstSubExpression : AstMathExpression
     {
         public AstExpression Left { get; protected set; }
         public AstExpression Right { get; protected set; }
@@ -659,8 +664,11 @@ namespace compiler
         }
     }
 
+    public abstract class AstBoolExpression : AstExpression
+    {
+    }
 
-    public class AstOrExpression : AstExpression
+    public class AstOrExpression : AstBoolExpression
     {
         public AstExpression Left { get; protected set; }
         public AstExpression Right { get; protected set; }
@@ -681,7 +689,7 @@ namespace compiler
         }
     }
 
-    public class AstAndExpression : AstExpression
+    public class AstAndExpression : AstBoolExpression
     {
         public AstExpression Left { get; protected set; }
         public AstExpression Right { get; protected set; }
@@ -702,7 +710,7 @@ namespace compiler
         }
     }
 
-    public class AstNotExpression : AstExpression
+    public class AstNotExpression : AstBoolExpression
     {
         public AstExpression Expr { get; protected set; }
 

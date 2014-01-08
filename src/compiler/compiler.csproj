@@ -59,10 +59,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AstNodeVisitor.cs" />
+    <Compile Include="ast\AstNodeVisitor.cs" />
     <Compile Include="ast\AstNode.cs" />
     <Compile Include="ast\enums.cs" />
     <Compile Include="ast\nodes.cs" />
+    <Compile Include="BuiltInTypes.cs" />
     <Compile Include="codegen\CodeGenerator.cs" />
     <Compile Include="Compiler.cs" />
     <Compile Include="parser\AstBuilder.cs" />
@@ -73,7 +74,9 @@
     <Compile Include="symbols\CallableSymbol.cs" />
     <Compile Include="symbols\Symbol.cs" />
     <Compile Include="symbols\SymbolTable.cs" />
-    <Compile Include="TypeEvaluator.cs" />
+    <Compile Include="symbols\SymbolTableBuilder.cs" />
+    <Compile Include="symbols\TypeEvaluator.cs" />
+    <Compile Include="symbols\TypeResolver.cs" />
     <Compile Include="utils\ErrorEvent.cs" />
     <Compile Include="utils\ErrorsContainer.cs" />
     <Compile Include="utils\ErrorsEventDispatcher.cs" />

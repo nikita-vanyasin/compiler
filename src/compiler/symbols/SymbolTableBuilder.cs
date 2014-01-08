@@ -6,36 +6,32 @@ using System.Threading.Tasks;
 
 namespace compiler
 {
-    class TypeEvaluator : AstNodeVisitor
+    public class SymbolTableBuilder : AstNodeVisitor
     {
-        public ErrorsEventDispatcher ErrorDispatcher { get; protected set; }
-
         private SymbolTable table;
-        private bool result;
-
-        public TypeEvaluator()
+        
+        public SymbolTable Build(AstProgram node)
         {
-            ErrorDispatcher = new ErrorsEventDispatcher();
-        }
+            table = new SymbolTable(0);
 
-        protected void DispatchError(SourcePosition position, string description, int code = -1)
-        {
-            result = false;
-            ErrorDispatcher.DispatchError(position, description, code);
-        }
+            AddBuiltInSymbols();
+            node.Accept(this);
 
-        public SymbolTable GetSymbolTable()
-        {
             return table;
         }
 
-        public bool Evaluate(AstProgram node)
+        private void AddBuiltInSymbols()
         {
-            result = true;
-            table = new SymbolTable(0);
-            node.Accept(this);
+            var writeIntList = new List<string>() { 
+                BuiltInTypes.INT
+            };
+            table.EnterFunction("Console", "WriteInt", BuiltInTypes.VOID, writeIntList);
 
-            return result;
+
+            var writeIntBool = new List<string>() { 
+                BuiltInTypes.BOOL
+            };
+            table.EnterFunction("Console", "WriteBool", BuiltInTypes.VOID, writeIntBool);
         }
 
         override public bool Visit(AstProgram node)
@@ -84,7 +80,7 @@ namespace compiler
             }
 
             table.EnterFunction("", node.Name.Id, node.TypeDef.Id, argumentsTypes);
-
+            
             return true;
         }
 
@@ -110,39 +106,6 @@ namespace compiler
 
         override public bool Visit(AstThisMethodCallExpression node)
         {
-            // check method exists
-            // check args count
-            // check arg types
-
-            var funcInfo = table.LookupFunction(node.Name.Id);
-
-            var methodExists = funcInfo != null;
-            if (!methodExists)
-            {
-                DispatchError(node.TextPosition, "Method " + node.Name.Id + " not found in current scope.");
-                return false;
-            }
-
-            var argsCount = funcInfo.ArgumentTypes.Count;
-            var realCount = node.CallArgs.Arguments.Count;
-            if (argsCount != realCount)
-            {
-                DispatchError(node.TextPosition, "Expected " + argsCount + " arguments, got " + realCount);
-                return false;
-            }
-
-            foreach (var argument in node.CallArgs.Arguments)
-            {
-                var typeMatched = true; // argument.Type == funcInfo.ArgumentTypes[i]
-                if (!typeMatched)
-                {
-                    DispatchError(node.TextPosition, "Invalid arguments for method call " + node.Name.Id + "(" + funcInfo.TypesToString() + ")");
-                    return false;
-                }
-            }            
-
-            
-
             return true;
         }
 
@@ -200,7 +163,7 @@ namespace compiler
         {
             return true;
         }
-        
+
         override public bool Visit(AstMulExpression node)
         {
             return true;

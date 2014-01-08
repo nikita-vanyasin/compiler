@@ -20,17 +20,17 @@ namespace compiler
                 return false;
             }
 
-            Parser parser = new Parser();
+            var parser = new Parser();
             parser.Error += this.OnErrorOccurred;
            
             if (parser.Parse(inputText))
             {
-                TypeEvaluator checker = new TypeEvaluator();
+                var checker = new TypeEvaluator();
                 checker.ErrorDispatcher.Error += this.OnErrorOccurred;
 
                 if (checker.Evaluate(parser.GetRootNode()))
                 {
-                    LLVMCodeGenerator generator = new LLVMCodeGenerator();
+                    var generator = new LLVMCodeGenerator();
                     generator.SetSymbolTable(checker.GetSymbolTable());
                     generator.ErrorDispatcher.Error += this.OnErrorOccurred;
                     return generator.Generate(parser.GetRootNode(), outStream);
