@@ -361,6 +361,40 @@ namespace compiler
             PushNode(node);
         }
 
+        // #ASSIGN_STATEMENT ID ASSIGNMENT #ARRAY_INITIALIZER
+        private void ConstructArrayInitializerStatement()
+        {
+            var vals = new List<AstIntegerValueExpression>();
+
+            var curr = nodes.Peek() as AstIntegerValueExpression;
+            while (curr != null)
+            {
+                nodes.Pop();
+                vals.Add(curr);
+                curr = nodes.Peek() as AstIntegerValueExpression;
+            }
+
+            var id = nodes.Pop() as AstIdExpression;
+
+            var node = new AstArrayInitializerStatement(id, vals);
+            PushNode(node);            
+        }
+
+        // #ARRAY_INITIALIZER  LEFT_BRACE #INTEGER_VALUE_LIST RIGHT_BRACE
+        private void ConstructArrayInitializer()
+        {
+        }
+
+        // #INTEGER_VALUE_LIST INTEGER_VALUE
+        private void ConstructIntValList()
+        {
+        }
+
+        // #INTEGER_VALUE_LIST INTEGER_VALUE COMMA #INTEGER_VALUE_LIST
+        private void ConstructIntValListList()
+        {
+        }
+
         // #IF_STATEMENT #IF_THEN_STATEMENT
         private void ConstructIfStatement()
         {

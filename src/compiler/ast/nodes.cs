@@ -870,7 +870,7 @@ namespace compiler
 
     public class AstIdArrayExpression : AstIdExpression
     {
-        public AstExpression Index { get; set; }
+        public AstExpression Index { get; protected set; }
 
         public AstIdArrayExpression(string id, AstExpression index)
             : base(id)
@@ -884,6 +884,40 @@ namespace compiler
             {
                 Index.Accept(visitor);
             }
+        }
+    }
+
+    public class AstArrayInitializerStatement : AstStatement
+    {
+        public AstIdExpression Id { get; protected set; }
+        public List<AstIntegerValueExpression> Values { get; protected set; }
+
+        public AstArrayInitializerStatement(AstIdExpression id, List<AstIntegerValueExpression> values)
+        {
+            Id = id;
+            Values = values;
+        }
+
+        public override void Accept(AstNodeVisitor visitor)
+        {
+            if (visitor.Visit(this))
+            {
+                Id.Accept(visitor);
+                foreach (var val in Values)
+                {
+                    val.Accept(visitor);
+                }
+            }
+        }
+
+        public List<int> GetValuesList()
+        {
+            var result = new List<int>();
+            foreach (var val in Values)
+            {
+                result.Add(Convert.ToInt32(val.Value));
+            }
+            return result;
         }
     }
 }

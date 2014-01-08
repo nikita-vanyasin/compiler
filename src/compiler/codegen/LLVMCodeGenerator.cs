@@ -724,5 +724,10 @@ namespace compiler
             }
             return false;
         }
+
+        public override bool Visit(AstArrayInitializerStatement node)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

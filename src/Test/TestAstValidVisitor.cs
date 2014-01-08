@@ -323,5 +323,12 @@ namespace Test
             ErrorIfIsNull(node.Index);
             return true;
         }
+
+        public override bool Visit(AstArrayInitializerStatement node)
+        {
+            ErrorIfIsNull(node.Id);
+            ErrorIfIsNull(node.Values);
+            return true;
+        }
     }
 }

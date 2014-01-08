@@ -282,5 +282,10 @@ namespace compiler
         {
             return true;
         }
+
+        public override bool Visit(AstArrayInitializerStatement node)
+        {
+            return true;
+        }
     }
 }

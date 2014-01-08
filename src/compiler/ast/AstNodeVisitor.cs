@@ -52,5 +52,6 @@ namespace compiler
         abstract public bool Visit(AstNotEqualComparison node);
 
         abstract public bool Visit(AstIdArrayExpression node);
+        abstract public bool Visit(AstArrayInitializerStatement node);
     }
 }

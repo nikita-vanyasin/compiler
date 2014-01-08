@@ -87,6 +87,8 @@ namespace compiler
                 case '!': return NotSwitchBranch();
                 case '[': return new Token(TokenType.LEFT_BRACKET, currChar);
                 case ']': return new Token(TokenType.RIGHT_BRACKET, currChar);
+                case '{': return new Token(TokenType.LEFT_BRACE, currChar);
+                case '}': return new Token(TokenType.RIGHT_BRACE, currChar);
                 case '<': return LessSwitchBranch();
                 case '>': return GreaterSwitchBranch();
                 case '\n': return NewLineBranch();
