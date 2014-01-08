@@ -101,6 +101,9 @@ namespace compiler
 				pos = scanner.GetSourcePosition();
 			}
 
+			SourceBox.SelectAll();
+			SourceBox.SelectionBackColor = SourceBox.BackColor;
+
 			SourceBox.SelectionStart = oldpos;
 			SourceBox.SelectionLength = 0;
 			StartRedrawingBox(eventMask);
