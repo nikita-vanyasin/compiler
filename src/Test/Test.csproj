@@ -57,6 +57,7 @@
     <Compile Include="TestAstValidVisitor.cs" />
     <Compile Include="CallableSymbolTest.cs" />
     <Compile Include="TypeEvaluatorTest.cs" />
+    <Compile Include="CodePathCheckerTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\compiler\compiler.csproj">

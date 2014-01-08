@@ -247,31 +247,75 @@ namespace compiler
         
         override public bool Visit(AstMulExpression node)
         {
+            var leftType = resolver.Resolve(node.Left);
+            var rightType = resolver.Resolve(node.Right);
+            if (leftType != BuiltInTypes.INT || rightType != BuiltInTypes.INT)
+            {
+                DispatchError(node.TextPosition, "Multiplication operation available only for integer types.");
+                return false;
+            }
+
             return true;
         }
 
         override public bool Visit(AstDivExpression node)
         {
+            var leftType = resolver.Resolve(node.Left);
+            var rightType = resolver.Resolve(node.Right);
+            if (leftType != BuiltInTypes.INT || rightType != BuiltInTypes.INT)
+            {
+                DispatchError(node.TextPosition, "Div operation available only for integer types.");
+                return false;
+            }
+
             return true;
         }
 
         override public bool Visit(AstModExpression node)
         {
+            var leftType = resolver.Resolve(node.Left);
+            var rightType = resolver.Resolve(node.Right);
+            if (leftType != BuiltInTypes.INT || rightType != BuiltInTypes.INT)
+            {
+                DispatchError(node.TextPosition, "Mod operation available only for integer types.");
+                return false;
+            }
             return true;
         }
 
         override public bool Visit(AstAddExpression node)
         {
+            var leftType = resolver.Resolve(node.Left);
+            var rightType = resolver.Resolve(node.Right);
+            if (leftType != BuiltInTypes.INT || rightType != BuiltInTypes.INT)
+            {
+                DispatchError(node.TextPosition, "Add operation available only for integer types.");
+                return false;
+            }
             return true;
         }
 
         override public bool Visit(AstSubExpression node)
         {
+            var leftType = resolver.Resolve(node.Left);
+            var rightType = resolver.Resolve(node.Right);
+            if (leftType != BuiltInTypes.INT || rightType != BuiltInTypes.INT)
+            {
+                DispatchError(node.TextPosition, "Sub operation available only for integer types.");
+                return false;
+            }
             return true;
         }
 
         override public bool Visit(AstNegateUnaryExpr node)
         {
+            var termType = resolver.Resolve(node.SimpleTerm);
+
+            if (termType != BuiltInTypes.INT)
+            {
+                DispatchError(node.TextPosition, "Negate operation available only for integer types.");
+                return false;
+            }
             return true;
         }
 
@@ -287,16 +331,37 @@ namespace compiler
 
         public override bool Visit(AstOrExpression node)
         {
+            var leftType = resolver.Resolve(node.Left);
+            var rightType = resolver.Resolve(node.Right);
+            if (leftType != BuiltInTypes.BOOL || rightType != BuiltInTypes.BOOL)
+            {
+                DispatchError(node.TextPosition, "Boolean operations available only for bool types.");
+                return false;
+            }
+
             return true;
         }
 
         public override bool Visit(AstAndExpression node)
         {
+            var leftType = resolver.Resolve(node.Left);
+            var rightType = resolver.Resolve(node.Right);
+            if (leftType != BuiltInTypes.BOOL || rightType != BuiltInTypes.BOOL)
+            {
+                DispatchError(node.TextPosition, "Boolean operations available only for bool types.");
+                return false;
+            }
             return true;
         }
 
         public override bool Visit(AstNotExpression node)
         {
+            var type = resolver.Resolve(node.Expr);
+            if (type != BuiltInTypes.BOOL)
+            {
+                DispatchError(node.TextPosition, "Boolean operations available only for bool types.");
+                return false;
+            }
             return true;
         }
     }

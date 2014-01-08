@@ -65,6 +65,7 @@
     <Compile Include="ast\nodes.cs" />
     <Compile Include="BuiltInTypes.cs" />
     <Compile Include="codegen\CodeGenerator.cs" />
+    <Compile Include="CodePathChecker.cs" />
     <Compile Include="Compiler.cs" />
     <Compile Include="parser\AstBuilder.cs" />
     <Compile Include="parser\ParseAction.cs" />

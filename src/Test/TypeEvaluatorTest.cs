@@ -97,5 +97,49 @@ class Program:
             res = checker.Evaluate(p.GetRootNode());
             Assert.IsTrue(res);
         }
+
+        [TestMethod]
+        public void TestExprBad()
+        {
+            Parser p = new Parser();
+            var text = @"  
+class Program:   
+    private bool a
+    private int i
+    public static int Main():   
+        a = false
+        i = 1 + a
+        return i  
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var checker = new TypeEvaluator();
+            res = checker.Evaluate(p.GetRootNode());
+            Assert.IsFalse(res);
+        }
+
+        [TestMethod]
+        public void TestConditionsWithInt()
+        {
+            Parser p = new Parser();
+            var text = @"  
+class Program:   
+    private int a
+    private int i
+    public static int Main():   
+        if (true && false):
+            if (false && !true && true):
+                if (false && !true && true):
+                    if(!true && i || false ):
+                        return a
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var checker = new TypeEvaluator();
+            res = checker.Evaluate(p.GetRootNode());
+            Assert.IsFalse(res); 
+        }
     }
 }
