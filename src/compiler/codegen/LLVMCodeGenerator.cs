@@ -13,6 +13,21 @@ namespace compiler
         private StreamWriter codeStream;
         private string currReturnType = "";
         private List<string> classVariables = new List<string>();
+        private Dictionary<string, uint> variableCounter = new Dictionary<string, uint>();
+
+        private string GetCurrVariableState(string variable)
+        {
+            if (variableCounter[variable] == 0)
+            {
+                return variable;
+            }
+            return variable + "." + variableCounter[variable];
+        }
+
+        private void UseVaribaleCatched(string variable)
+        {
+            variableCounter[variable] += 1;
+        }
 
 
         private void DefineLocalClassVariables()
@@ -51,10 +66,12 @@ namespace compiler
         {
             switch (type)
             {
-                case "int":
+                case BuiltInTypes.INT:
                     return "i32";
-                case "bool":
+                case BuiltInTypes.BOOL:
                     return "i1";
+                case BuiltInTypes.VOID:
+                    return "void";
                 default:
                     throw new NotImplementedException();
             }
@@ -64,10 +81,12 @@ namespace compiler
         {
             switch (node.Id)
             {
-                case "int":
+                case BuiltInTypes.INT:
                     return "0";
-                case "bool":
+                case BuiltInTypes.BOOL:
                     return "0";
+                case BuiltInTypes.VOID:
+                    return "";
                 default:
                     throw new NotImplementedException();
             }
@@ -151,10 +170,12 @@ namespace compiler
         override public bool Visit(AstArgumentsDefList node)
         {
             codeStream.Write("(");
+            variableCounter = new Dictionary<string, uint>();
             List<string> LLWMArgDefList = new List<string>();
             foreach(var argument in node.ArgumentsDefinition)
             {
-                LLWMArgDefList.Add(GetLLVMType(argument.TypeDef.Id) + " %" + argument.Name.Id);    
+                LLWMArgDefList.Add(GetLLVMType(argument.TypeDef.Id) + " %" + argument.Name.Id);
+                variableCounter[argument.Name.Id] = 0;
             }
             codeStream.Write(string.Join(",", LLWMArgDefList.ToArray()));
             codeStream.Write("){\n");
@@ -229,7 +250,8 @@ namespace compiler
             else
             {
                 node.NewValue.Accept(this);
-                codeStream.WriteLine("%" + node.Variable.Id + "= add " + GetLLVMType(symbolTableVariable.Type) + " 0, " + GetCurrUnnamedVariable());
+                UseVaribaleCatched(node.Variable.Id);
+                codeStream.WriteLine("%" + GetCurrVariableState(node.Variable.Id) + "= add " + GetLLVMType(symbolTableVariable.Type) + " 0, " + GetCurrUnnamedVariable());
                 
                 return false;
             }
@@ -259,7 +281,7 @@ namespace compiler
             }
             else
             {
-                codeStream.WriteLine(CreateUnnamedVariable() + " = add " + GetLLVMType(symbolTableVariable.Type) + " 0, %" + node.Id);
+                codeStream.WriteLine(CreateUnnamedVariable() + " = add " + GetLLVMType(symbolTableVariable.Type) + " 0, %" + GetCurrVariableState(node.Id));
                 return true;
             }
         }
