@@ -75,7 +75,6 @@ namespace compiler
             switch (currChar)
             {
                 case ' ': return new Token(TokenType.SPACE, currChar);
-                case '=': return new Token(TokenType.ASSIGNMENT, currChar);
                 case ':': return new Token(TokenType.COLON, currChar);
                 case '.': return new Token(TokenType.DOT, currChar);
                 case ',': return new Token(TokenType.COMMA, currChar);
@@ -85,15 +84,50 @@ namespace compiler
                 case '-': return new Token(TokenType.MINUS, currChar);
                 case '*': return new Token(TokenType.MULTIPLICATION, currChar);
                 case '!': return new Token(TokenType.NOT, currChar);
-                case '<': return new Token(TokenType.LT, currChar);
-                case '>': return new Token(TokenType.GT, currChar);
+                case '<': return LessSwitchBranch();
+                case '>': return GreaterSwitchBranch();
                 case '\n': return NewLineBranch();
                 case '\r': return CarriageReturnBranch();
                 case '&': return AmpersandSwitchBranch();
                 case '|': return PipeSwitchBranch();
+                case '=': return AssignSwitchBranch();
 
                 default: return DefaultSwitchBranch();
             }
+        }
+
+        private Token LessSwitchBranch()
+        {
+            if (GetNextChar() == '=')
+            {
+                PeekNext();
+                return new Token(TokenType.LTE, "<=");
+            }
+
+            return new Token(TokenType.LT, "<");
+        }
+
+
+        private Token GreaterSwitchBranch()
+        {
+            if (GetNextChar() == '=')
+            {
+                PeekNext();
+                return new Token(TokenType.GTE, ">=");
+            }
+
+            return new Token(TokenType.GT, ">");
+        }
+
+        private Token AssignSwitchBranch()
+        {
+            if (GetNextChar() == '=')
+            {
+                PeekNext();
+                return new Token(TokenType.EQUAL, "==");
+            }
+
+            return new Token(TokenType.ASSIGNMENT, currChar);
         }
 
         private Token NewLineBranch()

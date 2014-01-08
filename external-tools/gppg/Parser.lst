@@ -1,10 +1,10 @@
 
 // ==========================================================================
-//  GPPG error listing for yacc source file <Parser.y - 08.01.2014 12:53:47>
+//  GPPG error listing for yacc source file <Parser.y - 08.01.2014 15:56:14>
 // ==========================================================================
 //  Version:  1.5.0
 //  Machine:  USERNAME-PC
-//  DateTime: 08.01.2014 13:00:06
+//  DateTime: 08.01.2014 15:58:04
 //  UserName: Username
 // ==========================================================================
 
@@ -18,6 +18,7 @@ LEFT_BRACE RIGHT_BRACE LEFT_BRACKET
 RIGHT_BRACKET PLUS MINUS MULTIPLICATION DIV MOD
 NOT AND OR LINE_END
 BLOCK_START BLOCK_END PASS DOT EOF
+LT GT GTE LTE EQUAL
 %start PS_PROGRAM
 %%
 
@@ -168,18 +169,14 @@ AND_TEST : NOT_TEST
 
 NOT_TEST : NOT NOT_TEST
          | EXPRESSION
+         | COMPARISON
          ;           
 
-/*  temporary disabled
-NOT_TEST : NOT NOT_TEST
-         | EXPRESSION COMPARISON_S
-         ;
 
-COMPARISON_S : COMPARE_OPERATION EXPRESSION
-             | 
-             ;
-
-COMPARE_OPERATION : LT | GT | GTE | LTE | EQUAL
-                  ;
-*/// ==========================================================================
+COMPARISON : SIMPLE_TERM LT SIMPLE_TERM
+           | SIMPLE_TERM GT SIMPLE_TERM
+           | SIMPLE_TERM LTE SIMPLE_TERM
+           | SIMPLE_TERM GTE SIMPLE_TERM
+           | SIMPLE_TERM EQUAL SIMPLE_TERM
+           ;// ==========================================================================
 

@@ -43,5 +43,11 @@ namespace compiler
         abstract public bool Visit(AstAndExpression node);
         abstract public bool Visit(AstNotExpression node);
         abstract public bool Visit(AstWhileStatement node);
+
+        abstract public bool Visit(AstLtComparison node);
+        abstract public bool Visit(AstGtComparison node);
+        abstract public bool Visit(AstLteComparison node);
+        abstract public bool Visit(AstGteComparison node);
+        abstract public bool Visit(AstEqualComparison node);
     }
 }

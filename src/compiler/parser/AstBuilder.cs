@@ -50,13 +50,12 @@ namespace compiler
         {
             var node = new AstIdExpression(t.Attribute);
             PushNode(node);
-            //nodes.Push(node);
         }
 
         public void AddAstIntegerValueNode(Token t)
         {
             var node = new AstIntegerValueExpression(t.Attribute);
-            nodes.Push(node);
+            PushNode(node);
         }
 
         private void PushNode(AstNode node)
@@ -598,61 +597,55 @@ namespace compiler
 
         }
 
-
-
-        /* comparisions temporary disabled. see next iteration tasks.
-        // #NOT_TEST #EXPRESSION #COMPARISON_S
-        private void ConstructNotCompoundTest()
+        // #NOT_TEST #COMPARISON
+        private void ConstructNotTestComparison()
         {
 
         }
 
-        // #COMPARISON_S #COMPARE_OPERATION #EXPRESSION
-        private void ConstructComparisonS()
+        // #COMPARISON #SIMPLE_TERM LT #SIMPLE_TERM
+        private void ConstructLtComparison()
         {
-
+            var right = nodes.Pop() as AstSimpleTermExpr;
+            var left = nodes.Pop() as AstSimpleTermExpr;
+            var node = new AstLtComparison(left, right);
+            PushNode(node);
         }
 
-        // #COMPARISON_S
-        private void ConstructEmptyComparisonS()
+        // #COMPARISON #SIMPLE_TERM GT #SIMPLE_TERM
+        private void ConstructGtComparison()
         {
-
+            var right = nodes.Pop() as AstSimpleTermExpr;
+            var left = nodes.Pop() as AstSimpleTermExpr;
+            var node = new AstGtComparison(left, right);
+            PushNode(node);
         }
 
-        // #COMPARE_OPERATION LT
-        private void ConstructCompareOperationLt()
+        // #COMPARISON #SIMPLE_TERM LTE #SIMPLE_TERM
+        private void ConstructLteComparison()
         {
-            var op = new AstCompareOperation(CompareOp.LT);
-            nodes.Push(op);
+            var right = nodes.Pop() as AstSimpleTermExpr;
+            var left = nodes.Pop() as AstSimpleTermExpr;
+            var node = new AstLteComparison(left, right);
+            PushNode(node);
         }
 
-        // #COMPARE_OPERATION GT
-        private void ConstructCompareOperationGt()
+        // #COMPARISON #SIMPLE_TERM GTE #SIMPLE_TERM
+        private void ConstructGteComparison()
         {
-            var op = new AstCompareOperation(CompareOp.GT);
-            nodes.Push(op);
+            var right = nodes.Pop() as AstSimpleTermExpr;
+            var left = nodes.Pop() as AstSimpleTermExpr;
+            var node = new AstGteComparison(left, right);
+            PushNode(node);
         }
 
-        // #COMPARE_OPERATION LTE
-        private void ConstructCompareOperationLte()
+        // #COMPARISON #SIMPLE_TERM EQUAL #SIMPLE_TERM
+        private void ConstructEqualComparison()
         {
-            var op = new AstCompareOperation(CompareOp.LTE);
-            nodes.Push(op);
+            var right = nodes.Pop() as AstSimpleTermExpr;
+            var left = nodes.Pop() as AstSimpleTermExpr;
+            var node = new AstEqualComparison(left, right);
+            PushNode(node);
         }
-
-        // #COMPARE_OPERATION GTE
-        private void ConstructCompareOperationGte()
-        {
-            var op = new AstCompareOperation(CompareOp.GTE);
-            nodes.Push(op);
-        }
-        
-        // #COMPARE_OPERATION EQUAL
-        private void ConstructCompareOperationEqual()
-        {
-            var op = new AstCompareOperation(CompareOp.EQUAL);
-            nodes.Push(op);
-        }
-        */
     }
 }

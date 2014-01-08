@@ -415,5 +415,65 @@ namespace compiler
             }
             return true;
         }
+
+        public override bool Visit(AstLtComparison node)
+        {
+            var leftType = resolver.Resolve(node.Left);
+            var rightType = resolver.Resolve(node.Right);
+            if (leftType != BuiltInTypes.INT || rightType != BuiltInTypes.INT)
+            {
+                DispatchError(node.TextPosition, "Comparison operations available only for integer types.");
+                return false;
+            }
+            return true;
+        }
+
+        public override bool Visit(AstGtComparison node)
+        {
+            var leftType = resolver.Resolve(node.Left);
+            var rightType = resolver.Resolve(node.Right);
+            if (leftType != BuiltInTypes.INT || rightType != BuiltInTypes.INT)
+            {
+                DispatchError(node.TextPosition, "Comparison operations available only for integer types.");
+                return false;
+            }
+            return true;
+        }
+
+        public override bool Visit(AstLteComparison node)
+        {
+            var leftType = resolver.Resolve(node.Left);
+            var rightType = resolver.Resolve(node.Right);
+            if (leftType != BuiltInTypes.INT || rightType != BuiltInTypes.INT)
+            {
+                DispatchError(node.TextPosition, "Comparison operations available only for integer types.");
+                return false;
+            }
+            return true;
+        }
+
+        public override bool Visit(AstGteComparison node)
+        {
+            var leftType = resolver.Resolve(node.Left);
+            var rightType = resolver.Resolve(node.Right);
+            if (leftType != BuiltInTypes.INT || rightType != BuiltInTypes.INT)
+            {
+                DispatchError(node.TextPosition, "Comparison operations available only for integer types.");
+                return false;
+            }
+            return true;
+        }
+
+        public override bool Visit(AstEqualComparison node)
+        {
+            var leftType = resolver.Resolve(node.Left);
+            var rightType = resolver.Resolve(node.Right);
+            if (leftType != BuiltInTypes.INT || rightType != BuiltInTypes.INT)
+            {
+                DispatchError(node.TextPosition, "Comparison operations available only for integer types.");
+                return false;
+            }
+            return true;
+        }
     }
 }
