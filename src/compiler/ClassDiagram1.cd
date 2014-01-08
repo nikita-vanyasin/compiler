@@ -1,0 +1,576 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="compiler.AstNode" Collapsed="true">
+    <Position X="41.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>ast\AstNode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstNodeVisitor" Collapsed="true">
+    <Position X="4" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ast\AstNodeVisitor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstProgram" Collapsed="true">
+    <Position X="19.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ast\nodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstClass" Collapsed="true">
+    <Position X="24.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAABAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ast\nodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstClassBody" Collapsed="true">
+    <Position X="37.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAQAAA=</HashCode>
+      <FileName>ast\nodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstVisibilityModifier" Collapsed="true">
+    <Position X="78.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>ast\nodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstStaticModifier" Collapsed="true">
+    <Position X="4" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>ast\nodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstClassField" Collapsed="true">
+    <Position X="8.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AMQAAAAAAAAAAAAAAAAAAAQAAAAAAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>ast\nodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstClassMethod" Collapsed="true">
+    <Position X="10.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BMQAEAAAAAAAAAAAAAAAAAQAAAAAAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>ast\nodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstArgumentsDefList" Collapsed="true">
+    <Position X="13" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ast\nodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstArgumentDef" Collapsed="true">
+    <Position X="15.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIQAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ast\nodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstStatementsBlock" Collapsed="true">
+    <Position X="17.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ast\nodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstStatementsList" Collapsed="true">
+    <Position X="22" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ast\nodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstStatement" Collapsed="true">
+    <Position X="31" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ast\nodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstExpression" Collapsed="true">
+    <Position X="58" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ast\nodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstFunctionCallExpression" Collapsed="true">
+    <Position X="72.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ast\nodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstThisMethodCallExpression" Collapsed="true">
+    <Position X="71.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAACAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ast\nodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstThisMethodCallStatement" Collapsed="true">
+    <Position X="26.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAA=</HashCode>
+      <FileName>ast\nodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstExternalMethodCallExpression" Collapsed="true">
+    <Position X="73.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAACAAAAAAAAAAAAAAACQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ast\nodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstExternalMethodCallStatement" Collapsed="true">
+    <Position X="28.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAA=</HashCode>
+      <FileName>ast\nodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstReturnStatement" Collapsed="true">
+    <Position X="31" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>ast\nodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstIfStatement" Collapsed="true">
+    <Position X="33.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAEACAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ast\nodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstAssignStatement" Collapsed="true">
+    <Position X="35.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAQAAAAAAAA=</HashCode>
+      <FileName>ast\nodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstBoolValueExpression" Collapsed="true">
+    <Position X="62.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>ast\nodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstIntegerValueExpression" Collapsed="true">
+    <Position X="64.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>ast\nodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstIdExpression" Collapsed="true">
+    <Position X="76" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ast\nodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstArgumentsCallList" Collapsed="true">
+    <Position X="6.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>ast\nodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstCallArgument" Collapsed="true">
+    <Position X="40" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAA=</HashCode>
+      <FileName>ast\nodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstMathExpression" Collapsed="true">
+    <Position X="49" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ast\nodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstMulExpression" Collapsed="true">
+    <Position X="44.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACACAAAAAAAA=</HashCode>
+      <FileName>ast\nodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstDivExpression" Collapsed="true">
+    <Position X="46.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACACAAAAAAAA=</HashCode>
+      <FileName>ast\nodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstModExpression" Collapsed="true">
+    <Position X="49" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACACAAAAAAAA=</HashCode>
+      <FileName>ast\nodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstAddExpression" Collapsed="true">
+    <Position X="51.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACACAAAAAAAA=</HashCode>
+      <FileName>ast\nodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstSubExpression" Collapsed="true">
+    <Position X="53.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACACAAAAAAAA=</HashCode>
+      <FileName>ast\nodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstUnaryExpr" Collapsed="true">
+    <Position X="68.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAA=</HashCode>
+      <FileName>ast\nodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstNegateUnaryExpr" Collapsed="true">
+    <Position X="69.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ast\nodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstSimpleUnaryExpr" Collapsed="true">
+    <Position X="67" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ast\nodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstSimpleTermExpr" Collapsed="true">
+    <Position X="42.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAA=</HashCode>
+      <FileName>ast\nodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstBoolExpression" Collapsed="true">
+    <Position X="58" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ast\nodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstOrExpression" Collapsed="true">
+    <Position X="55.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACACAAAAAAAA=</HashCode>
+      <FileName>ast\nodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstAndExpression" Collapsed="true">
+    <Position X="58" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACACAAAAAAAA=</HashCode>
+      <FileName>ast\nodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstNotExpression" Collapsed="true">
+    <Position X="60.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAA=</HashCode>
+      <FileName>ast\nodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.BuiltInTypes" Collapsed="true">
+    <Position X="84.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAIAAAIAAAAAAAAIAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>BuiltInTypes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.CodeGenerator" Collapsed="true">
+    <Position X="5.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAIAAABAAAAAAAAAAAAAAAAAAEAAAGAAAAA=</HashCode>
+      <FileName>codegen\CodeGenerator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.LLVMCodeGenerator" Collapsed="true">
+    <Position X="5.25" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAACgAIAMAQAQEAAAMAAgAEAQQAAABEICCAEAAAAA=</HashCode>
+      <FileName>codegen\LLVMCodeGenerator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.CodePathChecker" Collapsed="true">
+    <Position X="7.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAoAAAAAAAQABAAAAAAAAAAAAAAAAEAAACAAAAA=</HashCode>
+      <FileName>CodePathChecker.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.Compiler" Collapsed="true">
+    <Position X="86" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABkAAAAAAAAEA=</HashCode>
+      <FileName>Compiler.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.Form1" Collapsed="true">
+    <Position X="84.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BQAAAAAAgDAAAgQCACCAgAADCAABAAAIAAAAACAAJAA=</HashCode>
+      <FileName>Form1.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.AstBuilder" Collapsed="true">
+    <Position X="80.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gIKgACIIHAFgjAcEAPAxACokIIAADI8QQYEQIAIYMDw=</HashCode>
+      <FileName>parser\AstBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.BaseScanner" Collapsed="true">
+    <Position X="82.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ESQAEAAAAAABZAABAIEABAJDhAIAAAAIEAAACEACACQ=</HashCode>
+      <FileName>parser\BaseScanner.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.ParseAction" Collapsed="true">
+    <Position X="87.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAgEAAAAAAAAAAAIAAAAAAAAAAAAA=</HashCode>
+      <FileName>parser\ParseAction.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.Parser" Collapsed="true">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAkAAAAAAAAAABAAAACAAAAAggAAIAAAAAIAAAAEAg=</HashCode>
+      <FileName>parser\Parser.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.ParseTable" Collapsed="true">
+    <Position X="80.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAABCAAAAoAAACgACAgAAAAAAEAAAAgAA=</HashCode>
+      <FileName>parser\ParseTable.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.ParseTableBuilder" Collapsed="true">
+    <Position X="82.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAACgAAAAAAAAACAAAA=</HashCode>
+      <FileName>parser\ParseTableBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.ProductionInfo" Collapsed="true">
+    <Position X="84.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAIAAAAAAAABAAAAAAAAAAAAAAAAAAAQ=</HashCode>
+      <FileName>parser\ProductionInfo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.IndentationException" Collapsed="true">
+    <Position X="86" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>parser\Scanner.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.Scanner" Collapsed="true">
+    <Position X="80.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BRAAACAAAAAIAAAAAIggCEAGBAAgAAEAEAAAAIACAEA=</HashCode>
+      <FileName>parser\Scanner.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.Token" Collapsed="true">
+    <Position X="82.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACAAAEgAAgAAAAAAAAAIAAAQAAAAAAAAA=</HashCode>
+      <FileName>parser\Token.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.TokenFactory" Collapsed="true">
+    <Position X="84.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAA=</HashCode>
+      <FileName>parser\Token.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.Program" Collapsed="true">
+    <Position X="86" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.CallableSymbol" Collapsed="true">
+    <Position X="0.5" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAAAAAAAAAAAACAIAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>symbols\CallableSymbol.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.Symbol" Collapsed="true">
+    <Position X="0.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAAAAAAAQAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>symbols\Symbol.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.SymbolsScope" Collapsed="true">
+    <Position X="86" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAEIBAAAAgYAAAAAAAAAAAAAAAAAEAACE=</HashCode>
+      <FileName>symbols\SymbolsScope.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.SymbolTable" Collapsed="true">
+    <Position X="87.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAABAAAAAACACAAAAAgIIAAAAAAAAAAAAAAAAEAgAE=</HashCode>
+      <FileName>symbols\SymbolTable.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.SymbolTableBuilder" Collapsed="true">
+    <Position X="0.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAARAAAAAAAAAAAAAgAAAAAAAAAAAAAA=</HashCode>
+      <FileName>symbols\SymbolTableBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.TypeEvaluator" Collapsed="true">
+    <Position X="3" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAgAAAAARABAAAAgQAAAAAAAAAAEAIACAAAAA=</HashCode>
+      <FileName>symbols\TypeEvaluator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.SymbolNotFoundException" Collapsed="true">
+    <Position X="84.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAA=</HashCode>
+      <FileName>symbols\TypeResolver.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.TypeResolver" Collapsed="true">
+    <Position X="86" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAABAACAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>symbols\TypeResolver.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.ErrorEvent" Collapsed="true">
+    <Position X="87.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAgAAAgAAAAAAAAAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>utils\ErrorEvent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.ErrorsContainer" Collapsed="true">
+    <Position X="80.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAgAAAAAAAAA=</HashCode>
+      <FileName>utils\ErrorsContainer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.ErrorsEventDispatcher" Collapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAACAAAAA=</HashCode>
+      <FileName>utils\ErrorsEventDispatcher.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.ExtensionMethods" Collapsed="true">
+    <Position X="82.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>utils\ExtensionMethods.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.TextUtils" Collapsed="true">
+    <Position X="80.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAAAAAAAAAAEAAAAAAAAAAAgAAAAIAAAAAA=</HashCode>
+      <FileName>utils\TextUtils.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.Properties.Resources" Collapsed="true">
+    <Position X="87.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABEAAAAQAAAAAAAAAAAAAAAIA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="compiler.Properties.Settings" Collapsed="true">
+    <Position X="82.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="compiler.VisibilityModifier" Collapsed="true">
+    <Position X="80.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ast\enums.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="compiler.StaticModifier" Collapsed="true">
+    <Position X="86" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAQAAAAAAAAAQAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ast\enums.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="compiler.BoolValue" Collapsed="true">
+    <Position X="80.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAA=</HashCode>
+      <FileName>ast\enums.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="compiler.CompareOp" Collapsed="true">
+    <Position X="82.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAIAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAA=</HashCode>
+      <FileName>ast\enums.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="compiler.ParseActionKind" Collapsed="true">
+    <Position X="84.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACBAAAAAAAAAAAAAAAgAAAAAAAAAAACAAAAAAA=</HashCode>
+      <FileName>parser\ParseAction.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="compiler.TokenType" Collapsed="true">
+    <Position X="87.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>LAIBIAQFDiZAoCAEUECgCAAAEAkJKAAyAAAgIACKAAE=</HashCode>
+      <FileName>parser\Token.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Delegate Name="compiler.ErrorEventHandler" Collapsed="true">
+    <Position X="80.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAgAAAAAAAAQAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>utils\ErrorsEventDispatcher.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

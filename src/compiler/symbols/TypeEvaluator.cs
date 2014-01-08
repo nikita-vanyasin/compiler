@@ -38,6 +38,7 @@ namespace compiler
 
             result = true;
             table = tableBuilder.Build(node);
+            table.UseGlobalScope();
             resolver = new TypeResolver(table);
             currFunctionReturnType = null;
 
@@ -55,17 +56,29 @@ namespace compiler
 
         override public bool Visit(AstProgram node)
         {
+            table.UseGlobalScope();
             return true;
         }
 
         override public bool Visit(AstClass node)
         {
+            table.UseChildScope();
             return true;
         }
 
         override public bool Visit(AstClassBody node)
         {
-            return true;
+            foreach (AstClassField classField in node.ClassFields)
+            {
+                classField.Accept(this);
+            }
+            foreach (AstClassMethod classMethod in node.ClassMethods)
+            {
+                classMethod.Accept(this);
+                table.UseParentScope();
+            }
+
+            return false;
         }
 
         override public bool Visit(AstVisibilityModifier node)
@@ -85,6 +98,7 @@ namespace compiler
 
         override public bool Visit(AstClassMethod node)
         {
+            table.UseNamedChildScope(node.Name.Id);
             currFunctionReturnType = node.TypeDef.Id;
 
             return true;
@@ -227,6 +241,12 @@ namespace compiler
 
         override public bool Visit(AstIntegerValueExpression node)
         {
+            var value = node.Value;
+            if (value.Length > BuiltInTypes.INTEGER_NUMBER_LENGTH)
+            {
+                DispatchError(node.TextPosition, "Too long integer value. Maximum " + BuiltInTypes.INTEGER_NUMBER_LENGTH + " digits allowed");
+            }
+
             return true;
         }
 
@@ -268,6 +288,31 @@ namespace compiler
                 return false;
             }
 
+            return CheckZeroDevision(node.Right);
+        }
+
+        private bool CheckZeroDevision(AstExpression node)
+        {
+            // todo: cast?
+
+            var castNode = node;
+
+            if (node is AstSimpleUnaryExpr)
+            {
+                var term = node as AstSimpleUnaryExpr;
+                castNode = term.SimpleTerm.Expr;
+            }
+            
+            var intValExpr = castNode as AstIntegerValueExpression;
+            if (intValExpr != null)
+            {
+                if (Convert.ToInt32(intValExpr.Value) == 0)
+                {
+                    DispatchError(node.TextPosition, "Division by zero");
+                    return false;
+                }
+            }
+
             return true;
         }
 
@@ -280,7 +325,8 @@ namespace compiler
                 DispatchError(node.TextPosition, "Mod operation available only for integer types.");
                 return false;
             }
-            return true;
+
+            return CheckZeroDevision(node.Right);
         }
 
         override public bool Visit(AstAddExpression node)
