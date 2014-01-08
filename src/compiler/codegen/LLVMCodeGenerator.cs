@@ -9,7 +9,7 @@ namespace compiler
 {
     class LLVMCodeGenerator : CodeGenerator
     {
-        private uint unnamedVariable = 1;
+        private uint unnamedVariable = 0;
         private StreamWriter codeStream;
         private string currReturnType = "";
         private List<string> classVariables = new List<string>();
@@ -27,6 +27,11 @@ namespace compiler
         private void CreateLLVMBuiltIn()
         {
             codeStream.WriteLine("declare i32 @puts(i8*)\n");
+        }
+
+        private void ResetUnnamedVariable()
+        {
+            unnamedVariable = 0;
         }
 
         private string CreateUnnamedVariable()
@@ -134,6 +139,7 @@ namespace compiler
 
         override public bool Visit(AstClassMethod node)
         {
+            ResetUnnamedVariable();
             codeStream.Write("define " + GetLLVMType(node.TypeDef.Id) + " @" + node.Name.Id.ToLower());
             currReturnType = GetLLVMType(node.TypeDef.Id);
             node.ArgumentsDefinition.Accept(this);
@@ -152,7 +158,7 @@ namespace compiler
             }
             codeStream.Write(string.Join(",", LLWMArgDefList.ToArray()));
             codeStream.Write("){\n");
-            DefineLocalClassVariables();
+           // DefineLocalClassVariables();
             return false;
         }
 
@@ -210,9 +216,23 @@ namespace compiler
 
         override public bool Visit(AstAssignStatement node)
         {
-            node.NewValue.Accept(this);
-            codeStream.WriteLine("\n%" + node.Variable.Id + " = " + GetCurrUnnamedVariable());
-            return false;
+            var symbolTableVariable = table.Lookup(node.Variable.Id);
+            //codeStream.Write();
+            if (classVariables.Contains(node.Variable.Id))
+            {
+                node.NewValue.Accept(this);
+
+                codeStream.WriteLine("store " + GetLLVMType(symbolTableVariable.Type) + " " + GetCurrUnnamedVariable()
+                 + ", " + GetLLVMType(symbolTableVariable.Type) + "* @" + node.Variable.Id);
+                return false;
+            }
+            else
+            {
+                node.NewValue.Accept(this);
+                codeStream.WriteLine("%" + node.Variable.Id + "= add " + GetLLVMType(symbolTableVariable.Type) + " 0, " + GetCurrUnnamedVariable());
+                
+                return false;
+            }
         }
 
         override public bool Visit(AstBoolValueExpression node)
@@ -223,15 +243,25 @@ namespace compiler
 
         override public bool Visit(AstIntegerValueExpression node)
         {
-            codeStream.WriteLine(CreateUnnamedVariable() + " = " + node.Value);
+            //codeStream.WriteLine(CreateUnnamedVariable() + " = " + node.Value);
+            codeStream.WriteLine(CreateUnnamedVariable() + " = add i32 0, " + node.Value);
             return true;
         }
 
         override public bool Visit(AstIdExpression node)
         {
             //symbolTable.Add("id", );
-            codeStream.WriteLine(CreateUnnamedVariable() + " = %" + node.Id);
-            return true;
+            var symbolTableVariable = table.Lookup(node.Id);
+            if (classVariables.Contains(node.Id))
+            {
+                codeStream.WriteLine(CreateUnnamedVariable() + " = load " + GetLLVMType(symbolTableVariable.Type) + "* @" + node.Id);
+                return true;
+            }
+            else
+            {
+                codeStream.WriteLine(CreateUnnamedVariable() + " = add " + GetLLVMType(symbolTableVariable.Type) + " 0, %" + node.Id);
+                return true;
+            }
         }
 
         override public bool Visit(AstArgumentsCallList node)
@@ -262,10 +292,11 @@ namespace compiler
         override public bool Visit(AstAddExpression node)
         {
             node.Left.Accept(this);
-            string addLine = " = add i32 " + GetCurrUnnamedVariable();
+            string addLine = " = add i32 " + GetCurrUnnamedVariable() + ", ";
+           // addLine = (CreateUnnamedVariable() + addLine);
             node.Right.Accept(this);
-            addLine += ", " + GetCurrUnnamedVariable() + "\n";
-            codeStream.Write(CreateUnnamedVariable() + addLine);
+            addLine += GetCurrUnnamedVariable();
+            codeStream.WriteLine(CreateUnnamedVariable() + addLine);
             
           //  codeStream.Write("\n");
             return false;
