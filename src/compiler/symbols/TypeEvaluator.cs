@@ -118,6 +118,12 @@ namespace compiler
 
         override public bool Visit(AstArgumentDef node)
         {
+            if (node.TypeDef is AstIdArrayExpression)
+            {
+                DispatchError(node.TypeDef.TextPosition, "Passing arrays to functions is not implemented in current version.");
+                return false;
+            }
+
             return true;
         }
 
@@ -516,7 +522,46 @@ namespace compiler
                 DispatchError(node.Index.TextPosition, "Only integer values available for array index");
             }
 
+            CheckIsNotNegative(node.Index);
+
+            var s = table.Lookup(node.Id);
+            if (s != null)
+            {
+                var maxSize = table.Lookup(node.Id).Size - 1;
+                CheckIndexInRange(maxSize, node.Index);
+            }
+
             return true;
+        }
+
+        private void CheckIsNotNegative(AstExpression node)
+        {
+            var castNode = node;
+            if (node is AstNegateUnaryExpr)
+            {
+                DispatchError(node.TextPosition, "Negative number used as array index");
+            }
+        }
+
+        private void CheckIndexInRange(int maxSize, AstExpression node)
+        {
+            var castNode = node;
+            if (node is AstSimpleUnaryExpr)
+            {
+                var term = node as AstSimpleUnaryExpr;
+                castNode = term.SimpleTerm.Expr;
+            }
+
+            var intValExpr = castNode as AstIntegerValueExpression;
+            if (intValExpr != null)
+            {
+                intValExpr.Accept(this);
+                if (Visit(intValExpr) && Convert.ToInt32(intValExpr.Value) > maxSize)
+                {
+                    DispatchError(node.TextPosition, "Index out of range [0, " + maxSize + "]");
+                    
+                }
+            }
         }
     }
 }

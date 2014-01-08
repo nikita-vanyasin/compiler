@@ -315,7 +315,11 @@ class Program:
         temp[4] = a *6
         temp[5] = temp[0]
         temp[5] = temp[0] - 1
+        foo(temp[3])
         return a  
+    public static int foo(int a):
+        Console.WriteInt(a)
+        return 0
 
 ";
             var res = p.Parse(text);
@@ -339,8 +343,8 @@ class Program:
         temp[100] = 10
         temp[3] = a
         temp[4] = a *6
-        temp[5] = temp[0]
-        temp[5] = temp[0] - 1
+        temp[5] = temp[2]
+        temp[5] = temp[1] - 1
         return 0  
 
 ";
@@ -554,6 +558,32 @@ class Program:
     public static int Main():   
         temp[0] = 32 mod 8908098800099080980
         return 1  
+
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var checker = new TypeEvaluator();
+            res = checker.Evaluate(p.GetRootNode());
+            Assert.IsFalse(res);
+        }
+
+        [TestMethod]
+        public void TestArrFuncArgBad()
+        {
+            Parser p = new Parser();
+            var text = @"  
+class Program:  
+    private int[100] temp  
+    private int a
+    private bool c
+    public static int Main(int[20] d):   
+        temp[3] = a
+        temp[4] = a *6
+        temp[5] = temp[0]
+        temp[5] = temp[0] - 1
+        return 0  
+
 
 ";
             var res = p.Parse(text);
