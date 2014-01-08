@@ -263,6 +263,7 @@ namespace compiler
             codeStream.Write(string.Join(",", tmpVariablesArgCallList.ToArray()));
             codeStream.WriteLine(")");
             inFunc = false;
+            tmpVariablesArgCallList = new List<string>();
             return false;
         }
 
@@ -280,6 +281,7 @@ namespace compiler
             codeStream.Write(string.Join(",", tmpVariablesArgCallList.ToArray()));
             codeStream.WriteLine(")");
             inFunc = false;
+            tmpVariablesArgCallList = new List<string>();
             return false;
         }
 
@@ -303,7 +305,6 @@ namespace compiler
         override public bool Visit(AstAssignStatement node)
         {
             var symbolTableVariable = table.Lookup(node.Variable.Id);
-            //codeStream.Write();
             if (classVariables.Contains(node.Variable.Id))
             {
                 node.NewValue.Accept(this);
@@ -316,9 +317,7 @@ namespace compiler
             {
                 node.NewValue.Accept(this);
                 UseVaribaleCatched(node.Variable.Id);
-                codeStream.WriteLine("%" + GetCurrVariableState(node.Variable.Id) + "= add " + GetLLVMType(symbolTableVariable.Type) + " 0, " + GetCurrUnnamedVariable());
-                
-            
+                codeStream.WriteLine("%" + GetCurrVariableState(node.Variable.Id) + "= add " + GetLLVMType(symbolTableVariable.Type) + " 0, " + GetCurrUnnamedVariable());                           
             }
           
             return false;
@@ -326,7 +325,6 @@ namespace compiler
 
         override public bool Visit(AstBoolValueExpression node)
         {
-           // codeStream.Write(" " + node.Value.ToString());
             codeStream.WriteLine(CreateUnnamedVariable() + " = add i8 0, " + GetBoolLLVM(node.Value));
             if (inFunc)
             {
@@ -337,7 +335,6 @@ namespace compiler
 
         override public bool Visit(AstIntegerValueExpression node)
         {
-            //codeStream.WriteLine(CreateUnnamedVariable() + " = " + node.Value);
             string saveOperation = "add ";
             if (IsNegative)
             {
@@ -353,7 +350,6 @@ namespace compiler
 
         override public bool Visit(AstIdExpression node)
         {
-            //symbolTable.Add("id", );
             var symbolTableVariable = table.Lookup(node.Id);
             if (classVariables.Contains(node.Id))
             {
