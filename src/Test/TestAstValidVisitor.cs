@@ -311,6 +311,13 @@ namespace Test
             return true;
         }
 
+        public override bool Visit(AstNotEqualComparison node)
+        {
+            ErrorIfIsNull(node.Left);
+            ErrorIfIsNull(node.Right);
+            return true;
+        }
+
         public override bool Visit(AstIdArrayExpression node)
         {
             ErrorIfIsNull(node.Index);

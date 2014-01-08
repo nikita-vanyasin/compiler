@@ -683,5 +683,13 @@ namespace compiler
             var node = new AstEqualComparison(left, right);
             PushNode(node);
         }
+
+        private void ConstructNotEqualComparison()
+        {
+            var right = nodes.Pop() as AstSimpleTermExpr;
+            var left = nodes.Pop() as AstSimpleTermExpr;
+            var node = new AstNotEqualComparison(left, right);
+            PushNode(node);
+        }
     }
 }

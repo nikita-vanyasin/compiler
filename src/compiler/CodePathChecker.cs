@@ -292,5 +292,10 @@ namespace compiler
         {
             return true;
         }
+
+        public override bool Visit(AstNotEqualComparison node)
+        {
+            return true;
+        }
     }
 }

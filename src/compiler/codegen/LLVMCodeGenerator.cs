@@ -696,6 +696,11 @@ namespace compiler
             return false;
         }
 
+        public override bool Visit(AstNotEqualComparison node)
+        {
+            throw new NotImplementedException();
+        }
+
         public override bool Visit(AstIdArrayExpression node)
         {
             node.Index.Accept(this);

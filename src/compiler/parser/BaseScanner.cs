@@ -84,7 +84,7 @@ namespace compiler
                 case '+': return new Token(TokenType.PLUS, currChar);
                 case '-': return new Token(TokenType.MINUS, currChar);
                 case '*': return new Token(TokenType.MULTIPLICATION, currChar);
-                case '!': return new Token(TokenType.NOT, currChar);
+                case '!': return NotSwitchBranch();
                 case '[': return new Token(TokenType.LEFT_BRACKET, currChar);
                 case ']': return new Token(TokenType.RIGHT_BRACKET, currChar);
                 case '<': return LessSwitchBranch();
@@ -97,6 +97,17 @@ namespace compiler
 
                 default: return DefaultSwitchBranch();
             }
+        }
+
+        private Token NotSwitchBranch()
+        {
+            if (GetNextChar() == '=')
+            {
+                PeekNext();
+                return new Token(TokenType.NOT_EQUAL, "!=");
+            }
+
+            return new Token(TokenType.NOT, "!");
         }
 
         private Token LessSwitchBranch()

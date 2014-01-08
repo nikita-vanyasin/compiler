@@ -249,6 +249,29 @@ class Program:
             Assert.IsTrue(res);
         }
 
+        [TestMethod]
+        public void TestComparisonNotEqual()
+        {
+            Parser p = new Parser();
+            var text = @"  
+class Program:  
+    private int temp  
+    private bool test
+
+    public static int Main():   
+        while (temp != 0):
+            Console.WriteInt(10)
+        return 0  
+
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var testVisitor = new TestAstValidVisitor();
+            res = testVisitor.TestTree(p.GetRootNode());
+            Assert.IsTrue(res);
+        }
+
 
         [TestMethod]
         public void TestArrays()

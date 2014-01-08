@@ -509,6 +509,18 @@ namespace compiler
             return true;
         }
 
+        public override bool Visit(AstNotEqualComparison node)
+        {
+            var leftType = resolver.Resolve(node.Left);
+            var rightType = resolver.Resolve(node.Right);
+            if (leftType != BuiltInTypes.INT || rightType != BuiltInTypes.INT)
+            {
+                DispatchError(node.TextPosition, "Comparison operations available only for integer types.");
+                return false;
+            }
+            return true;
+        }
+
         public override bool Visit(AstIdArrayExpression node)
         {
             var intValSize = node.Index as AstIntegerValueExpression;

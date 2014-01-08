@@ -851,6 +851,23 @@ namespace compiler
         }
     }
 
+    public class AstNotEqualComparison : AstComparison
+    {
+        public AstNotEqualComparison(AstSimpleTermExpr left, AstSimpleTermExpr right)
+            : base(left, right)
+        {
+        }
+
+        public override void Accept(AstNodeVisitor visitor)
+        {
+            if (visitor.Visit(this))
+            {
+                Left.Accept(visitor);
+                Right.Accept(visitor);
+            }
+        }
+    }
+
     public class AstIdArrayExpression : AstIdExpression
     {
         public AstExpression Index { get; set; }
