@@ -12,7 +12,7 @@ namespace compiler
     {
         public event ErrorEventHandler Error;
 
-        public void DispatchError(int position, string description, int code)
+        public void DispatchError(SourcePosition position, string description, int code)
         {
             ErrorEventHandler handler = Error;
 

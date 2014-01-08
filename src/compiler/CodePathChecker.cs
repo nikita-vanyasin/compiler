@@ -25,7 +25,7 @@ namespace compiler
             return result;
         }
         
-        protected void DispatchError(int position, string description, int code = -1)
+        protected void DispatchError(SourcePosition position, string description, int code = -1)
         {
             result = false;
             ErrorDispatcher.DispatchError(position, description, code);

@@ -24,6 +24,7 @@ namespace compiler
         private void BuildSource()
         {
             logListBox.Items.Clear();
+			m_errorPositions.Clear();
 
             var text = SourceBox.Text + "\n";
             var outStream = new FileStream("result.s", FileMode.OpenOrCreate);

@@ -22,7 +22,7 @@ namespace compiler
             this.table = table;
         }
 
-        protected void DispatchError(int position, string description, int code)
+        protected void DispatchError(SourcePosition position, string description, int code)
         {
             ErrorDispatcher.DispatchError(position, description, code);
         }
