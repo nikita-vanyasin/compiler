@@ -598,7 +598,29 @@ namespace compiler
 
         public override bool Visit(AstArrayInitializerStatement node)
         {
-            throw new NotImplementedException();
+            var s = table.Lookup(node.Id.Id);
+
+            if (s == null)
+            {
+                DispatchError(node.Id.TextPosition, "Unknown variable " + node.Id.Id);
+                return true;
+            }
+
+            if (!s.IsArraySymbol())
+            {
+                DispatchError(node.Id.TextPosition, "variable " + node.Id.Id + " is not array");
+                return true;
+            }
+
+            var valsCount = node.Values.Count;
+            if (s.Size > 0 && valsCount > s.Size)
+            {
+                DispatchError(node.Values[0].TextPosition, "values count must be lesser than array size (" + s.Size + ")");
+            }
+
+            
+
+            return true;
         }
     }
 }

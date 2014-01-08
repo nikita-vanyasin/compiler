@@ -54,7 +54,7 @@ namespace compiler
         
         public void EnterFunction(string target, string name, string type, List<string> callArgTypes)
         {
-            if (table.ContainsKey(name))
+            if (functionsTable.ContainsKey(target + name))
             {
                 throw new CallableSymbolAlreadyDefinedException(name);
             }

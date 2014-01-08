@@ -645,6 +645,7 @@ class Program:
 
         }
 
+        [TestMethod]
         public void TestSameScopeRedefinBadFunc()
         {
             Parser p = new Parser();
@@ -656,9 +657,121 @@ class Program:
         a = 3
         return 0
     private static bool Foo():
-       return false
+        return false
     private static int Foo():
-       return 1
+        return 1
+
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var checker = new TypeEvaluator();
+            res = checker.Evaluate(p.GetRootNode());
+            Assert.IsFalse(res);
+
+        }
+
+        [TestMethod]
+        public void TestArrInit()
+        {
+            Parser p = new Parser();
+            var text = @"
+
+class Program:
+    private int[10] a
+    public static int Main():
+        a = { 2, 32, 10232, 32, 32, 23}
+        return 0
+
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var checker = new TypeEvaluator();
+            res = checker.Evaluate(p.GetRootNode());
+            Assert.IsTrue(res);
+
+        }
+
+        [TestMethod]
+        public void TestArrInitBad()
+        {
+            Parser p = new Parser();
+            var text = @"
+
+class Program:
+    private int[10] a
+    public static int Main():
+        c = { 2, 32, 10232, 32, 32, 23}
+        return 0
+
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var checker = new TypeEvaluator();
+            res = checker.Evaluate(p.GetRootNode());
+            Assert.IsFalse(res);
+
+        }
+
+        [TestMethod]
+        public void TestArrInitBadType()
+        {
+            Parser p = new Parser();
+            var text = @"
+
+class Program:
+    private int[10] a
+    private int b
+    public static int Main():
+        b = { 2, 32, 10232, 32, 32, 23}
+        return 0
+
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var checker = new TypeEvaluator();
+            res = checker.Evaluate(p.GetRootNode());
+            Assert.IsFalse(res);
+
+        }
+
+        [TestMethod]
+        public void TestArrInitTooManyValues()
+        {
+            Parser p = new Parser();
+            var text = @"
+
+class Program:
+    private int[4] a
+    public static int Main():
+        a = { 2, 32, 10232, 32, 32, 23, 90, 90, 320}
+        return 0
+
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var checker = new TypeEvaluator();
+            res = checker.Evaluate(p.GetRootNode());
+            Assert.IsFalse(res);
+
+        }
+
+
+        [TestMethod]
+        public void TestArrInitTooLongValue()
+        {
+            Parser p = new Parser();
+            var text = @"
+
+class Program:
+    private int[4] a
+    public static int Main():
+        a = { 2, 32, 1023280980809898098 }
+        return 0
 
 ";
             var res = p.Parse(text);
