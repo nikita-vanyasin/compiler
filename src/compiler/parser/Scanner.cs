@@ -76,7 +76,7 @@ namespace compiler
             return result;
         }
 
-        public SourcePosition GetSourcePosition()
+        public int GetSourcePosition()
         {
             return baseScanner.GetSourcePosition();
         }

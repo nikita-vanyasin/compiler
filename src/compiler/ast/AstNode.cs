@@ -8,14 +8,14 @@ namespace compiler
 {
     public class AstNode
     {
-        public SourcePosition TextPosition { get; protected set; }
+        public int TextPosition { get; protected set; }
 
         public AstNode()
         {
 
         }
 
-        public void SetTextPosition(SourcePosition pos)
+        public void SetTextPosition(int pos)
         {
             TextPosition = pos;
         }

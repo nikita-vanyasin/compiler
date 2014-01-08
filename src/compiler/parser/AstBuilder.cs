@@ -11,7 +11,7 @@ namespace compiler
     {
         private AstProgram rootNode;
         private Stack<AstNode> nodes;
-        private SourcePosition tokenCurrPosition = null;
+        private int tokenCurrPosition = 0;
 
         // http://en.wikipedia.org/wiki/Shunting-yard_algorithm
         public AstBuilder()
@@ -20,7 +20,7 @@ namespace compiler
             nodes = new Stack<AstNode>();
         }
 
-        public void SetSoursePosition(SourcePosition position)
+        public void SetSoursePosition(int position)
         {
             tokenCurrPosition = position;
         }
@@ -63,7 +63,7 @@ namespace compiler
         {
             node.SetTextPosition(tokenCurrPosition);
             nodes.Push(node);
-            tokenCurrPosition = null;
+            tokenCurrPosition = 0;
         }
 
         // #PS_PROGRAM #CLASS_DEF EOF

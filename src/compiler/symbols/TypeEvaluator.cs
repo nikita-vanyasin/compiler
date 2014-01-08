@@ -21,7 +21,7 @@ namespace compiler
             ErrorDispatcher = new ErrorsEventDispatcher();
         }
 
-        protected void DispatchError(SourcePosition position, string description, int code = -1)
+        protected void DispatchError(int position, string description, int code = -1)
         {
             result = false;
             ErrorDispatcher.DispatchError(position, description, code);

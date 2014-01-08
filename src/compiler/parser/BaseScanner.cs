@@ -53,12 +53,9 @@ namespace compiler
             return t;
         }
 
-        public SourcePosition GetSourcePosition()
+        public int GetSourcePosition()
         {
-            var pos = new SourcePosition();
-            pos.Line = TextUtils.GetLineNumber(text, currCharIndex);
-            pos.Column = TextUtils.GetColumnNumber(text, currCharIndex);
-            return pos;
+			return currCharIndex;
         }
 
         public string GetCurrentPositionAsString()
