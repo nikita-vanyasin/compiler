@@ -8,6 +8,7 @@ namespace compiler
 {
     public class SourcePosition
     {
-        public int Position;
+        public int Position { get; set; }
+        public int TokenLength { get; set; }
     }
 }

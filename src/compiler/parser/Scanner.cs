@@ -81,6 +81,11 @@ namespace compiler
             return baseScanner.GetSourcePosition();
         }
 
+        public int GetForwardTokenLength()
+        {
+            return baseScanner.GetForwardToken().Attribute.Length;
+        }
+
         private Token GetNextNotSpace()
         {
             Token newToken;
@@ -207,7 +212,7 @@ namespace compiler
 
         private Token GetErrorToken(string msg)
         {
-            return new Token(TokenType.ERROR, "at " + baseScanner.GetCurrentPositionAsString() + ": " + msg);
+            return new Token(TokenType.ERROR, msg);
         }
 
         private void SkipWhiteSpaces()

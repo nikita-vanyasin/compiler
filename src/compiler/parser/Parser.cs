@@ -38,6 +38,7 @@ namespace compiler
 
         private bool ParseProgram()
         {
+            var currSourcePosition = scanner.GetSourcePosition();
             int s;
             var currentToken = scanner.GetNextToken();
             LogLine("Token: " + currentToken);
@@ -45,15 +46,17 @@ namespace compiler
             {
                 s = stack.Peek();
                 Token a = currentToken;
-
+                
                 if (a.Type == TokenType.ERROR)
                 {
-                        DispatchError(scanner.GetSourcePosition(), "Error: " + a.Attribute, 1);
-                        return false;
+                    currSourcePosition = scanner.GetSourcePosition();
+                    currSourcePosition.Position -= scanner.GetForwardTokenLength();
+                    currSourcePosition.TokenLength = 1;
+                    DispatchError(currSourcePosition, a.Attribute, 1);
+                    return false;
                 }
 
                 ParseAction action = table.GetAction(s, a.Type);
-                astBuilder.SetSoursePosition(scanner.GetSourcePosition());
                 if (action.Kind == ParseActionKind.SHIFT)
                 {
                     stack.Push(action.Number);
@@ -91,9 +94,14 @@ namespace compiler
                 }
                 else
                 {
-                    DispatchError(scanner.GetSourcePosition(), string.Format("Unexpected \"{0}\"", a.Attribute), 2);
+                    DispatchError(currSourcePosition, string.Format("Unexpected \"{0}\"", a.Attribute), 2);
                     return false;
                 }
+
+                astBuilder.SetSoursePosition(currSourcePosition);
+                currSourcePosition = scanner.GetSourcePosition();
+                currSourcePosition.Position -= currentToken.Attribute.Length;
+                currSourcePosition.TokenLength = currentToken.Attribute.Length;
                 
                 Log("Stack: ");
                 foreach (var i in stack)

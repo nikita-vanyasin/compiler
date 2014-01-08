@@ -90,8 +90,9 @@ namespace compiler
 			{
 				if (m_errorPositions.ContainsKey(logListBox.SelectedIndex))
 				{
-					SourceBox.SelectionStart = m_errorPositions[logListBox.SelectedIndex].Position;
-					SourceBox.SelectionLength = 1;
+                    var sp = m_errorPositions[logListBox.SelectedIndex];
+					SourceBox.SelectionStart = sp.Position;
+					SourceBox.SelectionLength = sp.TokenLength;
 				}
 			}
 		}
