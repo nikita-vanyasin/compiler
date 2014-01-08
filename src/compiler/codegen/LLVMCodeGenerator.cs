@@ -20,6 +20,9 @@ namespace compiler
         private List<string> tmpVariablesArgCallList = new List<string>();
         private List<string> currExprCallTempraryVars = new List<string>();
 
+        //test negative
+        private bool IsNegative = false;
+
         private string GetBoolLLVM(BoolValue value)
         {
             if (value == BoolValue.TRUE)
@@ -166,12 +169,15 @@ namespace compiler
 
         override public bool Visit(AstProgram node)
         {
+            table.UseGlobalScope();
             CreateLLVMBuiltIn();
             return true;
         }
 
         override public bool Visit(AstClass node)
         {
+            table.UseChildScope();
+
            //TODO something
             node.Body.Accept(this);
             return false;
@@ -202,12 +208,17 @@ namespace compiler
 
         override public bool Visit(AstClassMethod node)
         {
+            table.UseNamedChildScope(node.Name.Id);
+
             ResetUnnamedVariable();
             codeStream.Write("define " + GetLLVMType(node.TypeDef.Id) + " @" + node.Name.Id.ToLower());
             currReturnType = GetLLVMType(node.TypeDef.Id);
             node.ArgumentsDefinition.Accept(this);
             node.StatementsBlock.Accept(this);
             codeStream.WriteLine("}");
+
+            table.UseParentScope();
+
             return false;
         }
 
@@ -327,7 +338,12 @@ namespace compiler
         override public bool Visit(AstIntegerValueExpression node)
         {
             //codeStream.WriteLine(CreateUnnamedVariable() + " = " + node.Value);
-            codeStream.WriteLine(CreateUnnamedVariable() + " = add i32 0, " + node.Value);
+            string saveOperation = "add ";
+            if (IsNegative)
+            {
+                saveOperation = "sub ";
+            }
+            codeStream.WriteLine(CreateUnnamedVariable() + " = " + saveOperation + " i32 0, " + node.Value);
             if (inFunc)
             {
                 currExprCallTempraryVars.Add("i32 " + GetCurrUnnamedVariable());
@@ -342,10 +358,20 @@ namespace compiler
             if (classVariables.Contains(node.Id))
             {
                 codeStream.WriteLine(CreateUnnamedVariable() + " = load " + GetLLVMType(symbolTableVariable.Type) + "* @" + node.Id);
+                if (IsNegative)
+                {
+                    string positiveVar = GetCurrUnnamedVariable();
+                    codeStream.WriteLine(CreateUnnamedVariable() + " = sub " + GetLLVMType(symbolTableVariable.Type) + " 0, " + positiveVar);
+                }
             }
             else
             {
-                codeStream.WriteLine(CreateUnnamedVariable() + " = add " + GetLLVMType(symbolTableVariable.Type) + " 0, %" + GetCurrVariableState(node.Id));
+                string saveOperation = "add ";
+                if (IsNegative)
+                {
+                    saveOperation = "sub ";
+                }
+                codeStream.WriteLine(CreateUnnamedVariable() + " = " + saveOperation + GetLLVMType(symbolTableVariable.Type) + " 0, %" + GetCurrVariableState(node.Id));
             }
             if (inFunc)
             {
@@ -443,11 +469,13 @@ namespace compiler
 
         override public bool Visit(AstNegateUnaryExpr node)
         {
+            IsNegative = true;
             return true;
         }
 
         override public bool Visit(AstSimpleUnaryExpr node)
         {
+            IsNegative = false;
             return true;
         }
 
