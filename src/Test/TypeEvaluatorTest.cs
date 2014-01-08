@@ -141,5 +141,72 @@ class Program:
             res = checker.Evaluate(p.GetRootNode());
             Assert.IsFalse(res); 
         }
+
+
+        [TestMethod]
+        public void TestFunctionsScope()
+        {
+            Parser p = new Parser();
+            var text = @"  
+class Program:   
+    private int a
+    public static int Main():   
+        a = foo(2)
+        return i
+    private int foo(int i):
+        return i
+
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var checker = new TypeEvaluator();
+            res = checker.Evaluate(p.GetRootNode());
+            Assert.IsFalse(res);
+        }
+
+        [TestMethod]
+        public void TestDevisionByZero1()
+        {
+            Parser p = new Parser();
+            var text = @"  
+class Program:   
+    private bool a
+    private int i
+    public static int Main():   
+        a = false
+        i = 1 div 2
+        i = (45 * 6 div 569 + i) mod (i - 5)
+        return i  
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var checker = new TypeEvaluator();
+            res = checker.Evaluate(p.GetRootNode());
+            Assert.IsTrue(res);
+        }
+
+        [TestMethod]
+        public void TestDevisionByZero2()
+        {
+            Parser p = new Parser();
+            var text = @"  
+class Program:   
+    private bool a
+    private int i
+    public static int Main():   
+        a = false
+        i = 1 div 2
+        i = (45 * 6 div 0 + i) mod (i - 5)
+        return i  
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var checker = new TypeEvaluator();
+            res = checker.Evaluate(p.GetRootNode());
+            Assert.IsFalse(res);
+        }
     }
 }

@@ -12,7 +12,7 @@ namespace compiler
         
         public SymbolTable Build(AstProgram node)
         {
-            table = new SymbolTable(0);
+            table = new SymbolTable();
 
             AddBuiltInSymbols();
             node.Accept(this);
@@ -36,11 +36,13 @@ namespace compiler
 
         override public bool Visit(AstProgram node)
         {
+            table.UseGlobalScope();
             return true;
         }
 
         override public bool Visit(AstClass node)
         {
+            table.UseChildScope();
             return true;
         }
 
@@ -68,9 +70,7 @@ namespace compiler
 
         override public bool Visit(AstClassMethod node)
         {
-            //TODO: use tables stack to store arg list
-            //
-            // table.BeginScope()
+            table.UseNamedChildScope(node.Name.Id);
 
             var argumentsTypes = new List<string>();
             foreach (var argDef in node.ArgumentsDefinition.ArgumentsDefinition)
@@ -79,6 +79,7 @@ namespace compiler
                 table.EnterSymbol(argDef.Name.Id, argDef.TypeDef.Id);
             }
 
+            table.UseParentScope();
             table.EnterFunction("", node.Name.Id, node.TypeDef.Id, argumentsTypes);
             
             return true;

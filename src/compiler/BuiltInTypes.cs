@@ -11,5 +11,7 @@ namespace compiler
         public const string INT = "int";
         public const string BOOL = "bool";
         public const string VOID = "void";
+
+        public const int INTEGER_NUMBER_LENGTH = 14;
     }
 }

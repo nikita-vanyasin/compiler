@@ -8,54 +8,72 @@ namespace compiler
 {
     public class SymbolTable
     {
-        private Dictionary<string, Symbol> table;
-        private Dictionary<string, CallableSymbol> functionsTable;
-
-        public int NestingLevel { get; protected set; }
-
-        public SymbolTable(int nestingLevel)
+        private SymbolsScope globalScope;
+        private SymbolsScope currScope;
+        
+        public SymbolTable()
         {
-            NestingLevel = nestingLevel;
-            table = new Dictionary<string, Symbol>();
-            functionsTable = new Dictionary<string, CallableSymbol>();
+            globalScope = new SymbolsScope();
+            UseGlobalScope();
+        }
+
+        public void UseGlobalScope()
+        {
+            currScope = globalScope;
+        }
+
+        public void UseNamedChildScope(string id)
+        {
+            try
+            {
+                currScope = currScope.Childs[id];
+            }
+            catch (KeyNotFoundException)
+            {
+                currScope = currScope.AddChild(id);
+            }
+        }
+
+        public void UseChildScope()
+        {
+            if (currScope.Childs.Count == 0)
+            {
+                currScope = currScope.AddChild();
+            }
+            else
+            {
+                currScope = currScope.Childs.First().Value;
+            }
+        }
+
+        public void UseParentScope()
+        {
+            if (currScope.Parent == null)
+            {
+                throw new InvalidOperationException("parent scope does not exist");
+            }
+
+            currScope = currScope.Parent;
         }
 
         public void EnterFunction(string target, string name, string type, List<string> callArgTypes)
         {
-            var s = new CallableSymbol(target, name, type, callArgTypes);
-            functionsTable[target + name] = s;
+            currScope.EnterFunction(target, name, type, callArgTypes);
         }
 
         public void EnterSymbol(string name, string type = "", int size = -1)
         {
-            Symbol s = new Symbol(name, type, size);
-            table[name] = s;
+            currScope.EnterSymbol(name, type, size);
         }
 
         public CallableSymbol LookupFunction(string key)
         {
-            try
-            {
-                CallableSymbol s = functionsTable[key];
-                return s;
-            }
-            catch (KeyNotFoundException)
-            {
-                return null;
-            }
+            return currScope.LookupFunction(key);
         }
 
         public Symbol Lookup(string name)
         {
-            try
-            {
-                Symbol s = table[name];
-                return s;
-            }
-            catch (KeyNotFoundException)
-            {
-                return null;
-            }
+            return currScope.Lookup(name);
         }
     }
 }
