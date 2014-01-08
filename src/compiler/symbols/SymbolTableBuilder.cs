@@ -219,5 +219,10 @@ namespace compiler
         {
             return true;
         }
+
+        public override bool Visit(AstWhileStatement node)
+        {
+            return true;
+        }
     }
 }

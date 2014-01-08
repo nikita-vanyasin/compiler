@@ -77,6 +77,13 @@ namespace Test
             return true;
         }
 
+        public override bool Visit(AstWhileStatement node)
+        {
+            ErrorIfIsNull(node.Condition);
+            ErrorIfIsNull(node.Statements);
+            return true;
+        }
+
         override public bool Visit(AstClassField node)
         {
             ErrorIfIsNull(node.Name);

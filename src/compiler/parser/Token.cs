@@ -20,7 +20,7 @@ namespace compiler
         LEFT_BRACE, RIGHT_BRACE, LEFT_BRACKET,
         RIGHT_BRACKET, PLUS, MINUS, MULTIPLICATION, DIV, MOD,
         NOT, AND, OR, LT, GT, GTE, LTE, LINE_END,
-        BLOCK_START, BLOCK_END, PASS, EQUAL, DOT
+        BLOCK_START, BLOCK_END, PASS, EQUAL, DOT, WHILE
     }
 
     public class Token
@@ -86,7 +86,8 @@ namespace compiler
                 {"false", TokenType.FALSE},
                 {"pass", TokenType.PASS},
                 {"div", TokenType.DIV},
-                {"mod", TokenType.MOD}
+                {"mod", TokenType.MOD},
+                {"while", TokenType.WHILE}
         };
 
         public static Token CreateByString(string strKeyword)

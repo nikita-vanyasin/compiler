@@ -373,6 +373,16 @@ namespace compiler
             PushNode(ifThenStmt);
         }
 
+        // #WHILE_STATEMENT WHILE LEFT_PAREN #OR_TEST RIGHT_PAREN BLOCK_START #STATEMENTS_BLOCK BLOCK_END
+        private void ConstructWhileStatement()
+        {
+            var block = nodes.Pop() as AstStatementsBlock;
+            var condition = nodes.Pop() as AstExpression;
+
+            var stmt = new AstWhileStatement(condition, block);
+            PushNode(stmt);
+        }
+
         // #EXPRESSION (#TERM|#ADD_EXPRESSION|#SUB_EXPRESSION)
         private void ConstructExpression()
         {

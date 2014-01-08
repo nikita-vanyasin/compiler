@@ -1,17 +1,17 @@
 
 // ==========================================================================
-//  GPPG error listing for yacc source file <Parser.y - 09.01.2014 1:24:57>
+//  GPPG error listing for yacc source file <Parser.y - 08.01.2014 12:53:47>
 // ==========================================================================
 //  Version:  1.5.0
-//  Machine:  MYCOMPUTER
-//  DateTime: 09.01.2014 1:25:00
-//  UserName: User
+//  Machine:  USERNAME-PC
+//  DateTime: 08.01.2014 13:00:06
+//  UserName: Username
 // ==========================================================================
 
 
 %namespace PySharpGrammarCheck
 %token
-ID INTEGER_VALUE BOOL CLASS ELSE FALSE
+ID INTEGER_VALUE BOOL CLASS ELSE FALSE WHILE 
 IF INT PRIVATE PUBLIC RETURN STATIC TRUE
 COMMA ASSIGNMENT LEFT_PAREN RIGHT_PAREN
 LEFT_BRACE RIGHT_BRACE LEFT_BRACKET
@@ -80,6 +80,7 @@ STATEMENTS_S : STATEMENTS
 
 STATEMENT : FUNC_CALL LINE_END
           | IF_STATEMENT
+          | WHILE_STATEMENT
           | ASSIGN_STATEMENT LINE_END
           | RETURN EXPRESSION LINE_END
           ;
@@ -93,6 +94,9 @@ IF_STATEMENT : IF_THEN_STATEMENT
 
 IF_THEN_STATEMENT : IF LEFT_PAREN OR_TEST RIGHT_PAREN BLOCK_START STATEMENTS_BLOCK BLOCK_END
                   ;
+
+WHILE_STATEMENT : WHILE LEFT_PAREN OR_TEST RIGHT_PAREN BLOCK_START STATEMENTS_BLOCK BLOCK_END
+                ;
 
 EXPRESSION : TERM
            | ADD_EXPRESSION

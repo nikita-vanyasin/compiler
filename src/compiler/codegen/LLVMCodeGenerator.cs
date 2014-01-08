@@ -547,5 +547,10 @@ namespace compiler
             IsNot = false;
             return false;
         }
+
+        public override bool Visit(AstWhileStatement node)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

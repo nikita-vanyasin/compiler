@@ -220,6 +220,11 @@ namespace compiler
             return true;
         }
 
+        public override bool Visit(AstWhileStatement node)
+        {
+            return true;
+        }
+
         override public bool Visit(AstAssignStatement node)
         {
             var leftType = resolver.Resolve(node.Variable);

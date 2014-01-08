@@ -733,4 +733,25 @@ namespace compiler
         }
     }
 
+    public class AstWhileStatement : AstStatement
+    {
+        public AstExpression Condition { get; protected set; }
+        public AstStatementsBlock Statements { get; protected set; }
+
+        public AstWhileStatement(AstExpression cond, AstStatementsBlock block)
+        {
+            Condition = cond;
+            Statements = block;
+        }
+
+        public override void Accept(AstNodeVisitor visitor)
+        {
+            if (visitor.Visit(this))
+            {
+                Condition.Accept(visitor);
+                Statements.Accept(visitor);
+            }
+        }
+    }
+
 }
