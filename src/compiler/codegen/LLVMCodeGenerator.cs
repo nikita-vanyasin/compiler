@@ -20,6 +20,22 @@ namespace compiler
         private List<string> tmpVariablesArgCallList = new List<string>();
         private List<string> currExprCallTempraryVars = new List<string>();
 
+        private string GetBoolLLVM(BoolValue value)
+        {
+            if (value == BoolValue.TRUE)
+            {
+                return "1";
+            }
+            return "0";
+        }
+
+        private void CallPrint()
+        {
+            codeStream.WriteLine(CreateUnnamedVariable() + "= getelementptr [4 x i8]* @.str, i64 0, i64 0");
+            string strCallF = "= call i32 (i8 *, ...)* @printf(i8* " + GetCurrUnnamedVariable() + ", ";
+            codeStream.Write(CreateUnnamedVariable() + strCallF);
+        }
+
         private void GetLLVMBuilInFucntion(string target, string name)
         {
             switch (target)
@@ -28,9 +44,10 @@ namespace compiler
                     switch (name)
                     {
                         case "WriteInt":
-                            codeStream.WriteLine(CreateUnnamedVariable() + "= getelementptr [4 x i8]* @.str, i64 0, i64 0");
-                            string strCallF =  "= call i32 (i8 *, ...)* @printf(i8* " + GetCurrUnnamedVariable() + ", ";
-                            codeStream.Write(CreateUnnamedVariable() + strCallF);
+                            CallPrint();
+                            return;
+                        case "WriteBool":
+                            CallPrint();
                             return;
                         default:
                             throw new NotImplementedException();
@@ -299,6 +316,11 @@ namespace compiler
         override public bool Visit(AstBoolValueExpression node)
         {
            // codeStream.Write(" " + node.Value.ToString());
+            codeStream.WriteLine(CreateUnnamedVariable() + " = add i8 0, " + GetBoolLLVM(node.Value));
+            if (inFunc)
+            {
+                currExprCallTempraryVars.Add("i8 " + GetCurrUnnamedVariable());
+            }
             return true;
         }
 
@@ -351,24 +373,8 @@ namespace compiler
         
         override public bool Visit(AstMulExpression node)
         {
-            return true;
-        }
-
-        override public bool Visit(AstDivExpression node)
-        {
-            return true;
-        }
-
-        override public bool Visit(AstModExpression node)
-        {
-            return true;
-        }
-
-        override public bool Visit(AstAddExpression node)
-        {
             node.Left.Accept(this);
-            string addLine = " = add i32 " + GetCurrUnnamedVariable() + ", ";
-           // addLine = (CreateUnnamedVariable() + addLine);
+            string addLine = " = mul i32 " + GetCurrUnnamedVariable() + ", ";
             node.Right.Accept(this);
             addLine += GetCurrUnnamedVariable();
             codeStream.WriteLine(CreateUnnamedVariable() + addLine);
@@ -376,13 +382,63 @@ namespace compiler
             {
                 currExprCallTempraryVars.Add("i32 " + GetCurrUnnamedVariable());
             }
-          //  codeStream.Write("\n");
+            return false;
+        }
+
+        override public bool Visit(AstModExpression node)
+        {
+            node.Left.Accept(this);
+            string addLine = " = urem i32 " + GetCurrUnnamedVariable() + ", ";
+            node.Right.Accept(this);
+            addLine += GetCurrUnnamedVariable();
+            codeStream.WriteLine(CreateUnnamedVariable() + addLine);
+            if (inFunc)
+            {
+                currExprCallTempraryVars.Add("i32 " + GetCurrUnnamedVariable());
+            }
+            return false;
+        }
+
+        override public bool Visit(AstDivExpression node)
+        {
+            node.Left.Accept(this);
+            string addLine = " = sdiv i32 " + GetCurrUnnamedVariable() + ", ";
+            node.Right.Accept(this);
+            addLine += GetCurrUnnamedVariable();
+            codeStream.WriteLine(CreateUnnamedVariable() + addLine);
+            if (inFunc)
+            {
+                currExprCallTempraryVars.Add("i32 " + GetCurrUnnamedVariable());
+            }
+            return false;
+        }
+
+        override public bool Visit(AstAddExpression node)
+        {
+            node.Left.Accept(this);
+            string addLine = " = add i32 " + GetCurrUnnamedVariable() + ", ";
+            node.Right.Accept(this);
+            addLine += GetCurrUnnamedVariable();
+            codeStream.WriteLine(CreateUnnamedVariable() + addLine);
+            if (inFunc)
+            {
+                currExprCallTempraryVars.Add("i32 " + GetCurrUnnamedVariable());
+            }
             return false;
         }
 
         override public bool Visit(AstSubExpression node)
         {
-            return true;
+            node.Left.Accept(this);
+            string addLine = " = sub i32 " + GetCurrUnnamedVariable() + ", ";
+            node.Right.Accept(this);
+            addLine += GetCurrUnnamedVariable();
+            codeStream.WriteLine(CreateUnnamedVariable() + addLine);
+            if (inFunc)
+            {
+                currExprCallTempraryVars.Add("i32 " + GetCurrUnnamedVariable());
+            }
+            return false;
         }
 
         override public bool Visit(AstNegateUnaryExpr node)

@@ -85,6 +85,8 @@ namespace compiler
                 {"true", TokenType.TRUE},
                 {"false", TokenType.FALSE},
                 {"pass", TokenType.PASS},
+                {"div", TokenType.DIV},
+                {"mod", TokenType.MOD}
         };
 
         public static Token CreateByString(string strKeyword)
