@@ -56,8 +56,7 @@ namespace compiler
         public SourcePosition GetSourcePosition()
         {
             var pos = new SourcePosition();
-            pos.Line = TextUtils.GetLineNumber(text, currCharIndex);
-            pos.Column = TextUtils.GetColumnNumber(text, currCharIndex);
+			pos.Position = currCharIndex;
             return pos;
         }
 

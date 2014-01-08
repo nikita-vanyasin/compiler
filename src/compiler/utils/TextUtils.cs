@@ -37,6 +37,15 @@ namespace compiler
             return index - counter + 1;
         }
 
+		public static string WriteCompilerError(string source, ErrorEvent ev)
+		{
+            return string.Format("Error: {0} {1} [Line {2}, Column {3}]", 
+				ev.Description, 
+				ErrorEvent.GetTextByCode(ev.Code), 
+				GetLineNumber(source, ev.Position.Position), 
+				GetColumnNumber(source, ev.Position.Position));
+		}
+
         public static string CharPosToText(string file, int index)
         {
             int line = GetLineNumber(file, index);

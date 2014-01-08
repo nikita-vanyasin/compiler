@@ -14,7 +14,7 @@ namespace compiler
     public partial class Form1 : Form
     {
 		//номер элемента в логе -> позиция в коде
-		private Dictionary<int, int> m_errorPositions = new Dictionary<int, int>();
+		private Dictionary<int, SourcePosition> m_errorPositions = new Dictionary<int, SourcePosition>();
 
         public Form1()
         {
@@ -89,7 +89,7 @@ namespace compiler
 			{
 				if (m_errorPositions.ContainsKey(logListBox.SelectedIndex))
 				{
-					SourceBox.SelectionStart = m_errorPositions[logListBox.SelectedIndex];
+					SourceBox.SelectionStart = m_errorPositions[logListBox.SelectedIndex].Position;
 					SourceBox.SelectionLength = 1;
 				}
 			}
