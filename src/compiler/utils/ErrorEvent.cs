@@ -26,7 +26,7 @@ namespace compiler
 
         public override string ToString()
         {
-            return "Error: " + Description + " at " + GetTextByCode(Code) + "(" + Position + ")";
+            return Description + " at " + GetTextByCode(Code) + "(" + Position + ")";
         }
     }
 }

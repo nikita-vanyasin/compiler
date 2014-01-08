@@ -91,7 +91,7 @@ namespace compiler
                 }
                 else
                 {
-                    DispatchError(scanner.GetSourcePosition(), "Error: ", 2);
+                    DispatchError(scanner.GetSourcePosition(), string.Format("Unexpected \"{0}\"", a.Attribute), 2);
                     return false;
                 }
                 
