@@ -53,7 +53,7 @@ namespace compiler
             }
             else if (expr is AstExternalMethodCallExpression)
             {
-                var key = (expr as AstExternalMethodCallExpression).Target + (expr as AstExternalMethodCallExpression).Name.Id;
+                var key = (expr as AstExternalMethodCallExpression).Target.Id + (expr as AstExternalMethodCallExpression).Name.Id;
                 var s = table.LookupFunction(key);
                 return GetSymbolType(expr, s, (expr as AstExternalMethodCallExpression).Name.Id);
             }
