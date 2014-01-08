@@ -227,7 +227,15 @@ namespace compiler
 
         override public bool Visit(AstThisMethodCallExpression node)
         {
-            return true;
+            inFunc = true;
+            tmpVariablesArgCallList = new List<string>();
+            node.CallArgs.Accept(this);
+            var symbolFunc = table.LookupFunction(node.Name.Id);
+            codeStream.Write(CreateUnnamedVariable() + " = call " + GetLLVMType(symbolFunc.Type) + " @" + symbolFunc.Name + "(");
+            codeStream.Write(string.Join(",", tmpVariablesArgCallList.ToArray()));
+            codeStream.WriteLine(")");
+            inFunc = false;
+            return false;
         }
 
         override public bool Visit(AstThisMethodCallStatement node)
