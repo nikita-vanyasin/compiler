@@ -15,6 +15,31 @@ namespace compiler
         private List<string> classVariables = new List<string>();
         private Dictionary<string, uint> variableCounter = new Dictionary<string, uint>();
 
+        //for function
+        private bool inFunc = false;
+        private List<string> tmpVariablesArgCallList = new List<string>();
+        private List<string> currExprCallTempraryVars = new List<string>();
+
+        private void GetLLVMBuilInFucntion(string target, string name)
+        {
+            switch (target)
+            {
+                case "Console":
+                    switch (name)
+                    {
+                        case "WriteInt":
+                            codeStream.WriteLine(CreateUnnamedVariable() + "= getelementptr [4 x i8]* @.str, i64 0, i64 0");
+                            string strCallF =  "= call i32 (i8 *, ...)* @printf(i8* " + GetCurrUnnamedVariable() + ", ";
+                            codeStream.Write(CreateUnnamedVariable() + strCallF);
+                            return;
+                        default:
+                            throw new NotImplementedException();
+                    }
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
         private string GetCurrVariableState(string variable)
         {
             if (variableCounter[variable] == 0)
@@ -41,7 +66,9 @@ namespace compiler
 
         private void CreateLLVMBuiltIn()
         {
-            codeStream.WriteLine("declare i32 @puts(i8*)\n");
+            codeStream.WriteLine("@.str = internal constant [4 x i8] c\"%d\\0A\\00\"");
+            codeStream.WriteLine("declare i32 @printf(i8 *, ...)");
+
         }
 
         private void ResetUnnamedVariable()
@@ -190,11 +217,6 @@ namespace compiler
 
         override public bool Visit(AstStatementsBlock node)
         {
-           /* codeStream.Write("{\n");
-            
-            node.Statements.Accept(this);
-
-            codeStream.Write("}\n");*/
             return true;
         }
 
@@ -215,7 +237,14 @@ namespace compiler
 
         override public bool Visit(AstExternalMethodCallExpression node)
         {
-            return true;
+            inFunc = true;
+            tmpVariablesArgCallList = new List<string>();
+            node.CallArgs.Accept(this);
+            GetLLVMBuilInFucntion(node.Target.Id, node.Name.Id);
+            codeStream.Write(string.Join(",", tmpVariablesArgCallList.ToArray()));
+            codeStream.WriteLine(")");
+            inFunc = false;
+            return false;
         }
 
         override public bool Visit(AstExternalMethodCallStatement node)
@@ -245,7 +274,7 @@ namespace compiler
 
                 codeStream.WriteLine("store " + GetLLVMType(symbolTableVariable.Type) + " " + GetCurrUnnamedVariable()
                  + ", " + GetLLVMType(symbolTableVariable.Type) + "* @" + node.Variable.Id);
-                return false;
+                
             }
             else
             {
@@ -253,8 +282,10 @@ namespace compiler
                 UseVaribaleCatched(node.Variable.Id);
                 codeStream.WriteLine("%" + GetCurrVariableState(node.Variable.Id) + "= add " + GetLLVMType(symbolTableVariable.Type) + " 0, " + GetCurrUnnamedVariable());
                 
-                return false;
+            
             }
+          
+            return false;
         }
 
         override public bool Visit(AstBoolValueExpression node)
@@ -267,6 +298,10 @@ namespace compiler
         {
             //codeStream.WriteLine(CreateUnnamedVariable() + " = " + node.Value);
             codeStream.WriteLine(CreateUnnamedVariable() + " = add i32 0, " + node.Value);
+            if (inFunc)
+            {
+                currExprCallTempraryVars.Add("i32 " + GetCurrUnnamedVariable());
+            }
             return true;
         }
 
@@ -277,18 +312,28 @@ namespace compiler
             if (classVariables.Contains(node.Id))
             {
                 codeStream.WriteLine(CreateUnnamedVariable() + " = load " + GetLLVMType(symbolTableVariable.Type) + "* @" + node.Id);
-                return true;
             }
             else
             {
                 codeStream.WriteLine(CreateUnnamedVariable() + " = add " + GetLLVMType(symbolTableVariable.Type) + " 0, %" + GetCurrVariableState(node.Id));
-                return true;
             }
+            if (inFunc)
+            {
+                currExprCallTempraryVars.Add(GetLLVMType(symbolTableVariable.Type) + " " + GetCurrUnnamedVariable());
+            }
+
+            return true;
         }
 
         override public bool Visit(AstArgumentsCallList node)
         {
-            return true;
+            foreach (var arg in node.Arguments)
+            {
+                currExprCallTempraryVars = new List<string>();
+                arg.Expr.Accept(this);
+                tmpVariablesArgCallList.Add(currExprCallTempraryVars.Last());
+            }
+            return false;
         }
 
         override public bool Visit(AstCallArgument node)
@@ -319,7 +364,10 @@ namespace compiler
             node.Right.Accept(this);
             addLine += GetCurrUnnamedVariable();
             codeStream.WriteLine(CreateUnnamedVariable() + addLine);
-            
+            if (inFunc)
+            {
+                currExprCallTempraryVars.Add("i32 " + GetCurrUnnamedVariable());
+            }
           //  codeStream.Write("\n");
             return false;
         }
