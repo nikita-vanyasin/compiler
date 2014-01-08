@@ -36,6 +36,11 @@ namespace compiler
             var readIntList = new List<string>(){
             };
             table.EnterFunction("Console", "ReadInt", BuiltInTypes.INT, readIntList);
+
+           /* var writeSpaceList = new List<string>()
+            {
+            };
+            table.EnterFunction("Console", "WriteSpace", BuiltInTypes.VOID, writeSpaceList);*/
         }
 
         override public bool Visit(AstProgram node)
