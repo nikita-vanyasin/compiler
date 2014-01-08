@@ -134,7 +134,7 @@ namespace compiler
                 DispatchError(node.TextPosition, "Method " + node.Name.Id + " not found in current scope.");
                 return false;
             }
-
+            
             var argsCount = funcInfo.ArgumentTypes.Count;
             var realCount = node.CallArgs.Arguments.Count;
             if (argsCount != realCount)

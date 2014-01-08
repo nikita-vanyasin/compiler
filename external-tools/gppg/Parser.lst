@@ -1,23 +1,23 @@
 
 // ==========================================================================
-//  GPPG error listing for yacc source file <Parser.y - 07.01.2014 18:23:33>
+//  GPPG error listing for yacc source file <Parser.y - 09.01.2014 1:24:57>
 // ==========================================================================
 //  Version:  1.5.0
 //  Machine:  MYCOMPUTER
-//  DateTime: 07.01.2014 19:17:17
+//  DateTime: 09.01.2014 1:25:00
 //  UserName: User
 // ==========================================================================
 
 
 %namespace PySharpGrammarCheck
 %token
-ID INTEGER_VALUE BOOL CHAR CLASS CONST ELSE ENUM FALSE
+ID INTEGER_VALUE BOOL CLASS ELSE FALSE
 IF INT PRIVATE PUBLIC RETURN STATIC TRUE
 COMMA ASSIGNMENT LEFT_PAREN RIGHT_PAREN
 LEFT_BRACE RIGHT_BRACE LEFT_BRACKET
 RIGHT_BRACKET PLUS MINUS MULTIPLICATION DIV MOD
-NOT AND OR LT GT GTE LTE LINE_END
-BLOCK_START BLOCK_END PASS EQUAL DOT EOF
+NOT AND OR LINE_END
+BLOCK_START BLOCK_END PASS DOT EOF
 %start PS_PROGRAM
 %%
 
@@ -47,7 +47,6 @@ STATIC_MODIFIER : STATIC
                 ;
 
 TYPE_DEFINITION : BOOL
-                | CHAR
                 | INT
                 ;
 
