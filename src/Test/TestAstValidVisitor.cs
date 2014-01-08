@@ -310,5 +310,11 @@ namespace Test
             ErrorIfIsNull(node.Right);
             return true;
         }
+
+        public override bool Visit(AstIdArrayExpression node)
+        {
+            ErrorIfIsNull(node.Index);
+            return true;
+        }
     }
 }

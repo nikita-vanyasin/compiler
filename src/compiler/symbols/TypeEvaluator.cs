@@ -48,7 +48,7 @@ namespace compiler
             }
             catch (SymbolNotFoundException e)
             {
-                DispatchError(e.Expr.TextPosition, "'" + e.Id + "' identifier not found.");
+                DispatchError(e.Expr.TextPosition, e.Message);
             }
 
             return result;
@@ -93,6 +93,13 @@ namespace compiler
 
         override public bool Visit(AstClassField node)
         {
+            var type = node.TypeDef;
+
+            if (type is AstIdArrayExpression)
+            {
+                (type as AstIdArrayExpression).Accept(this);
+            }
+
             return false;
         }
 
@@ -204,7 +211,7 @@ namespace compiler
         {
             if (currFunctionReturnType != null)
             {
-                var type = resolver.Resolve(node.Expression);
+                var type = resolver.Resolve(node.Expression);                
                 if (type != currFunctionReturnType)
                 {
                     DispatchError(node.TextPosition, "Return value(" + type + ") does not match function return type(" + currFunctionReturnType + ")");
@@ -250,6 +257,7 @@ namespace compiler
             if (value.Length > BuiltInTypes.INTEGER_NUMBER_LENGTH)
             {
                 DispatchError(node.TextPosition, "Too long integer value. Maximum " + BuiltInTypes.INTEGER_NUMBER_LENGTH + " digits allowed");
+                return false;
             }
 
             return true;
@@ -298,8 +306,6 @@ namespace compiler
 
         private bool CheckZeroDevision(AstExpression node)
         {
-            // todo: cast?
-
             var castNode = node;
 
             if (node is AstSimpleUnaryExpr)
@@ -311,7 +317,8 @@ namespace compiler
             var intValExpr = castNode as AstIntegerValueExpression;
             if (intValExpr != null)
             {
-                if (Convert.ToInt32(intValExpr.Value) == 0)
+                intValExpr.Accept(this);
+                if (Visit(intValExpr) && Convert.ToInt32(intValExpr.Value) == 0)
                 {
                     DispatchError(node.TextPosition, "Division by zero");
                     return false;
@@ -473,6 +480,42 @@ namespace compiler
                 DispatchError(node.TextPosition, "Comparison operations available only for integer types.");
                 return false;
             }
+            return true;
+        }
+
+        public override bool Visit(AstIdArrayExpression node)
+        {
+            var intValSize = node.Index as AstIntegerValueExpression;
+            if (intValSize != null)
+            {
+                try
+                {
+                    var size = Convert.ToInt32(intValSize.Value);
+                    if (size > BuiltInTypes.MAX_ARRAY_SIZE)
+                    {
+                        DispatchError(intValSize.TextPosition, "Max arrays size is " + BuiltInTypes.MAX_ARRAY_SIZE);
+                        return false;
+                    }
+
+                    if (size < 1)
+                    {
+                        DispatchError(intValSize.TextPosition, "Invalid array size");
+                        return false;
+                    }
+                }
+                catch (OverflowException)
+                {
+                    DispatchError(intValSize.TextPosition, "Max arrays size is " + BuiltInTypes.MAX_ARRAY_SIZE);
+                    return false;
+                }
+            }
+
+            var indexType = resolver.Resolve(node.Index);
+            if (indexType != BuiltInTypes.INT)
+            {
+                DispatchError(node.Index.TextPosition, "Only integer values available for array index");
+            }
+
             return true;
         }
     }

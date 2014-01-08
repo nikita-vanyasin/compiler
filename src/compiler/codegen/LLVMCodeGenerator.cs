@@ -658,5 +658,10 @@ namespace compiler
             SaveArg("i1" + GetCurrUnnamedVariable());
             return false;
         }
+
+        public override bool Visit(AstIdArrayExpression node)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

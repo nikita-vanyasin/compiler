@@ -85,6 +85,8 @@ namespace compiler
                 case '-': return new Token(TokenType.MINUS, currChar);
                 case '*': return new Token(TokenType.MULTIPLICATION, currChar);
                 case '!': return new Token(TokenType.NOT, currChar);
+                case '[': return new Token(TokenType.LEFT_BRACKET, currChar);
+                case ']': return new Token(TokenType.RIGHT_BRACKET, currChar);
                 case '<': return LessSwitchBranch();
                 case '>': return GreaterSwitchBranch();
                 case '\n': return NewLineBranch();

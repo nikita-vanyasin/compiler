@@ -40,9 +40,19 @@ namespace compiler
             {
                 return BuiltInTypes.BOOL;
             }
+            else if (expr is AstIdArrayExpression)
+            {
+                return BuiltInTypes.INT;
+            }
             else if (expr is AstIdExpression)
             {
                 var s = table.Lookup((expr as AstIdExpression).Id);
+
+                if (s != null && s.IsArraySymbol())
+                {
+                    return BuiltInTypes.INT_ARRAY;
+                }
+
                 return GetSymbolType(expr, s, (expr as AstIdExpression).Id);
             }
             else if (expr is AstThisMethodCallExpression)
@@ -55,7 +65,7 @@ namespace compiler
             {
                 var key = (expr as AstExternalMethodCallExpression).Target.Id + (expr as AstExternalMethodCallExpression).Name.Id;
                 var s = table.LookupFunction(key);
-                return GetSymbolType(expr, s, (expr as AstExternalMethodCallExpression).Name.Id);
+                return GetSymbolType(expr, s, (expr as AstExternalMethodCallExpression).Target.Id + "." + (expr as AstExternalMethodCallExpression).Name.Id);
             }
             else if (expr is AstNegateUnaryExpr)
             {
@@ -79,7 +89,8 @@ namespace compiler
         {
             if (s == null)
             {
-                var e = new SymbolNotFoundException();
+                var name = (s is CallableSymbol) ? " method" : " identifier";
+                var e = new SymbolNotFoundException("'" + id + name +"' not found.");
                 e.Expr = expr;
                 e.Id = id;
                 throw e;

@@ -67,7 +67,22 @@ namespace compiler
 
         override public bool Visit(AstClassField node)
         {
-            table.EnterSymbol(node.Name.Id, node.TypeDef.Id);
+            var size = -1;
+            if (node.TypeDef is AstIdArrayExpression)
+            {
+                var indexNode = (node.TypeDef as AstIdArrayExpression).Index;
+                var sizeStr = (indexNode as AstIntegerValueExpression).Value;
+                try
+                {
+                    size = Convert.ToInt32(sizeStr);
+                }
+                catch (OverflowException)
+                {
+                    size = -1;
+                }
+
+            }
+            table.EnterSymbol(node.Name.Id, node.TypeDef.Id, size);
 
             return false;
         }
@@ -249,6 +264,11 @@ namespace compiler
         }
 
         public override bool Visit(AstEqualComparison node)
+        {
+            return true;
+        }
+
+        public override bool Visit(AstIdArrayExpression node)
         {
             return true;
         }

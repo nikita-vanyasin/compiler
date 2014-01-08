@@ -84,10 +84,10 @@ class Program:
 class Program:   
     private int a
     public static int Main():   
-        a = foo(2)
+        a = foo(foo(foo(foo(1))))
         return a
     private int foo(int i):
-        return i
+        return i + 1
 
 ";
             var res = p.Parse(text);
@@ -223,6 +223,338 @@ class Program:
         return i  
     private static bool Foo():
         return false
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var checker = new TypeEvaluator();
+            res = checker.Evaluate(p.GetRootNode());
+            Assert.IsFalse(res);
+        }
+
+        [TestMethod]
+        public void TestWhileCond()
+        {
+            Parser p = new Parser();
+            var text = @"  
+class Program:  
+    private int temp  
+    private int i
+    private bool c
+    public static int Main():   
+        while (i > c):
+            Console.WriteInt(i)
+            i = i - 1
+        return temp  
+
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var checker = new TypeEvaluator();
+            res = checker.Evaluate(p.GetRootNode());
+            Assert.IsFalse(res);
+        }
+
+        [TestMethod]
+        public void TestArrDeclaration()
+        {
+            Parser p = new Parser();
+            var text = @"  
+class Program:  
+    private int[100] temp  
+    private int[1] i
+    private bool c
+    public static int Main():   
+        Console.WriteInt(1)
+        return 0  
+
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var checker = new TypeEvaluator();
+            res = checker.Evaluate(p.GetRootNode());
+            Assert.IsTrue(res);
+        }
+
+        [TestMethod]
+        public void TestArrDeclarationBadIndex()
+        {
+            Parser p = new Parser();
+            var text = @"  
+class Program:  
+    private int[100] temp  
+    private int[0] i
+    private bool c
+    public static int Main():   
+        Console.WriteInt(i)
+        return 0  
+
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var checker = new TypeEvaluator();
+            res = checker.Evaluate(p.GetRootNode());
+            Assert.IsFalse(res);
+        }
+
+        [TestMethod]
+        public void TestArrUse()
+        {
+            Parser p = new Parser();
+            var text = @"  
+class Program:  
+    private int[100] temp  
+    private int a
+    private bool c
+    public static int Main():   
+        temp[2] = 10
+        temp[0] = a
+        temp[4] = a *6
+        temp[5] = temp[0]
+        temp[5] = temp[0] - 1
+        return a  
+
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var checker = new TypeEvaluator();
+            res = checker.Evaluate(p.GetRootNode());
+            Assert.IsTrue(res);
+        }
+
+        [TestMethod]
+        public void TestArrUseBadIndexOverflow()
+        {
+            Parser p = new Parser();
+            var text = @"  
+class Program:  
+    private int[100] temp  
+    private int a
+    private bool c
+    public static int Main():   
+        temp[100] = 10
+        temp[3] = a
+        temp[4] = a *6
+        temp[5] = temp[0]
+        temp[5] = temp[0] - 1
+        return 0  
+
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var checker = new TypeEvaluator();
+            res = checker.Evaluate(p.GetRootNode());
+            Assert.IsFalse(res);
+        }
+
+        [TestMethod]
+        public void TestArrUseBadIndexUnderflow()
+        {
+            Parser p = new Parser();
+            var text = @"  
+class Program:  
+    private int[100] temp  
+    private int a
+    private bool c
+    public static int Main():   
+        temp[-1] = 10
+        temp[3] = a
+        temp[4] = a *6
+        temp[5] = temp[0]
+        temp[5] = temp[0] - 1
+        return 0  
+
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var checker = new TypeEvaluator();
+            res = checker.Evaluate(p.GetRootNode());
+            Assert.IsFalse(res);
+        }
+
+        [TestMethod]
+        public void TestArrUseBadWrite()
+        {
+            Parser p = new Parser();
+            var text = @"  
+class Program:  
+    private int[100] temp  
+    private int a
+    private bool c
+    public static int Main():   
+        temp[10] = c
+        temp[3] = a
+        temp[4] = a *6
+        temp[5] = temp[0]
+        temp[5] = temp[0] - 1
+        return 0  
+
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var checker = new TypeEvaluator();
+            res = checker.Evaluate(p.GetRootNode());
+            Assert.IsFalse(res);
+        }
+
+        [TestMethod]
+        public void TestArrUseBadRead()
+        {
+            Parser p = new Parser();
+            var text = @"  
+class Program:  
+    private int[100] temp  
+    private int a
+    private bool c
+    public static int Main():   
+        temp[10] = a
+        temp[3] = a
+        temp[4] = a *6
+        c = temp[0]
+        temp[5] = temp[0] - 1
+        return a  
+
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var checker = new TypeEvaluator();
+            res = checker.Evaluate(p.GetRootNode());
+            Assert.IsFalse(res);
+        }
+
+        [TestMethod]
+        public void TestArrUseExpr()
+        {
+            Parser p = new Parser();
+            var text = @"  
+class Program:  
+    private int[100] temp  
+    private int a
+    private bool c
+    public static int Main():   
+        temp[10 + a] = a
+        return a  
+
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var checker = new TypeEvaluator();
+            res = checker.Evaluate(p.GetRootNode());
+            Assert.IsTrue(res);
+        }
+
+        [TestMethod]
+        public void TestArrBadUseExpr()
+        {
+            Parser p = new Parser();
+            var text = @"  
+class Program:  
+    private int[100] temp  
+    private int a
+    private bool c
+    public static int Main():   
+        temp[c] = a
+        return a  
+
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var checker = new TypeEvaluator();
+            res = checker.Evaluate(p.GetRootNode());
+            Assert.IsFalse(res);
+        }
+
+
+        [TestMethod]
+        public void TestArrBadUsage()
+        {
+            Parser p = new Parser();
+            var text = @"  
+class Program:  
+    private int[100] temp  
+    private int a
+    private bool c
+    public static int Main():   
+        a = temp * 3
+        return a  
+
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var checker = new TypeEvaluator();
+            res = checker.Evaluate(p.GetRootNode());
+            Assert.IsFalse(res);
+        }
+
+        [TestMethod]
+        public void TestArrBadReturn()
+        {
+            Parser p = new Parser();
+            var text = @"  
+class Program:  
+    private int[100] temp  
+    private int a
+    private bool c
+    public static int Main():   
+        temp[c] = a
+        return temp  
+
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var checker = new TypeEvaluator();
+            res = checker.Evaluate(p.GetRootNode());
+            Assert.IsFalse(res);
+        }
+
+        [TestMethod]
+        public void TestArrDeclareTooBig()
+        {
+            Parser p = new Parser();
+            var text = @"  
+class Program:  
+    private int[1909090909090909009000] temp  
+    private int a
+    private bool c
+    public static int Main():   
+        temp[0] = a
+        return 1  
+
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var checker = new TypeEvaluator();
+            res = checker.Evaluate(p.GetRootNode());
+            Assert.IsFalse(res);
+        }
+
+
+        [TestMethod]
+        public void TestDivideBig()
+        {
+            Parser p = new Parser();
+            var text = @"  
+class Program:  
+    private int[19] temp  
+    private int a
+    private bool c
+    public static int Main():   
+        temp[0] = 32 mod 8908098800099080980
+        return 1  
+
 ";
             var res = p.Parse(text);
             Assert.IsTrue(res);
