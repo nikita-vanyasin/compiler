@@ -169,12 +169,15 @@ namespace compiler
 
         override public bool Visit(AstProgram node)
         {
+            table.UseGlobalScope();
             CreateLLVMBuiltIn();
             return true;
         }
 
         override public bool Visit(AstClass node)
         {
+            table.UseChildScope();
+
            //TODO something
             node.Body.Accept(this);
             return false;
@@ -205,12 +208,17 @@ namespace compiler
 
         override public bool Visit(AstClassMethod node)
         {
+            table.UseNamedChildScope(node.Name.Id);
+
             ResetUnnamedVariable();
             codeStream.Write("define " + GetLLVMType(node.TypeDef.Id) + " @" + node.Name.Id.ToLower());
             currReturnType = GetLLVMType(node.TypeDef.Id);
             node.ArgumentsDefinition.Accept(this);
             node.StatementsBlock.Accept(this);
             codeStream.WriteLine("}");
+
+            table.UseParentScope();
+
             return false;
         }
 
