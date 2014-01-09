@@ -552,5 +552,30 @@ namespace compiler
         {
             throw new NotImplementedException();
         }
+
+
+        public override bool Visit(AstLtComparison node)
+        {
+            throw new NotImplementedException();
+        }
+        public override bool Visit(AstGtComparison node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override bool Visit(AstLteComparison node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override bool Visit(AstGteComparison node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override bool Visit(AstEqualComparison node)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

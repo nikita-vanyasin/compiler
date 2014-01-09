@@ -263,5 +263,29 @@ namespace compiler
         {
             return true;
         }
+
+        public override bool Visit(AstLtComparison node)
+        {
+            return true;
+        }
+        public override bool Visit(AstGtComparison node)
+        {
+            return true;
+        }
+
+        public override bool Visit(AstLteComparison node)
+        {
+            return true;
+        }
+
+        public override bool Visit(AstGteComparison node)
+        {
+            return true;
+        }
+
+        public override bool Visit(AstEqualComparison node)
+        {
+            return true;
+        }
     }
 }

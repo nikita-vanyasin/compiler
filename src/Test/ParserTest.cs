@@ -179,5 +179,74 @@ class Program:
             res = testVisitor.TestTree(p.GetRootNode());
             Assert.IsTrue(res);
         }
+
+        [TestMethod]
+        public void TestWhileNodes()
+        {
+            Parser p = new Parser();
+            var text = @"  
+class Program:  
+    private int temp  
+    private bool test
+
+    public static int Main():   
+        while (test):
+            Console.WriteInt(10)
+        return 0  
+
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var testVisitor = new TestAstValidVisitor();
+            res = testVisitor.TestTree(p.GetRootNode());
+            Assert.IsTrue(res);
+        }
+
+        [TestMethod]
+        public void TestComparison()
+        {
+            Parser p = new Parser();
+            var text = @"  
+class Program:  
+    private int temp  
+    private bool test
+
+    public static int Main():   
+        while (temp < 5):
+            Console.WriteInt(10)
+        return 0  
+
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var testVisitor = new TestAstValidVisitor();
+            res = testVisitor.TestTree(p.GetRootNode());
+            Assert.IsTrue(res);
+        }
+
+        [TestMethod]
+        public void TestComparisonEqual()
+        {
+            Parser p = new Parser();
+            var text = @"  
+class Program:  
+    private int temp  
+    private bool test
+
+    public static int Main():   
+        while (temp == 0):
+            Console.WriteInt(10)
+        return 0  
+
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var testVisitor = new TestAstValidVisitor();
+            res = testVisitor.TestTree(p.GetRootNode());
+            Assert.IsTrue(res);
+        }
     }
 }

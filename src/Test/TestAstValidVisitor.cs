@@ -275,5 +275,40 @@ namespace Test
             ErrorIfIsNull(node.Expr);
             return true;
         }
+
+
+        public override bool Visit(AstLtComparison node)
+        {
+            ErrorIfIsNull(node.Left);
+            ErrorIfIsNull(node.Right);
+            return true;
+        }
+        public override bool Visit(AstGtComparison node)
+        {
+            ErrorIfIsNull(node.Left);
+            ErrorIfIsNull(node.Right);
+            return true;
+        }
+
+        public override bool Visit(AstLteComparison node)
+        {
+            ErrorIfIsNull(node.Left);
+            ErrorIfIsNull(node.Right);
+            return true;
+        }
+
+        public override bool Visit(AstGteComparison node)
+        {
+            ErrorIfIsNull(node.Left);
+            ErrorIfIsNull(node.Right);
+            return true;
+        }
+
+        public override bool Visit(AstEqualComparison node)
+        {
+            ErrorIfIsNull(node.Left);
+            ErrorIfIsNull(node.Right);
+            return true;
+        }
     }
 }

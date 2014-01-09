@@ -208,5 +208,28 @@ class Program:
             res = checker.Evaluate(p.GetRootNode());
             Assert.IsFalse(res);
         }
+
+        [TestMethod]
+        public void TestComparisonWithBoolBad()
+        {
+            Parser p = new Parser();
+            var text = @"  
+class Program:   
+    private bool a
+    private int i
+    public static int Main():   
+        if (5 < Foo()):
+            Console.WriteInt(1)
+        return i  
+    private static bool Foo():
+        return false
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var checker = new TypeEvaluator();
+            res = checker.Evaluate(p.GetRootNode());
+            Assert.IsFalse(res);
+        }
     }
 }

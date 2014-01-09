@@ -754,4 +754,101 @@ namespace compiler
         }
     }
 
+    public abstract class AstComparison : AstExpression
+    {
+        public AstSimpleTermExpr Left { get; protected set; }
+        public AstSimpleTermExpr Right { get; protected set; }
+
+        protected AstComparison(AstSimpleTermExpr left, AstSimpleTermExpr right)
+        {
+            Left = left;
+            Right = right;
+        }
+    }
+
+    public class AstLtComparison : AstComparison
+    {
+        public AstLtComparison(AstSimpleTermExpr left, AstSimpleTermExpr right)
+            : base(left, right)
+        {
+        }
+
+        public override void Accept(AstNodeVisitor visitor)
+        {
+            if (visitor.Visit(this))
+            {
+                Left.Accept(visitor);
+                Right.Accept(visitor);
+            }
+        }
+    }
+
+    public class AstGtComparison : AstComparison
+    {
+        public AstGtComparison(AstSimpleTermExpr left, AstSimpleTermExpr right)
+            : base(left, right)
+        {
+        }
+
+        public override void Accept(AstNodeVisitor visitor)
+        {
+            if (visitor.Visit(this))
+            {
+                Left.Accept(visitor);
+                Right.Accept(visitor);
+            }
+        }
+    }
+
+    public class AstLteComparison : AstComparison
+    {
+        public AstLteComparison(AstSimpleTermExpr left, AstSimpleTermExpr right)
+            : base(left, right)
+        {
+        }
+
+        public override void Accept(AstNodeVisitor visitor)
+        {
+            if (visitor.Visit(this))
+            {
+                Left.Accept(visitor);
+                Right.Accept(visitor);
+            }
+        }
+    }
+
+    public class AstGteComparison : AstComparison
+    {
+        public AstGteComparison(AstSimpleTermExpr left, AstSimpleTermExpr right)
+            : base(left, right)
+        {
+        }
+
+        public override void Accept(AstNodeVisitor visitor)
+        {
+            if (visitor.Visit(this))
+            {
+                Left.Accept(visitor);
+                Right.Accept(visitor);
+            }
+        }
+    }
+
+    public class AstEqualComparison : AstComparison
+    {
+        public AstEqualComparison(AstSimpleTermExpr left, AstSimpleTermExpr right)
+            : base(left, right)
+        {
+        }
+
+        public override void Accept(AstNodeVisitor visitor)
+        {
+            if (visitor.Visit(this))
+            {
+                Left.Accept(visitor);
+                Right.Accept(visitor);
+            }
+        }
+    }
+
 }
