@@ -341,8 +341,9 @@ namespace compiler
         {           
             funcCallArgStack.Push(new List<string>());
             var symbolFunc = table.LookupFunction(node.Name.Id);
+            node.CallArgs.Accept(this);
             codeStream.Write(CreateUnnamedVariable() + " = call " + GetLLVMType(symbolFunc.Type) + " @" + symbolFunc.Name + "(");
-            SaveArg(GetLLVMType(symbolFunc.Type) + " " + GetCurrUnnamedVariable());
+            //SaveArg(GetLLVMType(symbolFunc.Type) + " " + GetCurrUnnamedVariable());         
             codeStream.Write(string.Join(",", GetCurrFuncArg().ToArray()));
             codeStream.WriteLine(")");            
             return false;
