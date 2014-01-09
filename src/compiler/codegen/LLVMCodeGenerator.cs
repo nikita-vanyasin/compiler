@@ -698,7 +698,13 @@ namespace compiler
 
         public override bool Visit(AstNotEqualComparison node)
         {
-            throw new NotImplementedException();
+            node.Left.Accept(this);
+            string addLine = " = icmp ne i32 " + GetCurrUnnamedVariable() + ", ";
+            node.Right.Accept(this);
+            addLine += GetCurrUnnamedVariable();
+            codeStream.WriteLine(CreateUnnamedVariable() + addLine);
+            SaveArg("i1 " + GetCurrUnnamedVariable());
+            return false;
         }
 
         public override bool Visit(AstIdArrayExpression node)
