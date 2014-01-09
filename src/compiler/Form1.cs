@@ -104,7 +104,7 @@ namespace compiler
 		private void runToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			if(BuildSource())
-				Process.Start("llvm\\run_module.bat", outputFileName);
+				Process.Start("run_module.bat", outputFileName);
 		}
     }
 }

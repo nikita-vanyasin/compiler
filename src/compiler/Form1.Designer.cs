@@ -47,10 +47,10 @@
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.buildToolStripMenuItem});
-			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+			this.menuStrip1.Location = new System.Drawing.Point(4, 4);
 			this.menuStrip1.Name = "menuStrip1";
 			this.menuStrip1.Padding = new System.Windows.Forms.Padding(4, 2, 0, 2);
-			this.menuStrip1.Size = new System.Drawing.Size(802, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(794, 24);
 			this.menuStrip1.TabIndex = 0;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -98,10 +98,10 @@
 			// 
 			this.logListBox.Dock = System.Windows.Forms.DockStyle.Bottom;
 			this.logListBox.FormattingEnabled = true;
-			this.logListBox.Location = new System.Drawing.Point(0, 406);
+			this.logListBox.Location = new System.Drawing.Point(4, 402);
 			this.logListBox.Margin = new System.Windows.Forms.Padding(2);
 			this.logListBox.Name = "logListBox";
-			this.logListBox.Size = new System.Drawing.Size(802, 147);
+			this.logListBox.Size = new System.Drawing.Size(794, 147);
 			this.logListBox.TabIndex = 2;
 			this.logListBox.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.logListBox_MouseDoubleClick);
 			// 
@@ -110,11 +110,11 @@
 			this.SourceBox.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.SourceBox.Font = new System.Drawing.Font("Consolas", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.SourceBox.HideSelection = false;
-			this.SourceBox.Location = new System.Drawing.Point(0, 24);
+			this.SourceBox.Location = new System.Drawing.Point(4, 28);
 			this.SourceBox.Multiline = true;
 			this.SourceBox.Name = "SourceBox";
 			this.SourceBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.SourceBox.Size = new System.Drawing.Size(802, 382);
+			this.SourceBox.Size = new System.Drawing.Size(794, 374);
 			this.SourceBox.TabIndex = 1;
 			this.SourceBox.WordWrap = false;
 			// 
@@ -149,6 +149,7 @@
 			this.MainMenuStrip = this.menuStrip1;
 			this.Margin = new System.Windows.Forms.Padding(2);
 			this.Name = "Form1";
+			this.Padding = new System.Windows.Forms.Padding(4);
 			this.Text = "Compiler";
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
