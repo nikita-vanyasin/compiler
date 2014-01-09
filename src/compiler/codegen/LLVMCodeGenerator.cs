@@ -23,6 +23,15 @@ namespace compiler
         //test negative
         private bool IsNegative = false;
 
+        //if counter
+        private uint ifCount = 0;
+
+        private uint CreateIfUse()
+        {
+            ifCount++;
+            return ifCount;
+        }
+
         private string GetBoolLLVM(BoolValue value)
         {
             if (value == BoolValue.TRUE)
@@ -163,6 +172,7 @@ namespace compiler
             codeStream = new StreamWriter(outStream);
             codeStream.AutoFlush = true;
             astRootNode.Accept(this);
+            codeStream.Flush();
             return true;
             //throw new NotImplementedException();
         }
@@ -299,7 +309,20 @@ namespace compiler
 
         override public bool Visit(AstIfStatement node)
         {
-            return true;
+            node.Condition.Accept(this);
+            string currIf = CreateIfUse().ToString();
+           // codeStream.WriteLine("startif" + currIf.ToString() + ":");
+            var condExprResult = GetCurrUnnamedVariable();
+            codeStream.WriteLine(CreateUnnamedVariable() + "= icmp eq i1 1, " + condExprResult);
+            codeStream.WriteLine("br i1 " + GetCurrUnnamedVariable() + ", label %then" + currIf + ", label %else" + currIf);
+            codeStream.WriteLine("then" + currIf.ToString() + ":");
+            node.ThenBlock.Statements.Accept(this);
+            codeStream.WriteLine("br label %endif" + currIf);
+            codeStream.WriteLine("else" + currIf + ":");
+            node.ElseBlock.Accept(this);
+            codeStream.WriteLine("br label %endif" + currIf);
+            codeStream.WriteLine("endif" + currIf + ":");
+            return false;
         }
 
         override public bool Visit(AstAssignStatement node)
@@ -325,7 +348,7 @@ namespace compiler
 
         override public bool Visit(AstBoolValueExpression node)
         {
-            codeStream.WriteLine(CreateUnnamedVariable() + " = add i8 0, " + GetBoolLLVM(node.Value));
+            codeStream.WriteLine(CreateUnnamedVariable() + " = add i1 0, " + GetBoolLLVM(node.Value));
             if (inFunc)
             {
                 currExprCallTempraryVars.Add("i8 " + GetCurrUnnamedVariable());
@@ -483,7 +506,16 @@ namespace compiler
 
         public override bool Visit(AstOrExpression node)
         {
-            return true;
+            node.Left.Accept(this);
+            string addLine = " = or i1 " + GetCurrUnnamedVariable() + ", ";
+            node.Right.Accept(this);
+            addLine += GetCurrUnnamedVariable();
+            codeStream.WriteLine(CreateUnnamedVariable() + addLine);
+            if (inFunc)
+            {
+                currExprCallTempraryVars.Add("i1" + GetCurrUnnamedVariable());
+            }
+            return false;
         }
 
         public override bool Visit(AstAndExpression node)

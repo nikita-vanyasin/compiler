@@ -27,7 +27,7 @@ namespace compiler
 			m_errorPositions.Clear();
 
             var text = SourceBox.Text + "\n";
-            var outStream = new FileStream("result.s", FileMode.OpenOrCreate);
+            var outStream = new FileStream("result.s", FileMode.Create);
 
             logListBox.Items.Add("Starting build...");
             var compiler = new Compiler();
