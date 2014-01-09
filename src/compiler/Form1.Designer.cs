@@ -33,12 +33,12 @@
 			this.openToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.buildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.openFileDlg = new System.Windows.Forms.OpenFileDialog();
-			this.logListBox = new System.Windows.Forms.ListBox();
-			this.SourceBox = new System.Windows.Forms.TextBox();
-			this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
 			this.compileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.runToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.openFileDlg = new System.Windows.Forms.OpenFileDialog();
+			this.logListBox = new System.Windows.Forms.ListBox();
+			this.SourceBox = new System.Windows.Forms.RichTextBox();
+			this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -89,6 +89,22 @@
 			this.buildToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
 			this.buildToolStripMenuItem.Text = "Build";
 			// 
+			// compileToolStripMenuItem
+			// 
+			this.compileToolStripMenuItem.Name = "compileToolStripMenuItem";
+			this.compileToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
+			this.compileToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.compileToolStripMenuItem.Text = "Compile";
+			this.compileToolStripMenuItem.Click += new System.EventHandler(this.buildToolStripMenuItem_Click);
+			// 
+			// runToolStripMenuItem
+			// 
+			this.runToolStripMenuItem.Name = "runToolStripMenuItem";
+			this.runToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F5)));
+			this.runToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.runToolStripMenuItem.Text = "Run";
+			this.runToolStripMenuItem.Click += new System.EventHandler(this.runToolStripMenuItem_Click);
+			// 
 			// openFileDlg
 			// 
 			this.openFileDlg.DefaultExt = "ps";
@@ -111,32 +127,17 @@
 			this.SourceBox.Font = new System.Drawing.Font("Consolas", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.SourceBox.HideSelection = false;
 			this.SourceBox.Location = new System.Drawing.Point(4, 28);
-			this.SourceBox.Multiline = true;
 			this.SourceBox.Name = "SourceBox";
-			this.SourceBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.SourceBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
 			this.SourceBox.Size = new System.Drawing.Size(794, 374);
 			this.SourceBox.TabIndex = 1;
+			this.SourceBox.Text = "";
 			this.SourceBox.WordWrap = false;
+			this.SourceBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SourceBox_KeyDown);
 			// 
 			// saveFileDialog
 			// 
 			this.saveFileDialog.Filter = "PySharp Files (*.ps) |*.ps";
-			// 
-			// compileToolStripMenuItem
-			// 
-			this.compileToolStripMenuItem.Name = "compileToolStripMenuItem";
-			this.compileToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
-			this.compileToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.compileToolStripMenuItem.Text = "Compile";
-			this.compileToolStripMenuItem.Click += new System.EventHandler(this.buildToolStripMenuItem_Click);
-			// 
-			// runToolStripMenuItem
-			// 
-			this.runToolStripMenuItem.Name = "runToolStripMenuItem";
-			this.runToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F5)));
-			this.runToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.runToolStripMenuItem.Text = "Run";
-			this.runToolStripMenuItem.Click += new System.EventHandler(this.runToolStripMenuItem_Click);
 			// 
 			// Form1
 			// 
@@ -165,7 +166,7 @@
         private System.Windows.Forms.OpenFileDialog openFileDlg;
 		private System.Windows.Forms.ListBox logListBox;
 		private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem1;
-		private System.Windows.Forms.TextBox SourceBox;
+		private System.Windows.Forms.RichTextBox SourceBox;
 		private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
 		private System.Windows.Forms.SaveFileDialog saveFileDialog;
 		private System.Windows.Forms.ToolStripMenuItem buildToolStripMenuItem;

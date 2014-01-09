@@ -102,6 +102,7 @@
     <Compile Include="utils\TextUtils.cs" />
     <Compile Include="parser\Token.cs" />
     <Compile Include="utils\ExtensionMethods.cs" />
+    <Compile Include="utils\TokenColor.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

@@ -57,6 +57,7 @@ namespace compiler
         {
             var pos = new SourcePosition();
 			pos.Position = currCharIndex;
+			pos.TokenLength = GetForwardToken().Attribute.Length;
             return pos;
         }
 

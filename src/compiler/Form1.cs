@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using System.Diagnostics;
+using compiler.utils;
 
 namespace compiler
 {
@@ -71,6 +72,35 @@ namespace compiler
             return Path.GetDirectoryName(Environment.GetCommandLineArgs()[0]);
         }
 
+		private void recolorSyntax()
+		{
+			//reset colors
+			int oldpos = SourceBox.SelectionStart;
+
+			SourceBox.SelectAll();
+			SourceBox.SelectionColor = Color.Black;
+
+			BaseScanner scanner = new BaseScanner();
+			scanner.SetText(string.Format("{0}\n", SourceBox.Text));
+			Token token;
+			SourcePosition pos = scanner.GetSourcePosition();
+
+			while ((token = scanner.GetNextToken()).Type != TokenType.EOF)
+			{
+				Color color = TokenColor.GetColor(token);
+				if (color != Color.Black)
+				{
+					SourceBox.Select(pos.Position, pos.TokenLength);
+					SourceBox.SelectionColor = color;
+				}
+			
+				pos = scanner.GetSourcePosition();
+			}
+
+			SourceBox.SelectionStart = oldpos;
+			SourceBox.SelectionLength = 0;
+		}
+
 		private void saveToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			saveFileDialog.FileName = openFileDlg.FileName;
@@ -105,6 +135,11 @@ namespace compiler
 		{
 			if(BuildSource())
 				Process.Start("run_module.bat", outputFileName);
+		}
+
+		private void SourceBox_KeyDown(object sender, KeyEventArgs e)
+		{
+			recolorSyntax();
 		}
     }
 }
