@@ -8,11 +8,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using System.Diagnostics;
 
 namespace compiler
 {
     public partial class Form1 : Form
     {
+		private const string outputFileName = "result.s";
 		//номер элемента в логе -> позиция в коде
 		private Dictionary<int, SourcePosition> m_errorPositions = new Dictionary<int, SourcePosition>();
 
@@ -21,17 +23,18 @@ namespace compiler
             InitializeComponent();
         }
 
-        private void BuildSource()
+        private bool BuildSource()
         {
+			bool result = false;
             logListBox.Items.Clear();
 			m_errorPositions.Clear();
 
             var text = SourceBox.Text + "\n";
-            var outStream = new FileStream("result.s", FileMode.Create);
+            var outStream = new FileStream(outputFileName, FileMode.Create);
 
             logListBox.Items.Add("Starting build...");
             var compiler = new Compiler();
-            if (!compiler.Compile(text, outStream))
+            if (!(result = compiler.Compile(text, outStream)))
             {
                 var errorsContainer = compiler.GetErrorsContainer();
 				foreach (var ev in errorsContainer)
@@ -45,6 +48,7 @@ namespace compiler
                 logListBox.Items.Add("Compiled successfully!");
             }            
             outStream.Close();
+			return result;
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
@@ -95,6 +99,12 @@ namespace compiler
 					SourceBox.SelectionLength = sp.TokenLength;
 				}
 			}
+		}
+
+		private void runToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if(BuildSource())
+				Process.Start("llvm\\run_module.bat", outputFileName);
 		}
     }
 }
