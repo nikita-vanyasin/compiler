@@ -94,6 +94,14 @@ namespace compiler
             SaveArg("i32 " + GetCurrUnnamedVariable());
         }
 
+        private void CallSpace()
+        {
+            codeStream.WriteLine(CreateUnnamedVariable() + " = getelementptr [1 x i8]* @.spacestr, i32 0, i32 0");
+            string strCallF = "= call i32 (i8 *, ...)* @printf(i8* " + GetCurrUnnamedVariable();
+            codeStream.WriteLine(CreateUnnamedVariable() + strCallF + ")");
+            SaveArg("i32 " + GetCurrUnnamedVariable());
+        }
+
         private void GetLLVMBuilInFucntion(string target, string name)
         {
             switch (target)
@@ -110,6 +118,9 @@ namespace compiler
                         case "ReadInt":
                             CallRead();
                             return; 
+                        case "WriteSpace":
+                            CallSpace();
+                            return;
                         default:
                             throw new NotImplementedException();
                     }
@@ -144,6 +155,7 @@ namespace compiler
 
         private void CreateLLVMBuiltIn()
         {
+            codeStream.WriteLine("@.spacestr = internal constant [1 x i8] c\"\\20\"");
             codeStream.WriteLine("@.str = internal constant [4 x i8] c\"%d\\0A\\00\"");
             codeStream.WriteLine("@.rstr = internal constant [3 x i8] c\"%d\\00\"");
             codeStream.WriteLine("declare i32 @printf(i8 *, ...)");
