@@ -412,15 +412,29 @@ namespace compiler
                     string positiveVar = GetCurrUnnamedVariable();
                     codeStream.WriteLine(CreateUnnamedVariable() + " = sub " + GetLLVMType(symbolTableVariable.Type) + " 0, " + positiveVar);
                 }
+                if (IsNot)
+                {
+                    string inverseVal = GetCurrUnnamedVariable();
+                    codeStream.WriteLine(CreateUnnamedVariable() + " = xor " + GetLLVMType(symbolTableVariable.Type) + " " + inverseVal + ", 1");
+                }
             }
             else
             {
-                string saveOperation = "add ";
-                if (IsNegative)
+                if (IsNot)
                 {
-                    saveOperation = "sub ";
+                    codeStream.WriteLine(CreateUnnamedVariable() + " = xor " + GetLLVMType(symbolTableVariable.Type) + " %" + GetCurrVariableState(node.Id) + ", 0");
                 }
-                codeStream.WriteLine(CreateUnnamedVariable() + " = " + saveOperation + GetLLVMType(symbolTableVariable.Type) + " 0, %" + GetCurrVariableState(node.Id));
+                else
+                {
+                    string saveOperation = "add ";
+                    if (IsNegative)
+                    {
+                        saveOperation = "sub ";
+                    }
+                    codeStream.WriteLine(CreateUnnamedVariable() + " = " + saveOperation + GetLLVMType(symbolTableVariable.Type) + " 0, %" + GetCurrVariableState(node.Id));
+
+                }
+               
             }
                 SaveArg(GetLLVMType(symbolTableVariable.Type) + " " + GetCurrUnnamedVariable());
 
