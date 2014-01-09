@@ -22,6 +22,7 @@ namespace compiler
 
         //test negative
         private bool IsNegative = false;
+        private bool IsNot = false;
 
         //if counter
         private uint ifCount = 0;
@@ -348,7 +349,14 @@ namespace compiler
 
         override public bool Visit(AstBoolValueExpression node)
         {
-            codeStream.WriteLine(CreateUnnamedVariable() + " = add i1 0, " + GetBoolLLVM(node.Value));
+            if (IsNot)
+            {
+                codeStream.WriteLine(CreateUnnamedVariable() + " = xor i1 1, " + GetBoolLLVM(node.Value));
+            }
+            else
+            {
+                codeStream.WriteLine(CreateUnnamedVariable() + " = add i1 0, " + GetBoolLLVM(node.Value));
+            }
             if (inFunc)
             {
                 currExprCallTempraryVars.Add("i8 " + GetCurrUnnamedVariable());
@@ -520,12 +528,24 @@ namespace compiler
 
         public override bool Visit(AstAndExpression node)
         {
-            return true;
+            node.Left.Accept(this);
+            string addLine = " = and i1 " + GetCurrUnnamedVariable() + ", ";
+            node.Right.Accept(this);
+            addLine += GetCurrUnnamedVariable();
+            codeStream.WriteLine(CreateUnnamedVariable() + addLine);
+            if (inFunc)
+            {
+                currExprCallTempraryVars.Add("i1" + GetCurrUnnamedVariable());
+            }
+            return false;
         }
 
         public override bool Visit(AstNotExpression node)
         {
-            return true;
+            IsNot = true;
+            node.Expr.Accept(this);
+            IsNot = false;
+            return false;
         }
     }
 }
