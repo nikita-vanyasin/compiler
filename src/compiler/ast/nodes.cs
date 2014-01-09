@@ -851,4 +851,22 @@ namespace compiler
         }
     }
 
+    public class AstIdArrayExpression : AstIdExpression
+    {
+        public AstExpression Index { get; set; }
+
+        public AstIdArrayExpression(string id, AstExpression index)
+            : base(id)
+        {
+            Index = index;
+        }
+
+        public override void Accept(AstNodeVisitor visitor)
+        {
+            if (visitor.Visit(this))
+            {
+                Index.Accept(visitor);
+            }
+        }
+    }
 }

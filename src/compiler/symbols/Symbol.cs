@@ -18,5 +18,10 @@ namespace compiler
             Type = type;
             Size = size;
         }
+
+        public bool IsArraySymbol()
+        {
+            return Size > 0;
+        }
     }
 }

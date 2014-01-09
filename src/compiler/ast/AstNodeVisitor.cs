@@ -49,5 +49,7 @@ namespace compiler
         abstract public bool Visit(AstLteComparison node);
         abstract public bool Visit(AstGteComparison node);
         abstract public bool Visit(AstEqualComparison node);
+
+        abstract public bool Visit(AstIdArrayExpression node);
     }
 }

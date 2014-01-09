@@ -248,5 +248,28 @@ class Program:
             res = testVisitor.TestTree(p.GetRootNode());
             Assert.IsTrue(res);
         }
+
+
+        [TestMethod]
+        public void TestArrays()
+        {
+            Parser p = new Parser();
+            var text = @"  
+class Program:   
+    private int[10] a
+    private int i
+    public static int Main():   
+        foo(a[3])
+        i = a[2] 
+
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var testVisitor = new TestAstValidVisitor();
+            res = testVisitor.TestTree(p.GetRootNode());
+            Assert.IsTrue(res);
+        }
+
     }
 }

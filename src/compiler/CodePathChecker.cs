@@ -287,5 +287,10 @@ namespace compiler
         {
             return true;
         }
+
+        public override bool Visit(AstIdArrayExpression node)
+        {
+            return true;
+        }
     }
 }

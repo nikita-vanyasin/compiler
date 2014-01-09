@@ -171,24 +171,32 @@ namespace compiler
         // #TYPE_DEFINITION BOOL
         private void ConstructBoolTypeDefinition()
         {
-            var typeDef = new AstIdExpression("bool");
+            var typeDef = new AstIdExpression(BuiltInTypes.BOOL);
             PushNode(typeDef);
         }
 
         // #TYPE_DEFINITION CHAR
         private void ConstructCharTypeDefinition()
         {
-            var typeDef = new AstIdExpression("char");
+            var typeDef = new AstIdExpression(BuiltInTypes.CHAR);
             PushNode(typeDef);
         }
 
         // #TYPE_DEFINITION INT
         private void ConstructIntTypeDefinition()
         {
-            var typeDef = new AstIdExpression("int");
+            var typeDef = new AstIdExpression(BuiltInTypes.INT);
             PushNode(typeDef);
         }
-        
+
+        // #TYPE_DEFINITION INT LEFT_BRACKET INTEGER_VALUE RIGHT_BRACKET
+        private void ConstructIntArrayTypeDefinition()
+        {
+            var intVal = nodes.Pop() as AstIntegerValueExpression;
+            var typeDef = new AstIdArrayExpression(BuiltInTypes.INT, intVal);
+            PushNode(typeDef);
+        }
+
         // #METHOD_DECLARATION #METHOD_HEADER BLOCK_START #STATEMENTS_BLOCK BLOCK_END
         private void ConstructMethodDeclaration()
         {
@@ -341,6 +349,18 @@ namespace compiler
             PushNode(assignStmt);
         }
 
+        // #ASSIGN_STATEMENT ID #ARRAY ASSIGNMENT #EXPRESSION
+        private void ConstructAssignArrayStatement()
+        {
+            var newValue = nodes.Pop() as AstExpression;
+
+            var index = nodes.Pop() as AstExpression;
+            var id = nodes.Pop() as AstIdExpression;
+            var idArrExpression = new AstIdArrayExpression(id.Id, index);
+            var node = new AstAssignStatement(idArrExpression, newValue);
+            PushNode(node);
+        }
+
         // #IF_STATEMENT #IF_THEN_STATEMENT
         private void ConstructIfStatement()
         {
@@ -444,6 +464,22 @@ namespace compiler
             var expr = nodes.Pop() as AstExpression;
             var simpleTerm = new AstSimpleTermExpr(expr);
             PushNode(simpleTerm);
+        }
+
+        // #SIMPLE_TERM ID #ARRAY
+        private void ConstructArrayUseSimpleTerm()
+        {
+            var index = nodes.Pop() as AstExpression;
+            var id = nodes.Pop() as AstIdExpression;
+
+            var idArr = new AstIdArrayExpression(id.Id, index);
+            var node = new AstSimpleTermExpr(idArr);
+            PushNode(node);
+        }
+
+        // #ARRAY LEFT_BRACKET #EXPRESSION RIGHT_BRACKET
+        private void ConstructArrayUse()
+        {
         }
 
         // #ADD_EXPRESSION #EXPRESSION PLUS #TERM
