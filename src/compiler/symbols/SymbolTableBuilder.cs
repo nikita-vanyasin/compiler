@@ -25,22 +25,27 @@ namespace compiler
             var writeIntList = new List<string>() { 
                 BuiltInTypes.INT
             };
-            table.EnterFunction("Console", "WriteInt", BuiltInTypes.VOID, writeIntList);
+            AddBuiltInFunc("Console", "WriteInt", BuiltInTypes.VOID, writeIntList);
 
 
             var writeIntBool = new List<string>() { 
                 BuiltInTypes.BOOL
             };
-            table.EnterFunction("Console", "WriteBool", BuiltInTypes.VOID, writeIntBool);
+            AddBuiltInFunc("Console", "WriteBool", BuiltInTypes.VOID, writeIntBool);
 
             var readIntList = new List<string>(){
             };
-            table.EnterFunction("Console", "ReadInt", BuiltInTypes.INT, readIntList);
+            AddBuiltInFunc("Console", "ReadInt", BuiltInTypes.INT, readIntList);
 
-           /* var writeSpaceList = new List<string>()
-            {
-            };
-            table.EnterFunction("Console", "WriteSpace", BuiltInTypes.VOID, writeSpaceList);*/
+            /* var writeSpaceList = new List<string>()
+             {
+             };
+             AddBuiltInFunc("Console", "WriteSpace", BuiltInTypes.VOID, writeSpaceList);*/
+        }
+
+        private void AddBuiltInFunc(string target, string name, string type, List<string> types)
+        {
+            table.EnterFunction(target, name, type, types, true);
         }
 
         override public bool Visit(AstProgram node)
@@ -104,7 +109,9 @@ namespace compiler
             }
 
             table.UseParentScope();
-            table.EnterFunction("", node.Name.Id, node.TypeDef.Id, argumentsTypes);
+
+            var entryPoint = node.Name.Id == "Main";
+            table.EnterFunction("", node.Name.Id, node.TypeDef.Id, argumentsTypes, entryPoint);
             
             return true;
         }

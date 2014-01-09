@@ -56,9 +56,9 @@ namespace compiler
             currScope = currScope.Parent;
         }
 
-        public void EnterFunction(string target, string name, string type, List<string> callArgTypes)
+        public void EnterFunction(string target, string name, string type, List<string> callArgTypes, bool builtin = false)
         {
-            currScope.EnterFunction(target, name, type, callArgTypes);
+            currScope.EnterFunction(target, name, type, callArgTypes, builtin);
         }
 
         public void EnterSymbol(string name, string type = "", int size = -1)
@@ -79,6 +79,11 @@ namespace compiler
         public Symbol LookupParent(string name)
         {
             return currScope.Parent.Lookup(name);
+        }
+
+        public List<Symbol> GetAllDeclaredSymbols()
+        {
+            return globalScope.GetAllDeclaredSymbols();
         }
     }
 }

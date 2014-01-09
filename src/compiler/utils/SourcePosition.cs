@@ -10,5 +10,11 @@ namespace compiler
     {
         public int Position { get; set; }
         public int TokenLength { get; set; }
+
+        public SourcePosition()
+        {
+
+            Position = -1;
+        }
     }
 }

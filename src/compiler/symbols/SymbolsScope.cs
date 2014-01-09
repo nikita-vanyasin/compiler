@@ -51,8 +51,8 @@ namespace compiler
 
             return newScope;
         }
-        
-        public void EnterFunction(string target, string name, string type, List<string> callArgTypes)
+
+        public void EnterFunction(string target, string name, string type, List<string> callArgTypes, bool builtin = false)
         {
             if (functionsTable.ContainsKey(target + name))
             {
@@ -60,6 +60,7 @@ namespace compiler
             }
 
             var s = new CallableSymbol(target, name, type, callArgTypes);
+            s.BuiltIn = builtin;
             functionsTable[target + name] = s;
         }
 
@@ -78,7 +79,8 @@ namespace compiler
         {
             try
             {
-                return functionsTable[key];
+                var s = functionsTable[key];
+                return s;
             }
             catch (KeyNotFoundException)
             {
@@ -95,7 +97,8 @@ namespace compiler
         {
             try
             {
-                return table[name];
+                var s =  table[name];
+                return s;
             }
             catch (KeyNotFoundException)
             {
@@ -106,6 +109,18 @@ namespace compiler
 
                 return Parent.Lookup(name);
             }
+        }
+
+        public List<Symbol> GetAllDeclaredSymbols()
+        {
+            var result = table.Values.ToList();
+            result.AddRange(functionsTable.Values.ToList());
+
+            foreach (var child in Childs.Values)
+            {
+                result.AddRange(child.GetAllDeclaredSymbols());
+            }
+            return result;
         }
     }
 }

@@ -14,6 +14,8 @@ namespace compiler
         private TypeResolver resolver;
         private bool result;
 
+        private bool currStateInsideExpr = false;
+
         private string currFunctionReturnType = null;
 
         public TypeEvaluator()
@@ -55,6 +57,7 @@ namespace compiler
             table.UseGlobalScope();
             resolver = new TypeResolver(table);
             currFunctionReturnType = null;
+            currStateInsideExpr = false;
 
             try
             {
@@ -65,7 +68,22 @@ namespace compiler
                 DispatchError(e.Expr.TextPosition, e.Message);
             }
 
+            WarnUnusedSymbols();
+
             return result;
+        }
+
+        private void WarnUnusedSymbols()
+        {
+            var all = table.GetAllDeclaredSymbols();
+            foreach (var s in all)
+            {
+                if (!s.Used && !s.BuiltIn)
+                {
+                    var name = s is CallableSymbol ? "Function " : "Variable ";
+                    ErrorDispatcher.DispatchWarning(new SourcePosition(), name + s.Name + " is never used");
+                }
+            }
         }
 
         override public bool Visit(AstProgram node)
@@ -121,6 +139,18 @@ namespace compiler
         {
             table.UseNamedChildScope(node.Name.Id);
             currFunctionReturnType = node.TypeDef.Id;
+
+
+            node.Visibility.Accept(this);
+            node.Static.Accept(this);
+            node.TypeDef.Accept(this);
+            node.Name.Accept(this);
+            node.ArgumentsDefinition.Accept(this);
+
+            currStateInsideExpr = true;
+            node.StatementsBlock.Accept(this);
+            currStateInsideExpr = false;
+
 
             return true;
         }
@@ -269,7 +299,12 @@ namespace compiler
                 return false;
             }
 
-            return true;
+            currStateInsideExpr = false;
+            node.Variable.Accept(this);
+            currStateInsideExpr = true;
+            node.NewValue.Accept(this);
+
+            return false;
         }
 
         override public bool Visit(AstBoolValueExpression node)
@@ -291,6 +326,24 @@ namespace compiler
 
         override public bool Visit(AstIdExpression node)
         {
+
+            if (currStateInsideExpr)
+            {
+                var s = table.Lookup(node.Id);
+                if (s != null)
+                {
+                    s.Used = true;
+                }
+                else
+                {
+                    s = table.LookupFunction(node.Id);
+                    if (s != null)
+                    {
+                        s.Used = true;
+                    }
+                }
+            }
+
             return true;
         }
 

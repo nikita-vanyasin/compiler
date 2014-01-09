@@ -29,7 +29,8 @@ namespace compiler
         private bool BuildSource()
         {
 			bool result = false;
-            logListBox.Items.Clear();
+            logListBox.Items.Add("_______________________________________________________________");
+            logListBox.Items.Add("");
 			m_errorPositions.Clear();
 
             var text = SourceBox.Text + "\n";
@@ -37,19 +38,27 @@ namespace compiler
 
             logListBox.Items.Add("Starting build...");
             var compiler = new Compiler();
-            if (!(result = compiler.Compile(text, outStream)))
+
+            result = compiler.Compile(text, outStream);
+
+            var errorsContainer = compiler.GetErrorsContainer();
+            foreach (var ev in errorsContainer)
             {
-                var errorsContainer = compiler.GetErrorsContainer();
-				foreach (var ev in errorsContainer)
-				{
-					int id = logListBox.Items.Add(TextUtils.WriteCompilerError(SourceBox.Text, ev));
-					m_errorPositions.Add(id, ev.Position);
-				}
+                int id = logListBox.Items.Add(TextUtils.WriteCompilerError(SourceBox.Text, ev));
+                m_errorPositions.Add(id, ev.Position);
             }
-            else
+
+            if (result)
             {
                 logListBox.Items.Add("Compiled successfully!");
-            }            
+                logListBox.Items.Add("");
+            }
+
+            if (logListBox.Items.Count > 0)
+            {
+
+                logListBox.SelectedIndex = logListBox.Items.Count - 1;
+            }
             outStream.Close();
 			return result;
         }

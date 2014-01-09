@@ -21,5 +21,17 @@ namespace compiler
                 handler(this, new ErrorEvent(position, description, code));
             }
         }
+
+        public void DispatchWarning(SourcePosition position, string description)
+        {
+            ErrorEventHandler handler = Error;
+
+            if (handler != null)
+            {
+                var e = new ErrorEvent(position, description, 0);
+                e.IsError = false;
+                handler(this, e);
+            }
+        }
     }
 }

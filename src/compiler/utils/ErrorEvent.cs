@@ -16,9 +16,11 @@ namespace compiler
         public string Description { get; private set; }
         public int Code { get; private set; }
         public SourcePosition Position { get; private set; }
+        public bool IsError { get; set; }
 
         public ErrorEvent(SourcePosition position, string description, int code)
         {
+            IsError = true;
             this.Position = position;
             this.Description = description;
             this.Code = code;
