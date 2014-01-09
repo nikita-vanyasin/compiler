@@ -26,6 +26,15 @@ namespace compiler
         //if counter
         private uint ifCount = 0;
 
+        //while counter
+        private uint whileCount = 0;
+
+        private uint CreateWhileUse()
+        {
+            whileCount++;
+            return whileCount;
+        }
+
         private uint CreateIfUse()
         {
             ifCount++;
@@ -540,7 +549,19 @@ namespace compiler
 
         public override bool Visit(AstWhileStatement node)
         {
-            throw new NotImplementedException();
+            string currWhileIndex = CreateWhileUse().ToString(); ;
+            codeStream.WriteLine("br label %whilecond" + currWhileIndex);
+            codeStream.WriteLine("whilestart" + currWhileIndex + ":");
+            node.Statements.Accept(this);
+            codeStream.WriteLine("br label %whilecond" + currWhileIndex);
+            codeStream.WriteLine("whilecond" + currWhileIndex + ":");
+            node.Condition.Accept(this);
+            var condExprResult = GetCurrUnnamedVariable();
+            codeStream.WriteLine(CreateUnnamedVariable() + "= icmp eq i1 1, " + condExprResult);
+            codeStream.WriteLine("br i1 " + GetCurrUnnamedVariable() + ", label %whilestart" + currWhileIndex + ", label %endwhile" + currWhileIndex);
+            codeStream.WriteLine("endwhile" + currWhileIndex + ":");
+            //codeStream
+            return false;
         }
 
 
