@@ -616,7 +616,13 @@ namespace compiler
             if (s != null)
             {
                 s.Used = true;
-                
+
+
+                if (!s.IsArraySymbol())
+                {
+                    DispatchError(node.TextPosition, "Is not array");
+                    return false;
+                }
 
                 var maxSize = table.Lookup(node.Id).Size - 1;
                 CheckIndexInRange(maxSize, node.Index);
