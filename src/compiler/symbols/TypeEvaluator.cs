@@ -568,11 +568,25 @@ namespace compiler
 
         private void CheckIsNotNegative(AstExpression node)
         {
-            var castNode = node;
             if (node is AstNegateUnaryExpr)
             {
                 DispatchError(node.TextPosition, "Negative number used as array index");
             }
+
+
+            var castNode = node as AstSimpleUnaryExpr;
+            if (castNode != null)
+            {
+                var term = castNode.SimpleTerm;
+                var intValExpr = term.Expr as AstIntegerValueExpression;
+
+
+                if (intValExpr != null && Convert.ToInt32(intValExpr.Value) < 0)
+                {
+                    DispatchError(node.TextPosition, "Invalid array index");
+                }
+            }
+            
         }
 
         private void CheckIndexInRange(int maxSize, AstExpression node)

@@ -17,7 +17,7 @@ namespace compiler
         public void SetText(string text)
         {
             Reset();
-            this.text = text; ;
+            this.text = text;
         }
 
         public Token GetNextToken()
@@ -82,7 +82,7 @@ namespace compiler
                 case '(': return new Token(TokenType.LEFT_PAREN, currChar);
                 case ')': return new Token(TokenType.RIGHT_PAREN, currChar);
                 case '+': return new Token(TokenType.PLUS, currChar);
-                case '-': return new Token(TokenType.MINUS, currChar);
+                case '-': return MinusSwitchBranch();
                 case '*': return new Token(TokenType.MULTIPLICATION, currChar);
                 case '!': return NotSwitchBranch();
                 case '[': return new Token(TokenType.LEFT_BRACKET, currChar);
@@ -98,6 +98,24 @@ namespace compiler
                 case '=': return AssignSwitchBranch();
 
                 default: return DefaultSwitchBranch();
+            }
+        }
+
+        private Token MinusSwitchBranch()
+        {
+            if (!char.IsDigit(GetNextChar()))
+            {
+                return new Token(TokenType.MINUS, currChar);
+            }
+            else
+            {
+                string str = ReadDigits();
+                bool nextCharIsLatin = GetNextChar().IsSimpleLatin();
+                if (!nextCharIsLatin)
+                {
+                    return new Token(TokenType.INTEGER_VALUE, str);
+                }
+                return GetErrorToken();
             }
         }
 
@@ -203,8 +221,8 @@ namespace compiler
             else if (char.IsDigit(currChar))
             {
                 string str = ReadDigits();
-                bool nextCharIsAlsoLatin = GetNextChar().IsSimpleLatin();
-                if (!nextCharIsAlsoLatin)
+                bool nextCharIsLatin = GetNextChar().IsSimpleLatin();
+                if (!nextCharIsLatin)
                 {
                     return new Token(TokenType.INTEGER_VALUE, str);
                 }
