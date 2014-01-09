@@ -1,0 +1,31 @@
+class Program:  
+    private int[5] sort 
+    private int length
+    private int iter
+    private int swap
+    private bool swapped 
+
+    public static int Main():
+        sort[0] = 2
+        sort[1] = 10
+        sort[2] = 4
+        sort[3] = 6
+        sort[4] = 1
+        swapped = true
+        length = 4
+        iter = 0
+        while(swapped):
+            swapped = false
+            while(iter <= (length - 1)):
+                if(sort[iter] > sort[iter + 1]):
+                    swap = sort[iter]
+                    sort[iter] = sort[iter + 1]
+                    sort[iter + 1] = swap
+                    swapped = true
+                iter = iter + 1
+            iter = 0  
+        iter = 0
+        while(iter <= length):
+            Console.WriteInt(sort[iter])
+            iter = iter + 1           
+        return 0  
