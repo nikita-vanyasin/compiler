@@ -83,6 +83,17 @@ namespace compiler
             SaveArg("i32 " + GetCurrUnnamedVariable());
         }
 
+        private void CallRead()
+        {
+            codeStream.WriteLine(CreateUnnamedVariable() + " = alloca i32");
+            var tmpVar = GetCurrUnnamedVariable();
+            codeStream.WriteLine(CreateUnnamedVariable() + " = getelementptr [3 x i8]* @.rstr, i64 0, i64 0");
+            string strCallF = " = call i32 (i8 *, ...)* @scanf(i8* " + GetCurrUnnamedVariable() + ", i32* " + tmpVar + ")";
+            codeStream.WriteLine(CreateUnnamedVariable() + strCallF);
+            codeStream.WriteLine(CreateUnnamedVariable() + " = load i32* " + tmpVar);            
+            SaveArg("i32 " + GetCurrUnnamedVariable());
+        }
+
         private void GetLLVMBuilInFucntion(string target, string name)
         {
             switch (target)
@@ -96,6 +107,9 @@ namespace compiler
                         case "WriteBool":
                             CallPrint();
                             return;
+                        case "ReadInt":
+                            CallRead();
+                            return; 
                         default:
                             throw new NotImplementedException();
                     }
@@ -131,7 +145,9 @@ namespace compiler
         private void CreateLLVMBuiltIn()
         {
             codeStream.WriteLine("@.str = internal constant [4 x i8] c\"%d\\0A\\00\"");
+            codeStream.WriteLine("@.rstr = internal constant [3 x i8] c\"%d\\00\"");
             codeStream.WriteLine("declare i32 @printf(i8 *, ...)");
+            codeStream.WriteLine("declare i32 @scanf(i8*, ...)");
 
         }
 
@@ -278,7 +294,6 @@ namespace compiler
             }
             codeStream.Write(string.Join(",", LLWMArgDefList.ToArray()));
             codeStream.Write("){\n");
-           // DefineLocalClassVariables();
             return false;
         }
 
@@ -300,7 +315,6 @@ namespace compiler
         override public bool Visit(AstThisMethodCallExpression node)
         {           
             funcCallArgStack.Push(new List<string>());
-            node.CallArgs.Accept(this);
             var symbolFunc = table.LookupFunction(node.Name.Id);
             codeStream.Write(CreateUnnamedVariable() + " = call " + GetLLVMType(symbolFunc.Type) + " @" + symbolFunc.Name + "(");
             SaveArg(GetLLVMType(symbolFunc.Type) + " " + GetCurrUnnamedVariable());
@@ -317,10 +331,21 @@ namespace compiler
         override public bool Visit(AstExternalMethodCallExpression node)
         {
             funcCallArgStack.Push(new List<string>());
-            node.CallArgs.Accept(this);
-            GetLLVMBuilInFucntion(node.Target.Id, node.Name.Id);
-            codeStream.Write(string.Join(",", GetCurrFuncArg().ToArray()));
-            codeStream.WriteLine(")");
+            var symbolFunc = table.LookupFunction(node.Target.Id + node.Name.Id);
+
+            if (symbolFunc.ArgumentTypes.Count != 0)
+            {
+                node.CallArgs.Accept(this);
+                GetLLVMBuilInFucntion(node.Target.Id, node.Name.Id);
+                codeStream.Write(string.Join(",", GetCurrFuncArg().ToArray()));
+                codeStream.WriteLine(")");
+                
+                return false;
+            }
+            else
+            {
+                GetLLVMBuilInFucntion(node.Target.Id, node.Name.Id);   
+            }
             return false;
         }
 
@@ -333,6 +358,7 @@ namespace compiler
         {
             node.Expression.Accept(this);
             codeStream.WriteLine("\nret " + currReturnType + " " + GetCurrUnnamedVariable());
+            CreateUnnamedVariable();
             return false;
         }
 

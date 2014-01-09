@@ -32,6 +32,10 @@ namespace compiler
                 BuiltInTypes.BOOL
             };
             table.EnterFunction("Console", "WriteBool", BuiltInTypes.VOID, writeIntBool);
+
+            var readIntList = new List<string>(){
+            };
+            table.EnterFunction("Console", "ReadInt", BuiltInTypes.INT, readIntList);
         }
 
         override public bool Visit(AstProgram node)
