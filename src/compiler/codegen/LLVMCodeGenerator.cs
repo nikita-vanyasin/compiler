@@ -29,6 +29,9 @@ namespace compiler
         //while counter
         private uint whileCount = 0;
 
+        //arr
+        private bool arrAssign = false;
+
         private uint CreateWhileUse()
         {
             whileCount++;
@@ -155,7 +158,7 @@ namespace compiler
 
         private void CreateLLVMBuiltIn()
         {
-            codeStream.WriteLine("@.spacestr = internal constant [1 x i8] c\"\\20\"");
+          //  codeStream.WriteLine("@.spacestr = internal constant [1 x i8] c\"\\20\"");
             codeStream.WriteLine("@.str = internal constant [4 x i8] c\"%d\\0A\\00\"");
             codeStream.WriteLine("@.rstr = internal constant [3 x i8] c\"%d\\00\"");
             codeStream.WriteLine("declare i32 @printf(i8 *, ...)");
@@ -273,8 +276,18 @@ namespace compiler
 
         override public bool Visit(AstClassField node)
         {
-            codeStream.WriteLine("@" + node.Name.Id + " = " + GetLLVMVisibility(node.Visibility) + " global " + GetLLVMType(node.TypeDef.Id) + " " + GetDefaultTypeValue(node.TypeDef));
-            classVariables.Add(node.Name.Id);
+            var symbolTableElement = table.Lookup(node.Name.Id);
+            if (symbolTableElement.IsArraySymbol())
+            {
+                //AstIdArrayExpression arrExpr = node.TypeDef as AstIdArrayExpression;
+                codeStream.WriteLine("@" + symbolTableElement.Name + " = " + GetLLVMVisibility(node.Visibility) + " global " +
+                   "[" + symbolTableElement.Size + " x i32] zeroinitializer");
+            }
+            else
+            {
+                codeStream.WriteLine("@" + node.Name.Id + " = " + GetLLVMVisibility(node.Visibility) + " global " + GetLLVMType(node.TypeDef.Id) + " " + GetDefaultTypeValue(node.TypeDef));
+                classVariables.Add(node.Name.Id);
+            }
             return false;
         }
 
@@ -395,7 +408,18 @@ namespace compiler
         override public bool Visit(AstAssignStatement node)
         {
             var symbolTableVariable = table.Lookup(node.Variable.Id);
-            if (classVariables.Contains(node.Variable.Id))
+            if(symbolTableVariable.IsArraySymbol())
+            {
+                node.NewValue.Accept(this);
+                arrAssign = true;
+                var newValueVar = GetCurrUnnamedVariable();
+                node.Variable.Accept(this);
+                var index = GetCurrUnnamedVariable();
+                codeStream.WriteLine("store i32 " + newValueVar + ", "
+                    + GetLLVMType(symbolTableVariable.Type) + "* " + GetCurrUnnamedVariable());
+                arrAssign = false;
+            }
+            else if (classVariables.Contains(node.Variable.Id))
             {
                 node.NewValue.Accept(this);
 
@@ -576,7 +600,7 @@ namespace compiler
             node.Right.Accept(this);
             addLine += GetCurrUnnamedVariable();
             codeStream.WriteLine(CreateUnnamedVariable() + addLine);
-            SaveArg("i1" + GetCurrUnnamedVariable());
+            SaveArg("i1 " + GetCurrUnnamedVariable());
             return false;
         }
 
@@ -587,7 +611,7 @@ namespace compiler
             node.Right.Accept(this);
             addLine += GetCurrUnnamedVariable();
             codeStream.WriteLine(CreateUnnamedVariable() + addLine);
-            SaveArg("i1" + GetCurrUnnamedVariable());
+            SaveArg("i1 " + GetCurrUnnamedVariable());
             return false;
         }
 
@@ -624,7 +648,7 @@ namespace compiler
             node.Right.Accept(this);
             addLine += GetCurrUnnamedVariable();
             codeStream.WriteLine(CreateUnnamedVariable() + addLine);
-            SaveArg("i1" + GetCurrUnnamedVariable());
+            SaveArg("i1 " + GetCurrUnnamedVariable());
             return false;
         }
         public override bool Visit(AstGtComparison node)
@@ -634,7 +658,7 @@ namespace compiler
             node.Right.Accept(this);
             addLine += GetCurrUnnamedVariable();
             codeStream.WriteLine(CreateUnnamedVariable() + addLine);
-            SaveArg("i1" + GetCurrUnnamedVariable());
+            SaveArg("i1 " + GetCurrUnnamedVariable());
             return false;
         }
 
@@ -645,7 +669,7 @@ namespace compiler
             node.Right.Accept(this);
             addLine += GetCurrUnnamedVariable();
             codeStream.WriteLine(CreateUnnamedVariable() + addLine);
-            SaveArg("i1" + GetCurrUnnamedVariable());
+            SaveArg("i1 " + GetCurrUnnamedVariable());
             return false;
         }
 
@@ -656,7 +680,7 @@ namespace compiler
             node.Right.Accept(this);
             addLine += GetCurrUnnamedVariable();
             codeStream.WriteLine(CreateUnnamedVariable() + addLine);
-            SaveArg("i1" + GetCurrUnnamedVariable());
+            SaveArg("i1 " + GetCurrUnnamedVariable());
             return false;
         }
 
@@ -667,13 +691,26 @@ namespace compiler
             node.Right.Accept(this);
             addLine += GetCurrUnnamedVariable();
             codeStream.WriteLine(CreateUnnamedVariable() + addLine);
-            SaveArg("i1" + GetCurrUnnamedVariable());
+            SaveArg("i1 " + GetCurrUnnamedVariable());
             return false;
         }
 
         public override bool Visit(AstIdArrayExpression node)
         {
-            throw new NotImplementedException();
+            node.Index.Accept(this);
+            var tableSymbol = table.Lookup(node.Id);
+            var arrIndex = GetCurrUnnamedVariable();
+            codeStream.WriteLine(CreateUnnamedVariable() + " = getelementptr [" + tableSymbol.Size + " x i32]* @" + node.Id +
+                  " , i32 0, i32 " + arrIndex);
+            if (!arrAssign)
+            {
+                codeStream.WriteLine(CreateUnnamedVariable() + " = getelementptr [" + tableSymbol.Size + " x i32]* @" + node.Id +
+                    " , i32 0, i32 " + arrIndex);
+                string strLoad = " = load i32* " + GetCurrUnnamedVariable();
+                codeStream.WriteLine(CreateUnnamedVariable() + strLoad);
+                SaveArg("i32 " + GetCurrUnnamedVariable());
+            }
+            return false;
         }
     }
 }
