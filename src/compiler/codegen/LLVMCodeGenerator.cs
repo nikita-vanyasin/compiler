@@ -16,9 +16,8 @@ namespace compiler
         private Dictionary<string, uint> variableCounter = new Dictionary<string, uint>();
 
         //for function
-        private bool inFunc = false;
-        private List<string> tmpVariablesArgCallList = new List<string>();
-        private List<string> currExprCallTempraryVars = new List<string>();
+        private Stack<List<string>> funcCallArgStack = new Stack<List<string>>();
+        private Stack<string> currFuncCallArgStack = new Stack<string>();
 
         //test negative
         private bool IsNegative = false;
@@ -31,6 +30,31 @@ namespace compiler
         {
             ifCount++;
             return ifCount;
+        }
+        //
+        private void SaveArg(string arg)
+        {
+            currFuncCallArgStack.Push(arg);
+        }
+
+        private string GetLastSavedArg()
+        {
+            string arg = currFuncCallArgStack.Pop();
+            currFuncCallArgStack.Clear();
+            return arg;
+        }
+
+        private List<string> GetCurrFuncArg()
+        {
+            return funcCallArgStack.Pop();
+        }
+
+        private void SaveArgInList(string argName)
+        {
+            if (funcCallArgStack.Count != 0)
+            {
+                funcCallArgStack.Peek().Add(argName);
+            }
         }
 
         private string GetBoolLLVM(BoolValue value)
@@ -47,6 +71,7 @@ namespace compiler
             codeStream.WriteLine(CreateUnnamedVariable() + "= getelementptr [4 x i8]* @.str, i64 0, i64 0");
             string strCallF = "= call i32 (i8 *, ...)* @printf(i8* " + GetCurrUnnamedVariable() + ", ";
             codeStream.Write(CreateUnnamedVariable() + strCallF);
+            SaveArg("i32 " + GetCurrUnnamedVariable());
         }
 
         private void GetLLVMBuilInFucntion(string target, string name)
@@ -175,7 +200,6 @@ namespace compiler
             astRootNode.Accept(this);
             codeStream.Flush();
             return true;
-            //throw new NotImplementedException();
         }
 
         override public bool Visit(AstProgram node)
@@ -265,16 +289,14 @@ namespace compiler
         }
 
         override public bool Visit(AstThisMethodCallExpression node)
-        {
-            inFunc = true;
-            tmpVariablesArgCallList = new List<string>();
+        {           
+            funcCallArgStack.Push(new List<string>());
             node.CallArgs.Accept(this);
             var symbolFunc = table.LookupFunction(node.Name.Id);
             codeStream.Write(CreateUnnamedVariable() + " = call " + GetLLVMType(symbolFunc.Type) + " @" + symbolFunc.Name + "(");
-            codeStream.Write(string.Join(",", tmpVariablesArgCallList.ToArray()));
-            codeStream.WriteLine(")");
-            inFunc = false;
-            tmpVariablesArgCallList = new List<string>();
+            SaveArg(GetLLVMType(symbolFunc.Type) + " " + GetCurrUnnamedVariable());
+            codeStream.Write(string.Join(",", GetCurrFuncArg().ToArray()));
+            codeStream.WriteLine(")");            
             return false;
         }
 
@@ -285,14 +307,11 @@ namespace compiler
 
         override public bool Visit(AstExternalMethodCallExpression node)
         {
-            inFunc = true;
-            tmpVariablesArgCallList = new List<string>();
+            funcCallArgStack.Push(new List<string>());
             node.CallArgs.Accept(this);
             GetLLVMBuilInFucntion(node.Target.Id, node.Name.Id);
-            codeStream.Write(string.Join(",", tmpVariablesArgCallList.ToArray()));
+            codeStream.Write(string.Join(",", GetCurrFuncArg().ToArray()));
             codeStream.WriteLine(")");
-            inFunc = false;
-            tmpVariablesArgCallList = new List<string>();
             return false;
         }
 
@@ -312,7 +331,7 @@ namespace compiler
         {
             node.Condition.Accept(this);
             string currIf = CreateIfUse().ToString();
-           // codeStream.WriteLine("startif" + currIf.ToString() + ":");
+
             var condExprResult = GetCurrUnnamedVariable();
             codeStream.WriteLine(CreateUnnamedVariable() + "= icmp eq i1 1, " + condExprResult);
             codeStream.WriteLine("br i1 " + GetCurrUnnamedVariable() + ", label %then" + currIf + ", label %else" + currIf);
@@ -357,10 +376,7 @@ namespace compiler
             {
                 codeStream.WriteLine(CreateUnnamedVariable() + " = add i1 0, " + GetBoolLLVM(node.Value));
             }
-            if (inFunc)
-            {
-                currExprCallTempraryVars.Add("i8 " + GetCurrUnnamedVariable());
-            }
+            SaveArg("i8 " + GetCurrUnnamedVariable());
             return true;
         }
 
@@ -372,10 +388,7 @@ namespace compiler
                 saveOperation = "sub ";
             }
             codeStream.WriteLine(CreateUnnamedVariable() + " = " + saveOperation + " i32 0, " + node.Value);
-            if (inFunc)
-            {
-                currExprCallTempraryVars.Add("i32 " + GetCurrUnnamedVariable());
-            }
+                SaveArg("i32 " + GetCurrUnnamedVariable());
             return true;
         }
 
@@ -400,10 +413,7 @@ namespace compiler
                 }
                 codeStream.WriteLine(CreateUnnamedVariable() + " = " + saveOperation + GetLLVMType(symbolTableVariable.Type) + " 0, %" + GetCurrVariableState(node.Id));
             }
-            if (inFunc)
-            {
-                currExprCallTempraryVars.Add(GetLLVMType(symbolTableVariable.Type) + " " + GetCurrUnnamedVariable());
-            }
+                SaveArg(GetLLVMType(symbolTableVariable.Type) + " " + GetCurrUnnamedVariable());
 
             return true;
         }
@@ -412,9 +422,9 @@ namespace compiler
         {
             foreach (var arg in node.Arguments)
             {
-                currExprCallTempraryVars = new List<string>();
                 arg.Expr.Accept(this);
-                tmpVariablesArgCallList.Add(currExprCallTempraryVars.Last());
+                SaveArgInList(GetLastSavedArg());
+
             }
             return false;
         }
@@ -431,10 +441,7 @@ namespace compiler
             node.Right.Accept(this);
             addLine += GetCurrUnnamedVariable();
             codeStream.WriteLine(CreateUnnamedVariable() + addLine);
-            if (inFunc)
-            {
-                currExprCallTempraryVars.Add("i32 " + GetCurrUnnamedVariable());
-            }
+            SaveArg("i32 " + GetCurrUnnamedVariable());
             return false;
         }
 
@@ -445,10 +452,7 @@ namespace compiler
             node.Right.Accept(this);
             addLine += GetCurrUnnamedVariable();
             codeStream.WriteLine(CreateUnnamedVariable() + addLine);
-            if (inFunc)
-            {
-                currExprCallTempraryVars.Add("i32 " + GetCurrUnnamedVariable());
-            }
+            SaveArg("i32 " + GetCurrUnnamedVariable());
             return false;
         }
 
@@ -459,10 +463,7 @@ namespace compiler
             node.Right.Accept(this);
             addLine += GetCurrUnnamedVariable();
             codeStream.WriteLine(CreateUnnamedVariable() + addLine);
-            if (inFunc)
-            {
-                currExprCallTempraryVars.Add("i32 " + GetCurrUnnamedVariable());
-            }
+            SaveArg("i32 " + GetCurrUnnamedVariable());
             return false;
         }
 
@@ -473,10 +474,7 @@ namespace compiler
             node.Right.Accept(this);
             addLine += GetCurrUnnamedVariable();
             codeStream.WriteLine(CreateUnnamedVariable() + addLine);
-            if (inFunc)
-            {
-                currExprCallTempraryVars.Add("i32 " + GetCurrUnnamedVariable());
-            }
+            SaveArg("i32 " + GetCurrUnnamedVariable());
             return false;
         }
 
@@ -487,10 +485,8 @@ namespace compiler
             node.Right.Accept(this);
             addLine += GetCurrUnnamedVariable();
             codeStream.WriteLine(CreateUnnamedVariable() + addLine);
-            if (inFunc)
-            {
-                currExprCallTempraryVars.Add("i32 " + GetCurrUnnamedVariable());
-            }
+
+            SaveArg("i32 " + GetCurrUnnamedVariable());
             return false;
         }
 
@@ -519,10 +515,7 @@ namespace compiler
             node.Right.Accept(this);
             addLine += GetCurrUnnamedVariable();
             codeStream.WriteLine(CreateUnnamedVariable() + addLine);
-            if (inFunc)
-            {
-                currExprCallTempraryVars.Add("i1" + GetCurrUnnamedVariable());
-            }
+            SaveArg("i1" + GetCurrUnnamedVariable());
             return false;
         }
 
@@ -533,10 +526,7 @@ namespace compiler
             node.Right.Accept(this);
             addLine += GetCurrUnnamedVariable();
             codeStream.WriteLine(CreateUnnamedVariable() + addLine);
-            if (inFunc)
-            {
-                currExprCallTempraryVars.Add("i1" + GetCurrUnnamedVariable());
-            }
+            SaveArg("i1" + GetCurrUnnamedVariable());
             return false;
         }
 
@@ -556,26 +546,56 @@ namespace compiler
 
         public override bool Visit(AstLtComparison node)
         {
-            throw new NotImplementedException();
+            node.Left.Accept(this);
+            string addLine = " = icmp slt i32 " + GetCurrUnnamedVariable() + ", ";
+            node.Right.Accept(this);
+            addLine += GetCurrUnnamedVariable();
+            codeStream.WriteLine(CreateUnnamedVariable() + addLine);
+            SaveArg("i1" + GetCurrUnnamedVariable());
+            return false;
         }
         public override bool Visit(AstGtComparison node)
         {
-            throw new NotImplementedException();
+            node.Left.Accept(this);
+            string addLine = " = icmp sgt i32 " + GetCurrUnnamedVariable() + ", ";
+            node.Right.Accept(this);
+            addLine += GetCurrUnnamedVariable();
+            codeStream.WriteLine(CreateUnnamedVariable() + addLine);
+            SaveArg("i1" + GetCurrUnnamedVariable());
+            return false;
         }
 
         public override bool Visit(AstLteComparison node)
         {
-            throw new NotImplementedException();
+            node.Left.Accept(this);
+            string addLine = " = icmp sle i32 " + GetCurrUnnamedVariable() + ", ";
+            node.Right.Accept(this);
+            addLine += GetCurrUnnamedVariable();
+            codeStream.WriteLine(CreateUnnamedVariable() + addLine);
+            SaveArg("i1" + GetCurrUnnamedVariable());
+            return false;
         }
 
         public override bool Visit(AstGteComparison node)
         {
-            throw new NotImplementedException();
+            node.Left.Accept(this);
+            string addLine = " = icmp sge i32 " + GetCurrUnnamedVariable() + ", ";
+            node.Right.Accept(this);
+            addLine += GetCurrUnnamedVariable();
+            codeStream.WriteLine(CreateUnnamedVariable() + addLine);
+            SaveArg("i1" + GetCurrUnnamedVariable());
+            return false;
         }
 
         public override bool Visit(AstEqualComparison node)
         {
-            throw new NotImplementedException();
+            node.Left.Accept(this);
+            string addLine = " = icmp eq i32 " + GetCurrUnnamedVariable() + ", ";
+            node.Right.Accept(this);
+            addLine += GetCurrUnnamedVariable();
+            codeStream.WriteLine(CreateUnnamedVariable() + addLine);
+            SaveArg("i1" + GetCurrUnnamedVariable());
+            return false;
         }
     }
 }
