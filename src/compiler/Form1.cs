@@ -10,6 +10,8 @@ using System.Windows.Forms;
 using System.IO;
 using System.Diagnostics;
 using compiler.utils;
+using System.Runtime.InteropServices;
+
 
 namespace compiler
 {
@@ -77,6 +79,8 @@ namespace compiler
 			//reset colors
 			int oldpos = SourceBox.SelectionStart;
 
+			int eventMask = StopRedrawingBox();
+
 			SourceBox.SelectAll();
 			SourceBox.SelectionColor = Color.Black;
 
@@ -99,6 +103,23 @@ namespace compiler
 
 			SourceBox.SelectionStart = oldpos;
 			SourceBox.SelectionLength = 0;
+			StartRedrawingBox(eventMask);
+		}
+
+		[DllImport("user32.dll")]
+		public static extern int SendMessage(IntPtr hWnd, int wMsg, int wParam, int lParam);
+
+		private int StopRedrawingBox()
+		{	
+			SendMessage(SourceBox.Handle, 0x0B/*wm_setredraw*/, 0, 0);
+			return SendMessage(SourceBox.Handle, 0x400+59/*EM_GETEVENTMASK*/, 0, 0);
+		}
+
+		private void StartRedrawingBox(int eventMask)
+		{
+			SendMessage(SourceBox.Handle, 0x400+69/*EM_SETEVENTMASK*/, 0, eventMask);
+			SendMessage(SourceBox.Handle, 0x0B/*WM_SETREDRAW*/, 1, 0);
+			SourceBox.Invalidate();
 		}
 
 		private void saveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -137,7 +158,9 @@ namespace compiler
 				Process.Start("run_module.bat", outputFileName);
 		}
 
-		private void SourceBox_KeyDown(object sender, KeyEventArgs e)
+
+
+		private void SourceBox_TextChanged(object sender, EventArgs e)
 		{
 			recolorSyntax();
 		}

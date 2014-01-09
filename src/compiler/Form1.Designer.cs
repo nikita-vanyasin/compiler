@@ -133,7 +133,7 @@
 			this.SourceBox.TabIndex = 1;
 			this.SourceBox.Text = "";
 			this.SourceBox.WordWrap = false;
-			this.SourceBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SourceBox_KeyDown);
+			this.SourceBox.TextChanged += new System.EventHandler(this.SourceBox_TextChanged);
 			// 
 			// saveFileDialog
 			// 
