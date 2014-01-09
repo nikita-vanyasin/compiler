@@ -7,8 +7,10 @@ using System.Reflection;
 
 namespace compiler
 {
-    public class Parser : ErrorsEventDispatcher
+    public class Parser
     {
+        public ErrorsEventDispatcher ErrorDispatcher { get; protected set; }
+
         private ParseTable table;
         private Scanner scanner;
         private Stack<int> stack;
@@ -16,8 +18,14 @@ namespace compiler
 
         public Parser()
         {
+            ErrorDispatcher = new ErrorsEventDispatcher();
             table = ParseTableBuilder.Build();
             scanner = new Scanner();
+        }
+
+        protected void DispatchError(SourcePosition position, string description)
+        {
+            ErrorDispatcher.DispatchError(position, description);
         }
 
         public bool Parse(string inputText)
@@ -52,7 +60,7 @@ namespace compiler
                     currSourcePosition = scanner.GetSourcePosition();
                     currSourcePosition.Position -= scanner.GetForwardTokenLength();
                     currSourcePosition.TokenLength = 1;
-                    DispatchError(currSourcePosition, a.Attribute, 1);
+                    DispatchError(currSourcePosition, a.Attribute);
                     return false;
                 }
 
@@ -94,7 +102,7 @@ namespace compiler
                 }
                 else
                 {
-                    DispatchError(currSourcePosition, string.Format("Unexpected \"{0}\"", a.Attribute), 2);
+                    DispatchError(currSourcePosition, string.Format("Unexpected \"{0}\"", a.Attribute));
                     return false;
                 }
 

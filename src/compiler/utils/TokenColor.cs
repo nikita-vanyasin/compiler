@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 
-namespace compiler.utils
+namespace compiler
 {
 	internal static class TokenColor
 	{

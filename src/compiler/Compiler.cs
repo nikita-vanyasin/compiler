@@ -22,7 +22,7 @@ namespace compiler
 
             // parse
             var parser = new Parser();
-            parser.Error += this.OnErrorOccurred;           
+            parser.ErrorDispatcher.Error += this.OnErrorOccurred;
             if (!parser.Parse(inputText))
             {
                 return false;
