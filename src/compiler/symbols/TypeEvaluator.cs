@@ -607,11 +607,17 @@ namespace compiler
                 DispatchError(node.Index.TextPosition, "Only integer values available for array index");
             }
 
-            CheckIsNotNegative(node.Index);
+            if (!CheckIsNotNegative(node.Index))
+            {
+                return false;
+            }
 
             var s = table.Lookup(node.Id);
             if (s != null)
             {
+                s.Used = true;
+                
+
                 var maxSize = table.Lookup(node.Id).Size - 1;
                 CheckIndexInRange(maxSize, node.Index);
             }
@@ -619,7 +625,7 @@ namespace compiler
             return true;
         }
 
-        private void CheckIsNotNegative(AstExpression node)
+        private bool CheckIsNotNegative(AstExpression node)
         {
             if (node is AstNegateUnaryExpr)
             {
@@ -637,9 +643,11 @@ namespace compiler
                 if (intValExpr != null && Convert.ToInt32(intValExpr.Value) < 0)
                 {
                     DispatchError(node.TextPosition, "Invalid array index");
+                    return false;
                 }
             }
-            
+
+            return true;            
         }
 
         private void CheckIndexInRange(int maxSize, AstExpression node)
