@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+			this.components = new System.ComponentModel.Container();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.openToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -39,7 +40,10 @@
 			this.logListBox = new System.Windows.Forms.ListBox();
 			this.SourceBox = new System.Windows.Forms.RichTextBox();
 			this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+			this.logMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.clearLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
+			this.logMenuStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// menuStrip1
@@ -120,9 +124,11 @@
 			this.logListBox.Size = new System.Drawing.Size(794, 147);
 			this.logListBox.TabIndex = 2;
 			this.logListBox.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.logListBox_MouseDoubleClick);
+			this.logListBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.logListBox_MouseUp);
 			// 
 			// SourceBox
 			// 
+			this.SourceBox.AcceptsTab = true;
 			this.SourceBox.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.SourceBox.Font = new System.Drawing.Font("Consolas", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.SourceBox.HideSelection = false;
@@ -139,6 +145,20 @@
 			// 
 			this.saveFileDialog.Filter = "PySharp Files (*.ps) |*.ps";
 			// 
+			// logMenuStrip
+			// 
+			this.logMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.clearLogToolStripMenuItem});
+			this.logMenuStrip.Name = "logMenuStrip";
+			this.logMenuStrip.Size = new System.Drawing.Size(122, 26);
+			// 
+			// clearLogToolStripMenuItem
+			// 
+			this.clearLogToolStripMenuItem.Name = "clearLogToolStripMenuItem";
+			this.clearLogToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.clearLogToolStripMenuItem.Text = "Clear log";
+			this.clearLogToolStripMenuItem.Click += new System.EventHandler(this.clearLogToolStripMenuItem_Click);
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -151,9 +171,10 @@
 			this.Margin = new System.Windows.Forms.Padding(2);
 			this.Name = "Form1";
 			this.Padding = new System.Windows.Forms.Padding(4);
-			this.Text = "Compiler";
+			this.Text = "Py# Compiler";
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
+			this.logMenuStrip.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -172,6 +193,8 @@
 		private System.Windows.Forms.ToolStripMenuItem buildToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem compileToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem runToolStripMenuItem;
+		private System.Windows.Forms.ContextMenuStrip logMenuStrip;
+		private System.Windows.Forms.ToolStripMenuItem clearLogToolStripMenuItem;
     }
 }
 

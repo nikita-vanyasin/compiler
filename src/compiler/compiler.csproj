@@ -71,6 +71,8 @@
     <Compile Include="codegen\CodeGenerator.cs" />
     <Compile Include="CodePathChecker.cs" />
     <Compile Include="Compiler.cs" />
+    <Compile Include="libraries\LibrariesHelper.cs" />
+    <Compile Include="libraries\StandardLibrary.cs" />
     <Compile Include="parser\AstBuilder.cs" />
     <Compile Include="parser\ParseAction.cs" />
     <Compile Include="parser\ParseTable.cs" />
