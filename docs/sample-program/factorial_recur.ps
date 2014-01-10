@@ -1,0 +1,12 @@
+class Program:
+    private int i
+    
+    public static int Main():
+        Console.WriteInt(factorial(4))
+        return 0
+
+    private static int factorial(int n):
+        if (n == 0):
+            return 1
+        else:
+            return n * factorial(n - 1)
