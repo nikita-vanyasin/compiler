@@ -26,6 +26,22 @@ namespace compiler
             this.Code = code;
         }
 
+        public override bool Equals(object obj)
+        {
+            var other = obj as ErrorEvent;
+            if (other != null)
+            {
+                return this.Description == other.Description && this.IsError == other.IsError && this.Position == other.Position;
+            }
+
+            return base.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return (Description + Position.Position + IsError.ToString()).GetHashCode();
+        }
+
         public override string ToString()
         {
             return Description + " at " + GetTextByCode(Code) + "(" + Position + ")";

@@ -13,8 +13,22 @@ namespace compiler
 
         public SourcePosition()
         {
-
             Position = -1;
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as SourcePosition;
+            if (other != null)
+            {
+                return this.Position == other.Position && this.TokenLength == other.TokenLength;
+            }
+            return base.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return Position.GetHashCode() + TokenLength.GetHashCode();
         }
     }
 }
