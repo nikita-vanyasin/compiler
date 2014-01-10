@@ -80,7 +80,7 @@ namespace compiler
 
         private void CallPrint()
         {
-            codeStream.WriteLine(CreateUnnamedVariable() + "= getelementptr [4 x i8]* @.str, i64 0, i64 0");
+            codeStream.WriteLine(CreateUnnamedVariable() + "= getelementptr [3 x i8]* @.str, i64 0, i64 0");
             string strCallF = "= call i32 (i8 *, ...)* @printf(i8* " + GetCurrUnnamedVariable() + ", ";
             codeStream.Write(CreateUnnamedVariable() + strCallF);
             SaveArg("i32 " + GetCurrUnnamedVariable());
@@ -99,7 +99,15 @@ namespace compiler
 
         private void CallSpace()
         {
-            codeStream.WriteLine(CreateUnnamedVariable() + " = getelementptr [1 x i8]* @.spacestr, i32 0, i32 0");
+            codeStream.WriteLine(CreateUnnamedVariable() + " = getelementptr [2 x i8]* @.spacestr, i64 0, i64 0");
+            string strCallF = "= call i32 (i8 *, ...)* @printf(i8* " + GetCurrUnnamedVariable();
+            codeStream.WriteLine(CreateUnnamedVariable() + strCallF + ")");
+            SaveArg("i32 " + GetCurrUnnamedVariable());
+        }
+
+        private void CallEndL()
+        {
+            codeStream.WriteLine(CreateUnnamedVariable() + " = getelementptr [2 x i8]* @.endlstr, i64 0, i64 0");
             string strCallF = "= call i32 (i8 *, ...)* @printf(i8* " + GetCurrUnnamedVariable();
             codeStream.WriteLine(CreateUnnamedVariable() + strCallF + ")");
             SaveArg("i32 " + GetCurrUnnamedVariable());
@@ -123,6 +131,9 @@ namespace compiler
                             return; 
                         case "WriteSpace":
                             CallSpace();
+                            return;
+                        case "WriteLine":
+                            CallEndL();
                             return;
                         default:
                             throw new NotImplementedException();
@@ -158,8 +169,9 @@ namespace compiler
 
         private void CreateLLVMBuiltIn()
         {
-          //  codeStream.WriteLine("@.spacestr = internal constant [1 x i8] c\"\\20\"");
-            codeStream.WriteLine("@.str = internal constant [4 x i8] c\"%d\\0A\\00\"");
+            codeStream.WriteLine("@.spacestr = internal constant [2 x i8] c\"\\20\\00\"");
+            codeStream.WriteLine("@.endlstr = internal constant [2 x i8] c\"\\0A\\00\"");
+            codeStream.WriteLine("@.str = internal constant [3 x i8] c\"%d\\00\"");
             codeStream.WriteLine("@.rstr = internal constant [3 x i8] c\"%d\\00\"");
             codeStream.WriteLine("declare i32 @printf(i8 *, ...)");
             codeStream.WriteLine("declare i32 @scanf(i8*, ...)");
@@ -296,6 +308,7 @@ namespace compiler
             currReturnType = GetLLVMType(node.TypeDef.Id);
             node.ArgumentsDefinition.Accept(this);
             node.StatementsBlock.Accept(this);
+            codeStream.WriteLine("ret " + GetLLVMType(node.TypeDef.Id) + " 0");//fake return for 
             codeStream.WriteLine("}");
 
             table.UseParentScope();
@@ -340,7 +353,8 @@ namespace compiler
             node.CallArgs.Accept(this);
             codeStream.Write(CreateUnnamedVariable() + " = call " + GetLLVMType(symbolFunc.Type) + " @" + symbolFunc.Name + "(");      
             codeStream.Write(string.Join(",", GetCurrFuncArg().ToArray()));
-            codeStream.WriteLine(")");            
+            codeStream.WriteLine(")");
+            SaveArg(GetLLVMType(symbolFunc.Type) + " " + GetCurrUnnamedVariable());
             return false;
         }
 
@@ -378,7 +392,7 @@ namespace compiler
         override public bool Visit(AstReturnStatement node)
         {
             node.Expression.Accept(this);
-            codeStream.WriteLine("\nret " + currReturnType + " " + GetCurrUnnamedVariable());
+            codeStream.WriteLine("ret " + currReturnType + " " + GetCurrUnnamedVariable());
             CreateUnnamedVariable();
             return false;
         }

@@ -37,10 +37,14 @@ namespace compiler
             };
             AddBuiltInFunc("Console", "ReadInt", BuiltInTypes.INT, readIntList);
 
-            /* var writeSpaceList = new List<string>()
+             var writeSpaceList = new List<string>()
              {
              };
-             AddBuiltInFunc("Console", "WriteSpace", BuiltInTypes.VOID, writeSpaceList);*/
+             AddBuiltInFunc("Console", "WriteSpace", BuiltInTypes.VOID, writeSpaceList);
+             var writeEndLineList = new List<string>()
+             {
+             };
+             AddBuiltInFunc("Console", "WriteLine", BuiltInTypes.VOID, writeEndLineList);
         }
 
         private void AddBuiltInFunc(string target, string name, string type, List<string> types)
