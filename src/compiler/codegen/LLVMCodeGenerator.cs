@@ -252,15 +252,12 @@ namespace compiler
         override public bool Visit(AstClass node)
         {
             table.UseChildScope();
-
-           //TODO something
             node.Body.Accept(this);
             return false;
         }
 
         override public bool Visit(AstClassBody node)
         {
-            //TODO something
             return true;
         }
 
@@ -279,7 +276,6 @@ namespace compiler
             var symbolTableElement = table.Lookup(node.Name.Id);
             if (symbolTableElement.IsArraySymbol())
             {
-                //AstIdArrayExpression arrExpr = node.TypeDef as AstIdArrayExpression;
                 codeStream.WriteLine("@" + symbolTableElement.Name + " = " + GetLLVMVisibility(node.Visibility) + " global " +
                    "[" + symbolTableElement.Size + " x i32] zeroinitializer");
             }
@@ -342,8 +338,7 @@ namespace compiler
             funcCallArgStack.Push(new List<string>());
             var symbolFunc = table.LookupFunction(node.Name.Id);
             node.CallArgs.Accept(this);
-            codeStream.Write(CreateUnnamedVariable() + " = call " + GetLLVMType(symbolFunc.Type) + " @" + symbolFunc.Name + "(");
-            //SaveArg(GetLLVMType(symbolFunc.Type) + " " + GetCurrUnnamedVariable());         
+            codeStream.Write(CreateUnnamedVariable() + " = call " + GetLLVMType(symbolFunc.Type) + " @" + symbolFunc.Name + "(");      
             codeStream.Write(string.Join(",", GetCurrFuncArg().ToArray()));
             codeStream.WriteLine(")");            
             return false;
@@ -432,7 +427,7 @@ namespace compiler
             {
                 node.NewValue.Accept(this);
                 UseVaribaleCatched(node.Variable.Id);
-                codeStream.WriteLine("%" + GetCurrVariableState(node.Variable.Id) + "= add " + GetLLVMType(symbolTableVariable.Type) + " 0, " + GetCurrUnnamedVariable());                           
+                codeStream.WriteLine("%" + GetCurrVariableState(node.Variable.Id) + " = add " + GetLLVMType(symbolTableVariable.Type) + " 0, " + GetCurrUnnamedVariable());                           
             }
           
             return false;
@@ -727,7 +722,16 @@ namespace compiler
 
         public override bool Visit(AstArrayInitializerStatement node)
         {
-            throw new NotImplementedException();
+            var tableSymbol = table.Lookup(node.Id.Id);
+            List<int> valueList = node.GetValuesList();
+            for (var i = 0; i < valueList.Count(); i++)
+            {
+                codeStream.WriteLine(CreateUnnamedVariable() + " = getelementptr [" + tableSymbol.Size + "x i32]* @" +
+                tableSymbol.Name + ", i32 0, i32 " + i.ToString());
+                codeStream.WriteLine("store i32 " + valueList[i].ToString() + ", i32* " + GetCurrUnnamedVariable());
+            }
+
+            return false;
         }
     }
 }
