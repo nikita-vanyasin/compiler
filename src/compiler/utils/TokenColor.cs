@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using compiler.libraries;
+using System.Globalization;
 
 namespace compiler
 {
@@ -26,6 +28,13 @@ namespace compiler
 			{TokenType.STATIC			, Color.Blue},
 			{TokenType.TRUE				, Color.Blue},
 			{TokenType.WHILE			, Color.Blue},
+
+			{TokenType.PLUS				, Color.Gray},
+			{TokenType.MINUS			, Color.Gray},
+			{TokenType.MULTIPLICATION	, Color.Gray},
+			{TokenType.DIV				, Color.Gray},
+			{TokenType.MOD				, Color.Gray},
+
 			{TokenType.INTEGER_VALUE	, Color.Green}, // TODO: CHAR_VALUE, FLOAT_VALUE...
 		};
 
@@ -34,6 +43,16 @@ namespace compiler
 			if (!s_colors.ContainsKey(token.Type)) return Color.Black;
 
 			return s_colors[token.Type];
+		}
+
+		public static Color ColorForID(string IDattribute)
+		{
+			//TODO: другие либы, никогда.
+			StandardLibrary lib = LibrariesHelper.GetSTL();
+			if (lib.GetClassNames().Any(s => string.Compare(s, IDattribute, false, CultureInfo.InvariantCulture) == 0))
+				return Color.Turquoise;
+
+			return Color.Black;
 		}
 	}
 }

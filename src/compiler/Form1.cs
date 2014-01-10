@@ -30,7 +30,6 @@ namespace compiler
 			bool result = false;
             logListBox.Items.Add("_______________________________________________________________");
             logListBox.Items.Add("");
-			m_errorPositions.Clear();
 
             var text = SourceBox.Text + "\n";
             var outStream = new FileStream(outputFileName, FileMode.Create);
@@ -68,7 +67,7 @@ namespace compiler
 			{
 				SourceBox.Clear();
 				SourceBox.Text = File.ReadAllText(openFileDlg.FileName);
-				this.Text = string.Format("Compiler - {0}", openFileDlg.FileName);
+				this.Text = string.Format("Py# Compiler - {0}", openFileDlg.FileName);
 			}
 		}
 
@@ -85,10 +84,6 @@ namespace compiler
 		private void recolorSyntax()
 		{
 			//reset colors
-			int oldpos = SourceBox.SelectionStart;
-
-			int eventMask = StopRedrawingBox();
-
 			SourceBox.SelectAll();
 			SourceBox.SelectionColor = Color.Black;
 
@@ -99,22 +94,22 @@ namespace compiler
 
 			while ((token = scanner.GetNextToken()).Type != TokenType.EOF)
 			{
-				Color color = TokenColor.GetColor(token);
+				Color color = token.Type == TokenType.ID
+					? TokenColor.ColorForID(token.Attribute)
+					: TokenColor.GetColor(token);
+
 				if (color != Color.Black)
 				{
 					SourceBox.Select(pos.Position, pos.TokenLength);
 					SourceBox.SelectionColor = color;
 				}
+
 			
 				pos = scanner.GetSourcePosition();
 			}
 
 			SourceBox.SelectAll();
 			SourceBox.SelectionBackColor = SourceBox.BackColor;
-
-			SourceBox.SelectionStart = oldpos;
-			SourceBox.SelectionLength = 0;
-			StartRedrawingBox(eventMask);
 		}
 
 		[DllImport("user32.dll")]
@@ -141,7 +136,7 @@ namespace compiler
 			if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 			{
 				File.WriteAllText(saveFileDialog.FileName, SourceBox.Text);
-				this.Text = string.Format("Compiler - {0}", saveFileDialog.FileName);
+				this.Text = string.Format("Py# Compiler - {0}", saveFileDialog.FileName);
 			}
 		}
 
@@ -159,6 +154,7 @@ namespace compiler
                     var sp = m_errorPositions[logListBox.SelectedIndex];
 					SourceBox.SelectionStart = sp.Position;
 					SourceBox.SelectionLength = sp.TokenLength;
+					SourceBox.Focus();
 				}
 			}
 		}
@@ -173,7 +169,43 @@ namespace compiler
 
 		private void SourceBox_TextChanged(object sender, EventArgs e)
 		{
+			int eventMask = StopRedrawingBox();
+
+			int oldpos = SourceBox.SelectionStart;
+			int offset = ReplaceTabs();
+			
 			recolorSyntax();
+
+			SourceBox.SelectionStart = oldpos + offset;
+			SourceBox.SelectionLength = 0;
+
+			StartRedrawingBox(eventMask);
+		}
+
+		private int ReplaceTabs()
+		{
+			const char target = '\t';
+			const string replacement = "    ";
+
+			int result = SourceBox.Text.Count(s => s == target);
+			SourceBox.Text = SourceBox.Text.Replace(target.ToString(), replacement);
+			result *= replacement.Length - 1/*target.length*/;
+
+			return result;
+		}
+
+		private void clearLogToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			m_errorPositions.Clear();
+			logListBox.Items.Clear();
+		}
+
+		private void logListBox_MouseUp(object sender, MouseEventArgs e)
+		{
+			if (e.Button == System.Windows.Forms.MouseButtons.Right)
+			{
+				logMenuStrip.Show(this, new Point(e.X + logListBox.Left, e.Y + logListBox.Top));
+			}
 		}
     }
 }
