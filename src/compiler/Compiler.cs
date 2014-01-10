@@ -60,6 +60,10 @@ namespace compiler
 
         public void OnErrorOccurred(object sender, ErrorEvent error)
         {
+            if (errorsContainer.Contains(error))
+            {
+                return;
+            }
             errorsContainer.Add(error);
         }
     }
