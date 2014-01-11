@@ -795,12 +795,6 @@ namespace compiler
 		{
 			if (visitor.Visit(this))
 			{
-				visitor.Stack.Push(this);
-
-				foreach (var item in Expr)			
-					item.Accept(visitor);
-				
-				visitor.Stack.Pop();
 			}
 		}
 
@@ -1047,9 +1041,9 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
-				visitor.Stack.Push(this);
-                Index.Accept(visitor);
-				visitor.Stack.Pop();
+				//visitor.Stack.Push(this);
+				//Index.Accept(visitor);
+				//visitor.Stack.Pop(); анкоммент при удалении index.Visit() из visitor.Visit(this)
             }
         }
     }

@@ -31,6 +31,9 @@ namespace compiler
 
         //arr
         private bool arrAssign = false;
+		private Stack<List<string>> m_indexVars = new Stack<List<string>>();
+		private List<string> m_lastIndex;
+		private List<string> m_currentIndex = new List<string>();
 
         private uint CreateWhileUse()
         {
@@ -43,10 +46,12 @@ namespace compiler
             ifCount++;
             return ifCount;
         }
-        //
+        
         private void SaveArg(string arg)
         {
             currFuncCallArgStack.Push(arg);
+			if(m_indexVars.Count != 0)
+				m_currentIndex.Add(arg);
         }
 
         private string GetLastSavedArg()
@@ -289,15 +294,28 @@ namespace compiler
             if (Symbol.IsArray(symbolTableElement))
             {
                 codeStream.WriteLine("@" + symbolTableElement.Name + " = " + GetLLVMVisibility(node.Visibility) + " global " +
-                   "[" + symbolTableElement.FlatSize + " x i32] zeroinitializer");
+					GetArrayId(symbolTableElement.Size as int[]) +
+                  " zeroinitializer");
             }
             else
             {
-                codeStream.WriteLine("@" + node.Name.Id + " = " + GetLLVMVisibility(node.Visibility) + " global " + GetLLVMType(node.TypeDef.Id) + " " + GetDefaultTypeValue(node.TypeDef));
+                codeStream.WriteLine("@" + node.Name.Id + " = " + GetLLVMVisibility(node.Visibility) + " global "
+					+ GetLLVMType(node.TypeDef.Id) + " " + GetDefaultTypeValue(node.TypeDef));
                 classVariables.Add(node.Name.Id);
             }
             return false;
         }
+
+		private string GetArrayId(int[] size)
+		{
+			string result = "i32";
+			foreach (int dim in size)
+			{
+				result = string.Format("[{0} x {1}]", dim, result);
+			}
+
+			return result;
+		}
 
         override public bool Visit(AstClassMethod node)
         {
@@ -508,7 +526,8 @@ namespace compiler
                 }
                
             }
-                SaveArg(GetLLVMType(symbolTableVariable.Type) + " " + GetCurrUnnamedVariable());
+
+			SaveArg(GetLLVMType(symbolTableVariable.Type) + " " + GetCurrUnnamedVariable());
 
             return true;
         }
@@ -719,14 +738,19 @@ namespace compiler
         public override bool Visit(AstIdArrayExpression node)
         {
             node.Index.Accept(this);
+			StringBuilder arrIndex = new StringBuilder();
+			foreach (string s in m_lastIndex)
+				arrIndex.AppendFormat(", {0} ", s);
+
             var tableSymbol = table.Lookup(node.Id);
-            var arrIndex = GetCurrUnnamedVariable();
-            codeStream.WriteLine(CreateUnnamedVariable() + " = getelementptr [" + tableSymbol.FlatSize + " x i32]* @" + node.Id +
-                  " , i32 0, i32 " + arrIndex);
+            codeStream.WriteLine(CreateUnnamedVariable() + " = getelementptr " + GetArrayId(tableSymbol.Size as int[]) + 
+				"* @" + node.Id +
+                 " , i32 0 " + arrIndex);
             if (!arrAssign)
             {
-				codeStream.WriteLine(CreateUnnamedVariable() + " = getelementptr [" + tableSymbol.FlatSize + " x i32]* @" + node.Id +
-                    " , i32 0, i32 " + arrIndex);
+				codeStream.WriteLine(CreateUnnamedVariable() + " = getelementptr " + GetArrayId(tableSymbol.Size as int[]) +
+					"* @" + node.Id +
+                    " , i32 0 " + arrIndex);
                 string strLoad = " = load i32* " + GetCurrUnnamedVariable();
                 codeStream.WriteLine(CreateUnnamedVariable() + strLoad);
                 SaveArg("i32 " + GetCurrUnnamedVariable());
@@ -741,7 +765,7 @@ namespace compiler
             List<int> valueList = node.GetValuesList();
             for (var i = 0; i < valueList.Count(); i++)
             {
-                codeStream.WriteLine(CreateUnnamedVariable() + " = getelementptr [" + tableSymbol.Size + "x i32]* @" +
+                codeStream.WriteLine(CreateUnnamedVariable() + " = getelementptr " + GetArrayId(tableSymbol.Size as int[]) + "* @" +
                 tableSymbol.Name + ", i32 0, i32 " + i.ToString());
                 codeStream.WriteLine("store i32 " + valueList[i].ToString() + ", i32* " + GetCurrUnnamedVariable());
             }
@@ -751,13 +775,21 @@ namespace compiler
 
 		public override bool Visit(AstIntegerListExpression node)
 		{
-			// TODO
 			return true;
 		}
 
 		public override bool Visit(AstExpressionList node)
 		{
-			// TODO
+			m_indexVars.Push(new List<string>());
+			foreach (var e in node.Expr)
+			{
+				e.Accept(this);
+				m_indexVars.Peek().Add(m_currentIndex.Last());
+				m_currentIndex.Clear();
+			}
+
+			m_lastIndex = m_indexVars.Pop();
+
 			return true;
 		}
 
