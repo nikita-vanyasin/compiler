@@ -356,5 +356,59 @@ class Program:
             Assert.IsTrue(res);
         }
 
+		[TestMethod]
+		public void TestMultiDimArray()
+		{
+			Parser p = new Parser();
+			var text = @"  
+class Program:   
+    private int[10, 10, 10] a
+    private int i
+    public static int Main():   
+        a = {21, 21, 21, 21, 2}
+
+";
+			var res = p.Parse(text);
+			Assert.IsTrue(res);
+
+			var testVisitor = new TestAstValidVisitor();
+			res = testVisitor.TestTree(p.GetRootNode());
+			Assert.IsTrue(res);
+		}
+
+		[TestMethod]
+		public void TestMulDimArray_wrongIndexNumber()
+		{
+			Parser p = new Parser();
+			var text = @"  
+class Program:   
+    private int[10, 10, 10] a
+    private int i
+    public static int Main():   
+        a[1, 2] = 3
+		i = a[1]
+
+";
+			var res = p.Parse(text);
+			Assert.IsFalse(res);
+		}
+
+		[TestMethod]
+		public void TestMulDimArray_indicesOutOfRange()
+		{
+			Parser p = new Parser();
+			var text = @"  
+class Program:   
+    private int[10, 10, 10] a
+    private int i
+    public static int Main():   
+        a[1, 2, -1] = 3
+		i = a[12, 21, 3]
+
+";
+			var res = p.Parse(text);
+			Assert.IsFalse(res);
+
+		}
     }
 }
