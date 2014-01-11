@@ -37,14 +37,14 @@ namespace compiler
             Log("Starting build...");
             var compiler = new Compiler();
 
-            var text = (string)this.Invoke(new Func<string>(() =>
-                             SourceBox.Text));
+            var text = (string)this.Invoke(new Func<string>(() => SourceBox.Text));
             result = compiler.Compile(text, outStream);
 
             var errorsContainer = compiler.GetErrorsContainer();
             foreach (var ev in errorsContainer)
             {
-                int id = logListBox.Items.Add(TextUtils.WriteCompilerError(SourceBox.Text, ev));
+                text = (string)this.Invoke(new Func<string>(() => SourceBox.Text));
+                int id = Log(TextUtils.WriteCompilerError(text, ev));
                 m_errorPositions.Add(id, ev.Position);
             }
 
@@ -65,12 +65,14 @@ namespace compiler
 			return result;
         }
 
-        private void Log(object o)
+        private int Log(object o)
         {
+            var r = 0;
             this.Invoke(new MethodInvoker(delegate()
             {
-                logListBox.Items.Add(o);
+                r = logListBox.Items.Add(o);
             }));
+            return r;
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
