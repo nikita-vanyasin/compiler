@@ -37,14 +37,21 @@ namespace compiler
             };
             AddBuiltInFunc("Console", "ReadInt", BuiltInTypes.INT, readIntList);
 
-             var writeSpaceList = new List<string>()
-             {
-             };
-             AddBuiltInFunc("Console", "WriteSpace", BuiltInTypes.VOID, writeSpaceList);
-             var writeEndLineList = new List<string>()
-             {
-             };
-             AddBuiltInFunc("Console", "WriteLine", BuiltInTypes.VOID, writeEndLineList);
+            var writeSpaceList = new List<string>()
+            {
+            };
+            AddBuiltInFunc("Console", "WriteSpace", BuiltInTypes.VOID, writeSpaceList);
+
+            var writeEndLineList = new List<string>()
+            {
+            };
+            AddBuiltInFunc("Console", "WriteLine", BuiltInTypes.VOID, writeEndLineList);
+
+            var writeStringList = new List<string>()
+            {
+                BuiltInTypes.STRING
+            };
+            AddBuiltInFunc("Console", "WriteString", BuiltInTypes.VOID, writeStringList);
         }
 
         private void AddBuiltInFunc(string target, string name, string type, List<string> types)
@@ -198,6 +205,11 @@ namespace compiler
         }
 
         override public bool Visit(AstCallArgument node)
+        {
+            return true;
+        }
+
+        public override bool Visit(AstStringLiteralExpression node)
         {
             return true;
         }

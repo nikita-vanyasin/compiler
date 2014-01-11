@@ -28,6 +28,7 @@ namespace compiler
 			{TokenType.STATIC			, Color.Blue},
 			{TokenType.TRUE				, Color.Blue},
 			{TokenType.WHILE			, Color.Blue},
+            {TokenType.STRING			, Color.Blue},
 
 			{TokenType.PLUS				, Color.Gray},
 			{TokenType.MINUS			, Color.Gray},
@@ -35,6 +36,7 @@ namespace compiler
 			{TokenType.DIV				, Color.Gray},
 			{TokenType.MOD				, Color.Gray},
 
+            {TokenType.STRING_LITERAL	, Color.Brown},
 			{TokenType.INTEGER_VALUE	, Color.Green}, // TODO: CHAR_VALUE, FLOAT_VALUE...
 		};
 

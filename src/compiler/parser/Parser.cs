@@ -79,6 +79,9 @@ namespace compiler
                         case TokenType.INTEGER_VALUE:
                             astBuilder.AddAstIntegerValueNode(a);
                             break;
+                        case TokenType.STRING_LITERAL:
+                            astBuilder.AddAstStringLiteralValueNode(a);
+                            break;
                     }
                 }
                 else if (action.Kind == ParseActionKind.REDUCE)

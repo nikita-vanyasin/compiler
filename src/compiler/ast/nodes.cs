@@ -479,6 +479,23 @@ namespace compiler
         }
     }
 
+    public class AstStringLiteralExpression : AstExpression
+    {
+        public string Value { get; protected set; }
+
+        public AstStringLiteralExpression(string val)
+        {
+            Value = val;
+        }
+
+        public override void Accept(AstNodeVisitor visitor)
+        {
+            if (visitor.Visit(this))
+            {
+            }
+        }
+    }
+
 	public abstract class AstListExpression : AstExpression
 	{
 		public abstract AstExpression this[int index] { get; }

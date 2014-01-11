@@ -51,6 +51,11 @@ namespace compiler
             return true;
         }
 
+        public override bool Visit(AstStringLiteralExpression node)
+        {
+            return true;
+        }
+
         override public bool Visit(AstStaticModifier node)
         {
             return true;

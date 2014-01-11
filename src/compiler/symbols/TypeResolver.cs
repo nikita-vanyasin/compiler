@@ -95,10 +95,14 @@ namespace compiler
 				else
 					return BuiltInTypes.INT;
 			}
-			else
-			{
-				throw new Exception("Unknown expression type.");
-			}            
+            else if (expr is AstStringLiteralExpression)
+            {
+                return BuiltInTypes.STRING;
+            }
+            else
+            {
+                throw new Exception("Unknown expression type.");
+            }            
         }
 
         private string GetSymbolType(AstExpression expr, Symbol s, string id)

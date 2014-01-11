@@ -165,6 +165,209 @@ class Program:
             Assert.IsFalse(res);
         }
 
+
+        [TestMethod]
+        public void TestStrings()
+        {
+            Parser p = new Parser();
+            var text = @"  
+class Program:   
+    private string a
+    private string i
+    public static int Main():   
+        a = ""Hello,""
+        i = ""World!""
+        Console.WriteString(a)
+        Console.WriteSpace()
+        Console.WriteString(i)
+        Console.WriteLine()
+        return 0  
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var checker = new TypeEvaluator();
+            res = checker.Evaluate(p.GetRootNode());
+            Assert.IsTrue(res);
+        }
+
+        [TestMethod]
+        public void TestStringsBadAssignInt()
+        {
+            Parser p = new Parser();
+            var text = @"  
+class Program:   
+    private string a
+    private int i
+    public static int Main():   
+        i = ""World!""
+        Console.WriteString(a)
+        Console.WriteSpace()
+        return i  
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var checker = new TypeEvaluator();
+            res = checker.Evaluate(p.GetRootNode());
+            Assert.IsFalse(res);
+        }
+
+        [TestMethod]
+        public void TestStringsBadAssignIntdas()
+        {
+            Parser p = new Parser();
+            var text = @"  
+class Program:   
+    private string a
+    private int i
+    public static int Main():   
+        i = a
+        Console.WriteString(a)
+        Console.WriteSpace()
+        return i  
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var checker = new TypeEvaluator();
+            res = checker.Evaluate(p.GetRootNode());
+            Assert.IsFalse(res);
+        }
+
+        [TestMethod]
+        public void TestStringsBadArrIndex()
+        {
+            Parser p = new Parser();
+            var text = @"  
+class Program:   
+    private string a
+    private int[43] i
+    public static int Main():   
+        i[a] = 43434
+        Console.WriteString(a)
+        Console.WriteSpace()
+        return i  
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var checker = new TypeEvaluator();
+            res = checker.Evaluate(p.GetRootNode());
+            Assert.IsFalse(res);
+        }
+
+        [TestMethod]
+        public void TestStringsBadArrIndexAssign()
+        {
+            Parser p = new Parser();
+            var text = @"  
+class Program:   
+    private string a
+    private int[43] i
+    private int b
+    public static int Main():   
+        b = i[a] + 1
+        Console.WriteString(a)
+        Console.WriteSpace()
+        return i  
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var checker = new TypeEvaluator();
+            res = checker.Evaluate(p.GetRootNode());
+            Assert.IsFalse(res);
+        }
+
+        [TestMethod]
+        public void TestStringsBadArrAssignVar()
+        {
+            Parser p = new Parser();
+            var text = @"  
+class Program:   
+    private string a
+    private int[43] i
+    public static int Main():   
+        i[0] = a
+        Console.WriteString(a)
+        Console.WriteSpace()
+        return i  
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var checker = new TypeEvaluator();
+            res = checker.Evaluate(p.GetRootNode());
+            Assert.IsFalse(res);
+        }
+
+        [TestMethod]
+        public void TestStringsBadArrAssignVar1()
+        {
+            Parser p = new Parser();
+            var text = @"  
+class Program:   
+    private string a
+    private int[43] i
+    public static int Main():   
+        i[0] = ""adsads""
+        Console.WriteString(a)
+        Console.WriteSpace()
+        return i  
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var checker = new TypeEvaluator();
+            res = checker.Evaluate(p.GetRootNode());
+            Assert.IsFalse(res);
+        }
+
+
+        [TestMethod]
+        public void TestStringsBadCond()
+        {
+            Parser p = new Parser();
+            var text = @"  
+class Program:   
+    private string a
+    private int[43] i
+    public static int Main():   
+        if (a && i):
+            pass
+        return 0 
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var checker = new TypeEvaluator();
+            res = checker.Evaluate(p.GetRootNode());
+            Assert.IsFalse(res);
+        }
+
+
+        [TestMethod]
+        public void TestStringsBadCond1()
+        {
+            Parser p = new Parser();
+            var text = @"  
+class Program:   
+    private string a
+    private int[43] i
+    public static int Main():   
+        if (a < i):
+            pass
+        return 0 
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var checker = new TypeEvaluator();
+            res = checker.Evaluate(p.GetRootNode());
+            Assert.IsFalse(res);
+        }
+
         [TestMethod]
         public void TestDevisionByZero1()
         {

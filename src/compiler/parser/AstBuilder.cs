@@ -58,6 +58,12 @@ namespace compiler
             PushNode(node);
         }
 
+        public void AddAstStringLiteralValueNode(Token t)
+        {
+            var node = new AstStringLiteralExpression(t.Attribute);
+            PushNode(node);
+        }
+
         private void PushNode(AstNode node)
         {
             node.SetTextPosition(tokenCurrPosition);
@@ -186,6 +192,13 @@ namespace compiler
         private void ConstructIntTypeDefinition()
         {
             var typeDef = new AstIdExpression(BuiltInTypes.INT);
+            PushNode(typeDef);
+        }
+
+        // #TYPE_DEFINITION STRING
+        private void ConstructStringTypeDefinition()
+        {
+            var typeDef = new AstIdExpression(BuiltInTypes.STRING);
             PushNode(typeDef);
         }
 

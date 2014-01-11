@@ -1069,6 +1069,81 @@ class Program:
 
 
         [TestMethod]
+        public void TestStringsBad()
+        {
+            Scanner s = new Scanner();
+            s.SetText(
+                @"  
+class Program:   
+    private int[-10] a
+    private string i
+    public static int Main():   
+        i = ""string!!!""""
+
+        
+"
+            );
+
+            var expectation = new List<Token>() {    
+                new Token(TokenType.CLASS, "class"),
+                new Token(TokenType.ID, "Program"),
+                new Token(TokenType.BLOCK_START, "1"),
+                    new Token(TokenType.PRIVATE, "private"),
+                    new Token(TokenType.INT, "int"),
+                    new Token(TokenType.LEFT_BRACKET, "["),
+                    new Token(TokenType.INTEGER_VALUE, "-10"),
+                    new Token(TokenType.RIGHT_BRACKET, "]"),
+                    new Token(TokenType.ID, "a"),
+                    new Token(TokenType.LINE_END, "\n"),
+                    new Token(TokenType.PRIVATE, "private"),
+                    new Token(TokenType.STRING, "string"),
+                    new Token(TokenType.ID, "i"),
+                    new Token(TokenType.LINE_END, "\n"),
+                    new Token(TokenType.PUBLIC, "public"),
+                    new Token(TokenType.STATIC, "static"),
+                    new Token(TokenType.INT, "int"),
+                    new Token(TokenType.ID, "Main"),
+                    new Token(TokenType.LEFT_PAREN, "("),
+                    new Token(TokenType.RIGHT_PAREN, ")"),
+                    new Token(TokenType.BLOCK_START, "2"),
+
+                        new Token(TokenType.ID, "i"),
+                        new Token(TokenType.ASSIGNMENT, "="),
+                        new Token(TokenType.STRING_LITERAL, "string!!!"),
+                        new Token(TokenType.ERROR, ""),
+                        new Token(TokenType.LINE_END, "\n"),
+
+                    new Token(TokenType.BLOCK_END, "2"),
+                new Token(TokenType.BLOCK_END, "1"),
+                new Token(TokenType.EOF, "\0")
+            };
+
+            Token t;
+            var i = 0;
+            do
+            {
+                t = s.GetNextToken();
+
+                //    Trace.Write("asserting[" + i + "] that " + expectation[i].Type + " equal " + t.Type);
+                //    Trace.WriteLine("and " + expectation[i].Attribute + " equal " + t.Attribute);
+
+                Assert.AreEqual(expectation[i].Type, t.Type);
+
+                if (expectation[i].Type != TokenType.ERROR)
+                {
+                    Assert.AreEqual(expectation[i].Attribute, t.Attribute);
+                }
+
+                if (expectation[i].Type == TokenType.STRING_LITERAL)
+                {
+                    var r = String.Compare(expectation[i].Attribute, t.Attribute);
+                    Assert.AreEqual(r, 0);
+                }
+                ++i;
+            } while (Token.IsCorrectToken(t));
+        }
+
+        [TestMethod]
         public void TestStrings1()
         {
             Scanner s = new Scanner();
@@ -1078,7 +1153,7 @@ class Program:
     private int[-10] a
     private string i
     public static int Main():   
-        i = ""string!!!
+        i = ""string!!!""
 
 "
             );

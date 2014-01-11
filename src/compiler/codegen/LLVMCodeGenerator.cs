@@ -491,6 +491,11 @@ namespace compiler
             return true;
         }
 
+        public override bool Visit(AstStringLiteralExpression node)
+        {
+            throw new NotImplementedException();
+        }
+
         override public bool Visit(AstIdExpression node)
         {
             var symbolTableVariable = table.Lookup(node.Id);
