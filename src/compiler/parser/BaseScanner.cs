@@ -96,6 +96,7 @@ namespace compiler
                 case '&': return AmpersandSwitchBranch();
                 case '|': return PipeSwitchBranch();
                 case '=': return AssignSwitchBranch();
+                case '"': return StringLiteralBranch();
 
                 default: return DefaultSwitchBranch();
             }
@@ -231,10 +232,41 @@ namespace compiler
             return GetErrorToken();
         }
 
-        private Token GetErrorToken()
+        private Token GetErrorToken(string errMsg = "Unknown token")
         {
-            string errMsg = "Unknown token";
             return new Token(TokenType.ERROR, errMsg);
+        }
+
+        private Token StringLiteralBranch()
+        {
+            string str = "";
+
+            var hasNewLine = false;
+            for (currChar = PeekNext(); !IsEof() && currChar != '\"'; currChar = PeekNext())
+            {
+                if (currChar == '\r' || currChar == '\n')
+                {
+                    hasNewLine = true;
+                    break;
+                }
+                else
+                {
+                    str += currChar;
+                }                
+            }
+
+            if (IsEof())
+            {
+                return GetErrorToken("Unexpected end of file. Expected: \"");
+            }
+
+            if (hasNewLine)
+            {
+                GetErrorToken("Unexpected end of line. Expected: \"");
+            }
+
+            PeekNext();
+            return new Token(TokenType.STRING_LITERAL, str);
         }
 
         private string ReadInditifier()
@@ -277,16 +309,18 @@ namespace compiler
             return (currCharIndex + 1 < text.Length) ? text[currCharIndex + 1] : ' ';
         }
 
-        private void PeekNext()
+        private char PeekNext()
         {
             ++currCharIndex;
             UpdateCurrChar();
+            return currChar;
         }
 
-        private void PeekPrev()
+        private char PeekPrev()
         {
             --currCharIndex;
             UpdateCurrChar();
+            return currChar;
         }
 
         private void UpdateCurrChar()
