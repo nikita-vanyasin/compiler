@@ -31,6 +31,7 @@ namespace compiler
         abstract public bool Visit(AstBoolValueExpression node);
         abstract public bool Visit(AstIntegerValueExpression node);
         abstract public bool Visit(AstIdExpression node);
+        abstract public bool Visit(AstStringLiteralExpression node);
         abstract public bool Visit(AstArgumentsCallList node);
         abstract public bool Visit(AstCallArgument node);
         abstract public bool Visit(AstMulExpression node);

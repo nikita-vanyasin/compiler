@@ -98,6 +98,12 @@ namespace compiler
 					? TokenColor.ColorForID(token.Attribute)
 					: TokenColor.GetColor(token);
 
+
+                if (token.Type == TokenType.STRING_LITERAL)
+                {
+                    pos.TokenLength += 2;
+                }
+
 				if (color != Color.Black)
 				{
 					SourceBox.Select(pos.Position, pos.TokenLength);

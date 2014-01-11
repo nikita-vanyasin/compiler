@@ -109,6 +109,12 @@ namespace compiler.utils
 			return true;
 		}
 
+        public override bool Visit(AstStringLiteralExpression node)
+        {
+            Log(node.ToString());
+            return true;
+        }
+
 		public override bool Visit(AstExternalMethodCallStatement node)
 		{
 			Log(node.ToString());

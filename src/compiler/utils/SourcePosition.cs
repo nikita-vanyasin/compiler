@@ -13,7 +13,7 @@ namespace compiler
 
         public SourcePosition()
         {
-            Position = -1;
+            Position = 0;
         }
 
         public override bool Equals(object obj)

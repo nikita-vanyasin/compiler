@@ -262,10 +262,9 @@ namespace compiler
 
             if (hasNewLine)
             {
-                GetErrorToken("Unexpected end of line. Expected: \"");
+                return GetErrorToken("Unexpected end of line. Expected: \"");
             }
-
-            PeekNext();
+            
             return new Token(TokenType.STRING_LITERAL, str);
         }
 

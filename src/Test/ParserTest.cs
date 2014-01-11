@@ -30,6 +30,48 @@ class Program:
         }
 
         [TestMethod]
+        public void TestString()
+        {
+            Parser p = new Parser();
+            var text = @"  
+class Program:  
+    private string s
+
+    public static int Main():   
+        s = ""hello, world!"" 
+        return 0  
+
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var testVisitor = new TestAstValidVisitor();
+            res = testVisitor.TestTree(p.GetRootNode());
+            Assert.IsTrue(res);
+        }
+
+        [TestMethod]
+        public void TestStringFunc()
+        {
+            Parser p = new Parser();
+            var text = @"  
+class Program:  
+    private string s
+
+    public static int Main(string arg):   
+        Main(""hello, world!"")
+        return 0  
+
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var testVisitor = new TestAstValidVisitor();
+            res = testVisitor.TestTree(p.GetRootNode());
+            Assert.IsTrue(res);
+        }
+
+        [TestMethod]
         public void TestEmptyStatement()
         {
             Parser p = new Parser();

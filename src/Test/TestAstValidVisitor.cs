@@ -185,6 +185,12 @@ namespace Test
             return true;
         }
 
+        public override bool Visit(AstStringLiteralExpression node)
+        {
+            ErrorIfIsNull(node.Value);
+            return true;
+        }
+
         override public bool Visit(AstIdExpression node)
         {
             ErrorIfIsNull(node.Id);
@@ -333,19 +339,19 @@ namespace Test
 
 		public override bool Visit(AstIntegerListExpression node)
 		{
-			// TODO
+            ErrorIfIsNull(node.Expr);
 			return true;
 		}
 
 		public override bool Visit(AstExpressionList node)
 		{
-			// TODO
+            ErrorIfIsNull(node.Expr);
 			return true;
 		}
 
 		public override bool Visit(AstArrayIndex node)
 		{
-			// TODO
+            ErrorIfIsNull(node.Expr);
 			return true;
 		}
 	}
