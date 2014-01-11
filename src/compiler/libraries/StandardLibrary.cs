@@ -11,7 +11,7 @@ namespace compiler.libraries
 	{
 		public virtual string[] GetClassNames()
 		{
-			return new[] { "Console" };
+			return new[] { "Console", "Math" };
 		}
 	}
 }

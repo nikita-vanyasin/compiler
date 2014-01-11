@@ -67,8 +67,10 @@
     <Compile Include="ast\AstNode.cs" />
     <Compile Include="ast\enums.cs" />
     <Compile Include="ast\nodes.cs" />
+    <Compile Include="ast\TraverseAllAstNodesVisitor.cs" />
     <Compile Include="BuiltInTypes.cs" />
     <Compile Include="codegen\CodeGenerator.cs" />
+    <Compile Include="codegen\FindAllStringConstantsVisitor.cs" />
     <Compile Include="CodePathChecker.cs" />
     <Compile Include="Compiler.cs" />
     <Compile Include="libraries\LibrariesHelper.cs" />

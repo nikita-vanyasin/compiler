@@ -102,6 +102,13 @@ namespace compiler
             SaveArg("i32 " + GetCurrUnnamedVariable());
         }
 
+        private void CallRand()
+        {
+            var str = " = call i32 ()* @rand()";
+            codeStream.WriteLine(CreateUnnamedVariable() + str);
+            SaveArg("i32 " + GetCurrUnnamedVariable());
+        }
+
         private void CallSpace()
         {
             codeStream.WriteLine(CreateUnnamedVariable() + " = getelementptr [2 x i8]* @.spacestr, i64 0, i64 0");
@@ -143,6 +150,15 @@ namespace compiler
                         default:
                             throw new NotImplementedException();
                     }
+                case "Math":
+                    switch (name)
+                    {
+                        case "Rand":
+                            CallRand();
+                            return;
+                        default:
+                            throw new NotImplementedException();
+                    }
                 default:
                     throw new NotImplementedException();
             }
@@ -180,7 +196,9 @@ namespace compiler
             codeStream.WriteLine("@.rstr = internal constant [3 x i8] c\"%d\\00\"");
             codeStream.WriteLine("declare i32 @printf(i8 *, ...)");
             codeStream.WriteLine("declare i32 @scanf(i8*, ...)");
-
+            codeStream.WriteLine("declare i32 @rand()");
+            codeStream.WriteLine("declare void @srand(i32 *)");
+            codeStream.WriteLine("declare i32 @time(i32 *)");
         }
 
         private void ResetUnnamedVariable()
@@ -322,7 +340,11 @@ namespace compiler
             table.UseNamedChildScope(node.Name.Id);
 
             ResetUnnamedVariable();
-            codeStream.Write("define " + GetLLVMType(node.TypeDef.Id) + " @" + node.Name.Id.ToLower());
+            var name = node.Name.Id == "Main" ? "main" : node.Name.Id;
+            codeStream.Write("define " + GetLLVMType(node.TypeDef.Id) + " @" + name);
+
+            CallRandomize();
+
             currReturnType = GetLLVMType(node.TypeDef.Id);
             node.ArgumentsDefinition.Accept(this);
             node.StatementsBlock.Accept(this);
@@ -332,6 +354,13 @@ namespace compiler
             table.UseParentScope();
 
             return false;
+        }
+
+        private void CallRandomize()
+        {
+            // srand(time(null)
+            // %1 = call i32 (i32 *) @time(i32 * null)
+            // call void (i32 *) @srand(%1) 
         }
 
         override public bool Visit(AstArgumentsDefList node)

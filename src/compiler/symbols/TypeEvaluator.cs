@@ -13,6 +13,7 @@ namespace compiler
         private SymbolTable table;
         private TypeResolver resolver;
         private bool result;
+        private bool isClassFieldDef;
 
         private bool currStateInsideExpr = false;
 
@@ -39,6 +40,7 @@ namespace compiler
             var tableBuilder = new SymbolTableBuilder();
 
             result = true;
+            isClassFieldDef = false;
 			try
 			{
 				table = tableBuilder.Build(node);
@@ -134,7 +136,9 @@ namespace compiler
 
             if (type is AstIdArrayExpression)
             {
+                isClassFieldDef = true;
                 (type as AstIdArrayExpression).Accept(this);
+                isClassFieldDef = false;
             }
 
             return false;
@@ -643,21 +647,26 @@ namespace compiler
                     return false;
                 }
 
-				int[] size = table.Lookup(node.Id).Size as int[];
-				AstListExpression indices = null;
+                int[] size = table.Lookup(node.Id).Size as int[];
+                AstListExpression indices = null;
 
-				if (node.Index is AstIntegerListExpression)
-					indices = node.Index as AstIntegerListExpression;
-				else if(node.Index is AstExpressionList)
-					indices = node.Index as AstExpressionList;
+                if (node.Index is AstIntegerListExpression)
+                    indices = node.Index as AstIntegerListExpression;
+                else if (node.Index is AstExpressionList)
+                    indices = node.Index as AstExpressionList;
 
-				if (indices.Length != size.Length)
-				{
-					DispatchError(node.TextPosition, "Wrong number of indices");
-					return false;
-				}
-				for (int i = 0; i < size.Length; i++)
-					CheckIndexInRange(size[i] - 1, indices[i]);		
+                if (indices.Length != size.Length)
+                {
+                    DispatchError(node.TextPosition, "Wrong number of indices");
+                    return false;
+                }
+                for (int i = 0; i < size.Length; i++)
+                    CheckIndexInRange(size[i] - 1, indices[i]);
+            }
+            else if (!isClassFieldDef)
+            {
+                DispatchError(node.TextPosition, "Unknown identifier " + node.Id);
+                return true;
             }
 
             return true;

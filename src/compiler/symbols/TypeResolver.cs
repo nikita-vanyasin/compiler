@@ -110,7 +110,7 @@ namespace compiler
             if (s == null)
             {
                 var name = (s is CallableSymbol) ? " method" : " identifier";
-                var e = new SymbolNotFoundException("'" + id + name +"' not found.");
+                var e = new SymbolNotFoundException("'" + id + "' " + name +" not found.");
                 e.Expr = expr;
                 e.Id = id;
                 throw e;

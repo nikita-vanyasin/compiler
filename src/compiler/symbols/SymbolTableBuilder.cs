@@ -52,6 +52,11 @@ namespace compiler
                 BuiltInTypes.STRING
             };
             AddBuiltInFunc("Console", "WriteString", BuiltInTypes.VOID, writeStringList);
+
+            var emptyList = new List<string>()
+            {
+            };
+            AddBuiltInFunc("Math", "Rand", BuiltInTypes.INT, emptyList);
         }
 
         private void AddBuiltInFunc(string target, string name, string type, List<string> types)
