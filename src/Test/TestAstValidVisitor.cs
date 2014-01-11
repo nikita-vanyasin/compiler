@@ -330,5 +330,23 @@ namespace Test
             ErrorIfIsNull(node.Values);
             return true;
         }
-    }
+
+		public override bool Visit(AstIntegerListExpression node)
+		{
+			// TODO
+			return true;
+		}
+
+		public override bool Visit(AstExpressionList node)
+		{
+			// TODO
+			return true;
+		}
+
+		public override bool Visit(AstArrayIndex node)
+		{
+			// TODO
+			return true;
+		}
+	}
 }

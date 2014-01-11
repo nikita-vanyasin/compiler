@@ -302,5 +302,23 @@ namespace compiler
         {
             return true;
         }
-    }
+
+		public override bool Visit(AstIntegerListExpression node)
+		{
+			// TODO: check
+			return true;
+		}
+
+		public override bool Visit(AstExpressionList node)
+		{
+			// TODO : check
+			return true;
+		}
+
+		public override bool Visit(AstArrayIndex node)
+		{
+			// TODO : check
+			return true;
+		}
+	}
 }

@@ -39,20 +39,25 @@ namespace compiler
             var tableBuilder = new SymbolTableBuilder();
 
             result = true;
-            try
-            {
-                table = tableBuilder.Build(node);
-            }
-            catch (CallableSymbolAlreadyDefinedException e)
-            {
-                DispatchError(new SourcePosition(), "Function already defined: " + e.Message);
-                return false;
-            }
-            catch (SymbolAlreadyDefinedException e)
-            {
-                DispatchError(new SourcePosition(), "Variable already defined: " + e.Message);
-                return false;
-            }
+			try
+			{
+				table = tableBuilder.Build(node);
+			}
+			catch (CallableSymbolAlreadyDefinedException e)
+			{
+				DispatchError(new SourcePosition(), "Function already defined: " + e.Message);
+				return false;
+			}
+			catch (SymbolAlreadyDefinedException e)
+			{
+				DispatchError(new SourcePosition(), "Variable already defined: " + e.Message);
+				return false;
+			}
+			catch (ArraySizeIncorrectException e)
+			{
+				DispatchError(new SourcePosition(), "Bad array size: " + e.Message);
+				return false;
+			}
 
             table.UseGlobalScope();
             resolver = new TypeResolver(table);
@@ -576,12 +581,12 @@ namespace compiler
 
         public override bool Visit(AstIdArrayExpression node)
         {
-            var intValSize = node.Index as AstIntegerValueExpression;
+            var intValSize = node.Index as AstIntegerListExpression;
             if (intValSize != null)
             {
                 try
                 {
-                    var size = Convert.ToInt32(intValSize.Value);
+					var size = intValSize.GetSize().Aggregate((s, t) => s * t);
                     if (size > BuiltInTypes.MAX_ARRAY_SIZE)
                     {
                         DispatchError(intValSize.TextPosition, "Max arrays size is " + BuiltInTypes.MAX_ARRAY_SIZE);
@@ -607,25 +612,47 @@ namespace compiler
                 DispatchError(node.Index.TextPosition, "Only integer values available for array index");
             }
 
-            if (!CheckIsNotNegative(node.Index))
+			if(node.Index is AstExpressionList)
+			{
+				var expr = node.Index as AstExpressionList;
+				foreach (var item in expr.Expr)
+					if (!CheckIsNotNegative(item))
+						return false;
+			}
+			else if(node.Index is AstIntegerListExpression)
+			{
+				var expr = node.Index as AstIntegerListExpression;
+				foreach (var item in expr.Expr)
+					if (!CheckIsNotNegative(item))
+						return false;
+			}
+
+            var sym = table.Lookup(node.Id);
+            if (sym != null)
             {
-                return false;
-            }
+                sym.Used = true;
 
-            var s = table.Lookup(node.Id);
-            if (s != null)
-            {
-                s.Used = true;
-
-
-                if (!s.IsArraySymbol())
+                if (!Symbol.IsArray(sym))
                 {
                     DispatchError(node.TextPosition, "Is not array");
                     return false;
                 }
 
-                var maxSize = table.Lookup(node.Id).Size - 1;
-                CheckIndexInRange(maxSize, node.Index);
+				int[] size = table.Lookup(node.Id).Size as int[];
+				AstListExpression indices = null;
+
+				if (node.Index is AstIntegerListExpression)
+					indices = node.Index as AstIntegerListExpression;
+				else if(node.Index is AstExpressionList)
+					indices = node.Index as AstExpressionList;
+
+				if (indices.Length != size.Length)
+				{
+					DispatchError(node.TextPosition, "Wrong number of indices");
+					return false;
+				}
+				for (int i = 0; i < size.Length; i++)
+					CheckIndexInRange(size[i] - 1, indices[i]);		
             }
 
             return true;
@@ -659,20 +686,23 @@ namespace compiler
         private void CheckIndexInRange(int maxSize, AstExpression node)
         {
             var castNode = node;
-            if (node is AstSimpleUnaryExpr)
-            {
-                var term = node as AstSimpleUnaryExpr;
-                castNode = term.SimpleTerm.Expr;
-            }
+			if (node is AstArrayIndex)
+				castNode = (node as AstArrayIndex).Expr;
+
+			if (castNode is AstSimpleUnaryExpr)
+				castNode = (castNode as AstSimpleUnaryExpr).SimpleTerm.Expr;
+			else if (castNode is AstSimpleTermExpr)
+				castNode = (castNode as AstSimpleTermExpr).Expr;
 
             var intValExpr = castNode as AstIntegerValueExpression;
             if (intValExpr != null)
             {
                 intValExpr.Accept(this);
-                if (Visit(intValExpr) && Convert.ToInt32(intValExpr.Value) > maxSize)
-                {
-                    DispatchError(node.TextPosition, "Index out of range [0, " + maxSize + "]");
-                    
+                if (Visit(intValExpr))
+				{
+					int index = Convert.ToInt32(intValExpr.Value);               
+					if(index > maxSize || index < 0)
+						DispatchError(node.TextPosition, "Index out of range [0, " + maxSize + "]");                   
                 }
             }
         }
@@ -687,21 +717,43 @@ namespace compiler
                 return true;
             }
 
-            if (!s.IsArraySymbol())
+            if (!Symbol.IsArray(s))
             {
                 DispatchError(node.Id.TextPosition, "variable " + node.Id.Id + " is not array");
                 return true;
             }
 
             var valsCount = node.Values.Count;
-            if (s.Size > 0 && valsCount > s.Size)
+            if (s.FlatSize > 0 && valsCount > s.FlatSize)
             {
                 DispatchError(node.Values[0].TextPosition, "values count must be lesser than array size (" + s.Size + ")");
             }
-
-            
-
+       
             return true;
         }
-    }
+
+		public override bool Visit(AstIntegerListExpression node)
+		{
+			AstIdArrayExpression expr = Stack.Peek() as AstIdArrayExpression;
+			if (expr == null) return true;
+	
+			
+			return true;
+		}
+
+		public override bool Visit(AstExpressionList node)
+		{
+			AstIdArrayExpression expr = Stack.Peek() as AstIdArrayExpression;
+			AstExpressionList listSrc = expr.Index as AstExpressionList;
+			Symbol array = table.Lookup(expr.Id);
+			// TODO
+			return true;
+		}
+
+		public override bool Visit(AstArrayIndex node)
+		{
+			// TODO
+			return true;
+		}
+	}
 }

@@ -9,6 +9,6 @@ CALL findstr /i /m /c:"Warning:" Parser.lst | find /c "Parser.lst"
 ECHO scanning listing for errors...
 CALL findstr /i /m /c:"Error:" Parser.lst | find /c "Parser.lst"
 CALL DEL Parser.y
-
+pause
 
  

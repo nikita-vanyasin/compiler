@@ -41,7 +41,7 @@ namespace compiler
 		{
             var type = ev.IsError ? "Error" : "Warning";
 
-            if (ev.Position.Position >= 0)
+            if (ev.Position != null && ev.Position.Position >= 0)
             {
                 return string.Format(type + ": {0} {1} [Line {2}, Column {3}]",
                     ev.Description,

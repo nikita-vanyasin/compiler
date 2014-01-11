@@ -30,4 +30,16 @@ namespace compiler
           System.Runtime.Serialization.StreamingContext context)
             : base(info, context) { }
     }
+
+	[Serializable]
+	public class ArraySizeIncorrectException : Exception
+	{
+		public ArraySizeIncorrectException() { }
+		public ArraySizeIncorrectException(string message) : base(message) { }
+		public ArraySizeIncorrectException(string message, Exception inner) : base(message, inner) { }
+		protected ArraySizeIncorrectException(
+		  System.Runtime.Serialization.SerializationInfo info,
+		  System.Runtime.Serialization.StreamingContext context)
+			: base(info, context) { }
+	}
 }

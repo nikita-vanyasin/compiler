@@ -17,8 +17,10 @@ namespace compiler
         public override void Accept(AstNodeVisitor visitor)
         {
             if (visitor.Visit(this))
-            {
+			{
+				visitor.Stack.Push(this);
                 Class.Accept(visitor);
+				visitor.Stack.Pop();
             }
         }
     }
@@ -37,8 +39,10 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
+				visitor.Stack.Push(this);
                 Name.Accept(visitor);
                 Body.Accept(visitor);
+				visitor.Stack.Pop();
             }
         }
     }
@@ -58,6 +62,7 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
+				visitor.Stack.Push(this);
                 foreach (AstClassField classField in ClassFields)
                 {
                     classField.Accept(visitor);
@@ -66,6 +71,7 @@ namespace compiler
                 {
                     classMethod.Accept(visitor);
                 }
+				visitor.Stack.Pop();
             }
         }
     }
@@ -128,10 +134,12 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
+				visitor.Stack.Push(this);
                 Visibility.Accept(visitor);
                 Static.Accept(visitor);
                 TypeDef.Accept(visitor);
                 Name.Accept(visitor);
+				visitor.Stack.Pop();
             }
         }
     }
@@ -166,12 +174,14 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
+				visitor.Stack.Push(this);
                 Visibility.Accept(visitor);
                 Static.Accept(visitor);
                 TypeDef.Accept(visitor);
                 Name.Accept(visitor);
                 ArgumentsDefinition.Accept(visitor);
                 StatementsBlock.Accept(visitor);
+				visitor.Stack.Pop();
             }
         }
     }
@@ -189,10 +199,12 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
+				visitor.Stack.Push(this);
                 foreach (var argument in ArgumentsDefinition)
                 {
                     argument.Accept(visitor);
                 }
+				visitor.Stack.Pop();
             }
         }
     }
@@ -212,8 +224,10 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
+				visitor.Stack.Push(this);
                 TypeDef.Accept(visitor);
                 Name.Accept(visitor);
+				visitor.Stack.Pop();
             }
         }
     }
@@ -231,7 +245,9 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
+				visitor.Stack.Push(this);
                 Statements.Accept(visitor);
+				visitor.Stack.Pop();
             }
         }
     }
@@ -249,10 +265,12 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
+				visitor.Stack.Push(this);
                 foreach (var statement in Statements)
                 {
                     statement.Accept(visitor);
                 }
+				visitor.Stack.Pop();
             }
         }
     }
@@ -284,8 +302,10 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
+				visitor.Stack.Push(this);
                 Name.Accept(visitor);
                 CallArgs.Accept(visitor);
+				visitor.Stack.Pop();
             }
         }
     }
@@ -303,7 +323,9 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
+				visitor.Stack.Push(this);
                 Expr.Accept(visitor);
+				visitor.Stack.Pop();
             }
         }
     }
@@ -325,9 +347,11 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
+				visitor.Stack.Push(this);
                 Target.Accept(visitor);
                 Name.Accept(visitor);
                 CallArgs.Accept(visitor);
+				visitor.Stack.Pop();
             }
         }
     }
@@ -345,7 +369,9 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
+				visitor.Stack.Push(this);
                 Expr.Accept(visitor);
+				visitor.Stack.Pop();
             }
         }
     }
@@ -363,7 +389,9 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
+				visitor.Stack.Push(this);
                 Expression.Accept(visitor);
+				visitor.Stack.Pop();
             }
         }
     }
@@ -385,9 +413,11 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
+				visitor.Stack.Push(this);
                 Condition.Accept(visitor);
                 ThenBlock.Accept(visitor);
                 ElseBlock.Accept(visitor);
+				visitor.Stack.Pop();
             }
         }
     }
@@ -407,8 +437,10 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
+				visitor.Stack.Push(this);
                 Variable.Accept(visitor);
                 NewValue.Accept(visitor);
+				visitor.Stack.Pop();
             }
         }
     }
@@ -447,6 +479,45 @@ namespace compiler
         }
     }
 
+	public abstract class AstListExpression : AstExpression
+	{
+		public abstract AstExpression this[int index] { get; }
+		public abstract int Length { get; }
+	}
+
+	public class AstIntegerListExpression : AstListExpression
+	{
+		public AstIntegerValueExpression[] Expr;
+		public override int Length { get { return Expr.Length; } }
+
+		public int[] GetSize()
+		{
+			return (from s in Expr select int.Parse(s.Value)).ToArray();
+		}
+
+		public AstIntegerListExpression(AstIntegerValueExpression[] astIntegerValueExpression)
+		{
+			// TODO: Complete member initialization
+			this.Expr = astIntegerValueExpression;
+		}
+
+		public override void Accept(AstNodeVisitor visitor)
+		{
+			if (visitor.Visit(this))
+			{
+				visitor.Stack.Push(this);
+				foreach (var item in Expr)
+					item.Accept(visitor);
+				visitor.Stack.Pop();
+			}
+		}
+
+		public override AstExpression this[int index]
+		{
+			get { return Expr[index]; }
+		}
+	}
+
     public class AstIdExpression : AstExpression
     {
         public string Id { get; protected set; }
@@ -477,10 +548,11 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
-                foreach (var argument in Arguments)
-                {
+				visitor.Stack.Push(this);
+                foreach (var argument in Arguments)             
                     argument.Accept(visitor);
-                }
+
+				visitor.Stack.Pop();
             }
         }
     }
@@ -498,10 +570,32 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
+				visitor.Stack.Push(this);
                 Expr.Accept(visitor);
+				visitor.Stack.Pop();
             }
         }
     }
+
+	public class AstArrayIndex : AstExpression
+	{
+		public AstExpression Expr { get; protected set; }
+
+		public AstArrayIndex(AstExpression expr)
+		{
+			Expr = expr;
+		}
+
+		public override void Accept(AstNodeVisitor visitor)
+		{
+			if (visitor.Visit(this))
+			{
+				visitor.Stack.Push(this);
+				Expr.Accept(visitor);
+				visitor.Stack.Pop();
+			}
+		}
+	}
 
     public abstract class AstMathExpression : AstExpression
     {
@@ -523,8 +617,10 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
+				visitor.Stack.Push(this);
                 Left.Accept(visitor);
                 Right.Accept(visitor);
+				visitor.Stack.Pop();
             }
         }
     }
@@ -544,8 +640,10 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
+				visitor.Stack.Push(this);
                 Left.Accept(visitor);
                 Right.Accept(visitor);
+				visitor.Stack.Pop();
             }
         }
     }
@@ -565,8 +663,10 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
+				visitor.Stack.Push(this);
                 Left.Accept(visitor);
                 Right.Accept(visitor);
+				visitor.Stack.Pop();
             }
         }
     }
@@ -586,8 +686,10 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
+				visitor.Stack.Push(this);
                 Left.Accept(visitor);
                 Right.Accept(visitor);
+				visitor.Stack.Pop();
             }
         }
     }
@@ -607,8 +709,10 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
+				visitor.Stack.Push(this);
                 Left.Accept(visitor);
                 Right.Accept(visitor);
+				visitor.Stack.Pop();
             }
         }
     }
@@ -629,7 +733,9 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
+				visitor.Stack.Push(this);
                 SimpleTerm.Accept(visitor);
+				visitor.Stack.Pop();
             }
         }
     }
@@ -645,7 +751,9 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
+				visitor.Stack.Push(this);
                 SimpleTerm.Accept(visitor);
+				visitor.Stack.Pop();
             }
         }
 
@@ -664,10 +772,44 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
+				visitor.Stack.Push(this);
                 Expr.Accept(visitor);
+				visitor.Stack.Pop();
             }
         }
     }
+
+
+	public class AstExpressionList : AstListExpression
+	{
+		public AstExpression[] Expr { get; protected set; }
+
+		public override int Length { get { return Expr.Length; } }
+
+		public AstExpressionList(AstExpression[] expr)
+		{
+			Expr = expr;
+		}
+
+		public override void Accept(AstNodeVisitor visitor)
+		{
+			if (visitor.Visit(this))
+			{
+				visitor.Stack.Push(this);
+
+				foreach (var item in Expr)			
+					item.Accept(visitor);
+				
+				visitor.Stack.Pop();
+			}
+		}
+
+		public override AstExpression this[int index]
+		{
+			get { return Expr[index]; }
+		}
+
+	}
 
     public abstract class AstBoolExpression : AstExpression
     {
@@ -688,8 +830,10 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
+				visitor.Stack.Push(this);
                 Left.Accept(visitor);
                 Right.Accept(visitor);
+				visitor.Stack.Pop();
             }
         }
     }
@@ -709,8 +853,10 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
+				visitor.Stack.Push(this);
                 Left.Accept(visitor);
                 Right.Accept(visitor);
+				visitor.Stack.Pop();
             }
         }
     }
@@ -728,7 +874,9 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
+				visitor.Stack.Push(this);
                 Expr.Accept(visitor);
+				visitor.Stack.Pop();
             }
         }
     }
@@ -748,8 +896,10 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
+				visitor.Stack.Push(this);
                 Condition.Accept(visitor);
                 Statements.Accept(visitor);
+				visitor.Stack.Pop();
             }
         }
     }
@@ -777,8 +927,10 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
+				visitor.Stack.Push(this);
                 Left.Accept(visitor);
                 Right.Accept(visitor);
+				visitor.Stack.Pop();
             }
         }
     }
@@ -794,8 +946,10 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
+				visitor.Stack.Push(this);
                 Left.Accept(visitor);
                 Right.Accept(visitor);
+				visitor.Stack.Pop();
             }
         }
     }
@@ -811,8 +965,10 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
+				visitor.Stack.Push(this);
                 Left.Accept(visitor);
                 Right.Accept(visitor);
+				visitor.Stack.Pop();
             }
         }
     }
@@ -828,8 +984,10 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
+				visitor.Stack.Push(this);
                 Left.Accept(visitor);
                 Right.Accept(visitor);
+				visitor.Stack.Pop();
             }
         }
     }
@@ -845,8 +1003,10 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
+				visitor.Stack.Push(this);
                 Left.Accept(visitor);
                 Right.Accept(visitor);
+				visitor.Stack.Pop();
             }
         }
     }
@@ -862,27 +1022,34 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
+				visitor.Stack.Push(this);
                 Left.Accept(visitor);
                 Right.Accept(visitor);
+				visitor.Stack.Pop();
             }
         }
     }
 
     public class AstIdArrayExpression : AstIdExpression
     {
+		// либо simpleexprlist либо intlist - для случаев в коде и в декларации соответственно #нуктотакпишет
         public AstExpression Index { get; protected set; }
 
-        public AstIdArrayExpression(string id, AstExpression index)
+        public AstIdArrayExpression(string id, AstNode index)
             : base(id)
         {
-            Index = index;
+			Index = (index as AstExpressionList);
+			if (Index == null)
+				Index = (index as AstIntegerListExpression);
         }
 
         public override void Accept(AstNodeVisitor visitor)
         {
             if (visitor.Visit(this))
             {
+				visitor.Stack.Push(this);
                 Index.Accept(visitor);
+				visitor.Stack.Pop();
             }
         }
     }
@@ -902,11 +1069,12 @@ namespace compiler
         {
             if (visitor.Visit(this))
             {
+				visitor.Stack.Push(this);
                 Id.Accept(visitor);
                 foreach (var val in Values)
-                {
                     val.Accept(visitor);
-                }
+                
+				visitor.Stack.Pop();
             }
         }
 

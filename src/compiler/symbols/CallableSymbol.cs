@@ -12,7 +12,7 @@ namespace compiler
         public List<string> ArgumentTypes { get; protected set; }
         
         public CallableSymbol(string target, string name, string type, List<string> callArgTypes)
-            :base(name, type)
+            :base(name, type, null)
         {
             Target = target;
             ArgumentTypes = callArgTypes;

@@ -21,7 +21,7 @@ namespace compiler
         }
 
         virtual public void Accept(AstNodeVisitor visitor)
-        {
+		{
         }
     }
 }

@@ -44,45 +44,61 @@ namespace compiler
             {
                 return BuiltInTypes.INT;
             }
-            else if (expr is AstIdExpression)
-            {
-                var s = table.Lookup((expr as AstIdExpression).Id);
+			else if (expr is AstIntegerListExpression)
+			{
+				return BuiltInTypes.INT;
+			}
+			else if (expr is AstIdExpression)
+			{
+				var s = table.Lookup((expr as AstIdExpression).Id);
 
-                if (s != null && s.IsArraySymbol())
-                {
-                    return BuiltInTypes.INT_ARRAY;
-                }
+				if (s != null && Symbol.IsArray(s))
+				{
+					return BuiltInTypes.INT_ARRAY;
+				}
 
-                return GetSymbolType(expr, s, (expr as AstIdExpression).Id);
-            }
-            else if (expr is AstThisMethodCallExpression)
-            {
-                var key = (expr as AstThisMethodCallExpression).Name.Id;
-                var s = table.LookupFunction(key);
-                return GetSymbolType(expr, s, (expr as AstThisMethodCallExpression).Name.Id);
-            }
-            else if (expr is AstExternalMethodCallExpression)
-            {
-                var key = (expr as AstExternalMethodCallExpression).Target.Id + (expr as AstExternalMethodCallExpression).Name.Id;
-                var s = table.LookupFunction(key);
-                return GetSymbolType(expr, s, (expr as AstExternalMethodCallExpression).Target.Id + "." + (expr as AstExternalMethodCallExpression).Name.Id);
-            }
-            else if (expr is AstNegateUnaryExpr)
-            {
-                return BuiltInTypes.INT;
-            }
-            else if (expr is AstSimpleUnaryExpr)
-            {
-                return this.Resolve((expr as AstSimpleUnaryExpr).SimpleTerm);
-            }
-            else if (expr is AstSimpleTermExpr)
-            {
-                return this.Resolve((expr as AstSimpleTermExpr).Expr);
-            }
-            else
-            {
-                throw new Exception("Unknown expression type.");
-            }            
+				return GetSymbolType(expr, s, (expr as AstIdExpression).Id);
+			}
+			else if (expr is AstThisMethodCallExpression)
+			{
+				var key = (expr as AstThisMethodCallExpression).Name.Id;
+				var s = table.LookupFunction(key);
+				return GetSymbolType(expr, s, (expr as AstThisMethodCallExpression).Name.Id);
+			}
+			else if (expr is AstExternalMethodCallExpression)
+			{
+				var key = (expr as AstExternalMethodCallExpression).Target.Id + (expr as AstExternalMethodCallExpression).Name.Id;
+				var s = table.LookupFunction(key);
+				return GetSymbolType(expr, s, (expr as AstExternalMethodCallExpression).Target.Id + "." + (expr as AstExternalMethodCallExpression).Name.Id);
+			}
+			else if (expr is AstNegateUnaryExpr)
+			{
+				return BuiltInTypes.INT;
+			}
+			else if (expr is AstSimpleUnaryExpr)
+			{
+				return this.Resolve((expr as AstSimpleUnaryExpr).SimpleTerm);
+			}
+			else if (expr is AstSimpleTermExpr)
+			{
+				return this.Resolve((expr as AstSimpleTermExpr).Expr);
+			}
+			else if (expr is AstArrayIndex)
+			{
+				return this.Resolve((expr as AstArrayIndex).Expr);
+			}
+			else if (expr is AstExpressionList)
+			{
+				bool result = (expr as AstExpressionList).Expr.All(s => string.Equals(Resolve(s), "int"));
+				if (!result)
+					return "error";
+				else
+					return BuiltInTypes.INT;
+			}
+			else
+			{
+				throw new Exception("Unknown expression type.");
+			}            
         }
 
         private string GetSymbolType(AstExpression expr, Symbol s, string id)

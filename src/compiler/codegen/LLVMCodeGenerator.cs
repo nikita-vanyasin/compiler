@@ -286,10 +286,10 @@ namespace compiler
         override public bool Visit(AstClassField node)
         {
             var symbolTableElement = table.Lookup(node.Name.Id);
-            if (symbolTableElement.IsArraySymbol())
+            if (Symbol.IsArray(symbolTableElement))
             {
                 codeStream.WriteLine("@" + symbolTableElement.Name + " = " + GetLLVMVisibility(node.Visibility) + " global " +
-                   "[" + symbolTableElement.Size + " x i32] zeroinitializer");
+                   "[" + symbolTableElement.FlatSize + " x i32] zeroinitializer");
             }
             else
             {
@@ -418,7 +418,7 @@ namespace compiler
         override public bool Visit(AstAssignStatement node)
         {
             var symbolTableVariable = table.Lookup(node.Variable.Id);
-            if(symbolTableVariable.IsArraySymbol())
+            if(Symbol.IsArray(symbolTableVariable))
             {
                 node.NewValue.Accept(this);
                 arrAssign = true;
@@ -721,11 +721,11 @@ namespace compiler
             node.Index.Accept(this);
             var tableSymbol = table.Lookup(node.Id);
             var arrIndex = GetCurrUnnamedVariable();
-            codeStream.WriteLine(CreateUnnamedVariable() + " = getelementptr [" + tableSymbol.Size + " x i32]* @" + node.Id +
+            codeStream.WriteLine(CreateUnnamedVariable() + " = getelementptr [" + tableSymbol.FlatSize + " x i32]* @" + node.Id +
                   " , i32 0, i32 " + arrIndex);
             if (!arrAssign)
             {
-                codeStream.WriteLine(CreateUnnamedVariable() + " = getelementptr [" + tableSymbol.Size + " x i32]* @" + node.Id +
+				codeStream.WriteLine(CreateUnnamedVariable() + " = getelementptr [" + tableSymbol.FlatSize + " x i32]* @" + node.Id +
                     " , i32 0, i32 " + arrIndex);
                 string strLoad = " = load i32* " + GetCurrUnnamedVariable();
                 codeStream.WriteLine(CreateUnnamedVariable() + strLoad);
@@ -733,6 +733,7 @@ namespace compiler
             }
             return false;
         }
+
 
         public override bool Visit(AstArrayInitializerStatement node)
         {
@@ -747,5 +748,23 @@ namespace compiler
 
             return false;
         }
-    }
+
+		public override bool Visit(AstIntegerListExpression node)
+		{
+			// TODO
+			return true;
+		}
+
+		public override bool Visit(AstExpressionList node)
+		{
+			// TODO
+			return true;
+		}
+
+		public override bool Visit(AstArrayIndex node)
+		{
+			// TODO
+			return true;
+		}
+	}
 }

@@ -61,7 +61,7 @@ namespace compiler
             currScope.EnterFunction(target, name, type, callArgTypes, builtin);
         }
 
-        public void EnterSymbol(string name, string type = "", int size = -1)
+        public void EnterSymbol(string name, string type, object size)
         {
             currScope.EnterSymbol(name, type, size);
         }

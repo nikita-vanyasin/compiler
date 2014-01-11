@@ -64,7 +64,7 @@ namespace compiler
             functionsTable[target + name] = s;
         }
 
-        public void EnterSymbol(string name, string type = "", int size = -1)
+        public void EnterSymbol(string name, string type, object size)
         {
             if (table.ContainsKey(name))
             {

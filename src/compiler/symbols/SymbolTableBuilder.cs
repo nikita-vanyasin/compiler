@@ -81,22 +81,24 @@ namespace compiler
 
         override public bool Visit(AstClassField node)
         {
-            var size = -1;
+			int[] size = null;
             if (node.TypeDef is AstIdArrayExpression)
             {
                 var indexNode = (node.TypeDef as AstIdArrayExpression).Index;
-                var sizeStr = (indexNode as AstIntegerValueExpression).Value;
-                try
-                {
-                    size = Convert.ToInt32(sizeStr);
-                }
-                catch (OverflowException)
-                {
-                    size = -1;
-                }
-
+				try
+				{
+					size = (indexNode as AstIntegerListExpression).GetSize();
+				}
+				catch (OverflowException e)
+				{
+					throw new ArraySizeIncorrectException(e.Message);
+				}
             }
-            table.EnterSymbol(node.Name.Id, node.TypeDef.Id, size);
+
+			if (size == null)
+				table.EnterSymbol(node.Name.Id, node.TypeDef.Id, -1);
+			else
+				table.EnterSymbol(node.Name.Id, node.TypeDef.Id, size);
 
             return false;
         }
@@ -109,7 +111,7 @@ namespace compiler
             foreach (var argDef in node.ArgumentsDefinition.ArgumentsDefinition)
             {
                 argumentsTypes.Add(argDef.TypeDef.Id);
-                table.EnterSymbol(argDef.Name.Id, argDef.TypeDef.Id);
+                table.EnterSymbol(argDef.Name.Id, argDef.TypeDef.Id, null);
             }
 
             table.UseParentScope();
@@ -298,5 +300,23 @@ namespace compiler
         {
             return true;
         }
-    }
+
+		public override bool Visit(AstIntegerListExpression node)
+		{
+			// TODO: check
+			return true;
+		}
+
+		public override bool Visit(AstExpressionList node)
+		{
+			// TODO: check
+			return true;
+		}
+
+		public override bool Visit(AstArrayIndex node)
+		{
+			// TODO : check
+			return true;
+		}
+	}
 }

@@ -189,11 +189,21 @@ namespace compiler
             PushNode(typeDef);
         }
 
-        // #TYPE_DEFINITION INT LEFT_BRACKET INTEGER_VALUE RIGHT_BRACKET
+        // #TYPE_DEFINITION INT LEFT_BRACKET INTEGER_VALUE_LIST RIGHT_BRACKET
         private void ConstructIntArrayTypeDefinition()
         {
-            var intVal = nodes.Pop() as AstIntegerValueExpression;
-            var typeDef = new AstIdArrayExpression(BuiltInTypes.INT, intVal);
+			List<AstIntegerValueExpression> dimensions = new List<AstIntegerValueExpression>();
+			AstIntegerValueExpression intVal;
+			do
+			{
+				intVal = nodes.Pop() as AstIntegerValueExpression;
+				dimensions.Add(intVal);
+			}
+			while((nodes.Peek() as AstIntegerValueExpression) != null);
+
+			AstIntegerListExpression expr = new AstIntegerListExpression(dimensions.ToArray());
+
+            var typeDef = new AstIdArrayExpression(BuiltInTypes.INT, expr);
             PushNode(typeDef);
         }
 
@@ -354,9 +364,16 @@ namespace compiler
         {
             var newValue = nodes.Pop() as AstExpression;
 
-            var index = nodes.Pop() as AstExpression;
-            var id = nodes.Pop() as AstIdExpression;
-            var idArrExpression = new AstIdArrayExpression(id.Id, index);
+			List<AstArrayIndex> indices = new List<AstArrayIndex>();
+
+			while (nodes.Peek() is AstArrayIndex)
+			{
+				indices.Insert(0, nodes.Pop() as AstArrayIndex);
+			}
+			AstExpressionList index = new AstExpressionList(indices.ToArray());
+			var id = nodes.Pop() as AstIdExpression;
+			var idArrExpression = new AstIdArrayExpression(id.Id, index);
+			idArrExpression.SetTextPosition( tokenCurrPosition );
             var node = new AstAssignStatement(idArrExpression, newValue);
             PushNode(node);
         }
@@ -441,7 +458,6 @@ namespace compiler
         {
         }
 
-
         // #TERM (#UNARY_EXPRESSION|#MUL_EXPRESSION|#DIV_EXPRESSION|#MOD_EXPRESSION)
         private void ConstructTerm()
         {
@@ -500,13 +516,50 @@ namespace compiler
             PushNode(simpleTerm);
         }
 
+		private void ConstructExpressionList()
+		{
+			var expr = nodes.Pop() as AstExpression;
+			var callArg = new AstArrayIndex(expr);
+			PushNode(callArg);
+		}
+
+		private void ConstructExpressionList2()
+		{
+			var callArgs = new List<AstArrayIndex>();
+			var curr = nodes.Peek() as AstNode;
+			while (curr is AstArrayIndex)
+			{
+				nodes.Pop();
+				callArgs.Insert(0, curr as AstArrayIndex);
+				curr = nodes.Peek() as AstNode;
+			}
+			var expr = nodes.Pop() as AstExpression;
+			var callArg = new AstArrayIndex(expr);
+			PushNode(callArg);
+			foreach (var arg in callArgs)
+			{
+				PushNode(arg);
+			}
+		}
+
         // #SIMPLE_TERM ID #ARRAY
         private void ConstructArrayUseSimpleTerm()
         {
-            var index = nodes.Pop() as AstExpression;
-            var id = nodes.Pop() as AstIdExpression;
+			var indices = new List<AstArrayIndex>();
+			var curr = nodes.Peek() as AstNode;
+			while (curr is AstArrayIndex)
+			{
+				nodes.Pop();
+				indices.Insert(0, curr as AstArrayIndex);
+				curr = nodes.Peek() as AstNode;
+			}
 
-            var idArr = new AstIdArrayExpression(id.Id, index);
+			var index = new AstExpressionList(indices.ToArray());
+
+			var id = nodes.Pop() as AstIdExpression;
+
+			var idArr = new AstIdArrayExpression(id.Id, index);
+			idArr.SetTextPosition( tokenCurrPosition );
             var node = new AstSimpleTermExpr(idArr);
             PushNode(node);
         }
@@ -602,13 +655,22 @@ namespace compiler
         // #CALL_ARGS_LIST #EXPRESSION COMMA #CALL_ARGS_LIST
         private void ConstructCallArgsListAdd()
         {
-            var some = nodes.Pop();
+            var callArgs = new List<AstCallArgument>();
+            var curr = nodes.Peek() as AstNode;
+            while (curr is AstCallArgument)
+            {
+                nodes.Pop();
+                callArgs.Insert(0, curr as AstCallArgument);
+                curr = nodes.Peek() as AstNode;
+            }
             var expr = nodes.Pop() as AstExpression;
             var callArg = new AstCallArgument(expr);
             PushNode(callArg);
-            PushNode(some);
+            foreach (var arg in callArgs)
+            {
+                PushNode(arg);
+            }
         }
-
         // #BOOL_VALUE TRUE
         private void ConstructBoolTrueValue()
         {

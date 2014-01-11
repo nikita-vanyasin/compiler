@@ -86,6 +86,7 @@
     <Compile Include="symbols\SymbolTableBuilder.cs" />
     <Compile Include="symbols\TypeEvaluator.cs" />
     <Compile Include="symbols\TypeResolver.cs" />
+    <Compile Include="utils\AstDumper.cs" />
     <Compile Include="utils\ErrorEvent.cs" />
     <Compile Include="utils\ErrorsContainer.cs" />
     <Compile Include="utils\ErrorsEventDispatcher.cs" />

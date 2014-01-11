@@ -8,6 +8,8 @@ namespace compiler
 {
     public abstract class AstNodeVisitor
     {
+		public Stack<AstNode> Stack = new Stack<AstNode>();
+
         abstract public bool Visit(AstProgram node);
         abstract public bool Visit(AstClass node);
         abstract public bool Visit(AstClassBody node);
@@ -53,5 +55,10 @@ namespace compiler
 
         abstract public bool Visit(AstIdArrayExpression node);
         abstract public bool Visit(AstArrayInitializerStatement node);
-    }
+
+		abstract public bool Visit(AstIntegerListExpression node);
+		abstract public bool Visit(AstExpressionList node);
+
+		abstract public bool Visit(AstArrayIndex node);
+	}
 }
