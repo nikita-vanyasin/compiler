@@ -29,15 +29,16 @@ namespace compiler
         private bool BuildSource()
         {
 			bool result = false;
-            logListBox.Items.Add("_______________________________________________________________");
-            logListBox.Items.Add("");
+            Log("_______________________________________________________________");
+            Log("");
 
-            var text = SourceBox.Text + "\n";
             var outStream = new FileStream(outputFileName, FileMode.Create);
 
-            logListBox.Items.Add("Starting build...");
+            Log("Starting build...");
             var compiler = new Compiler();
 
+            var text = (string)this.Invoke(new Func<string>(() =>
+                             SourceBox.Text));
             result = compiler.Compile(text, outStream);
 
             var errorsContainer = compiler.GetErrorsContainer();
@@ -49,17 +50,27 @@ namespace compiler
 
             if (result)
             {
-                logListBox.Items.Add("Compiled successfully!");
-                logListBox.Items.Add("");
+                Log("Compiled successfully!");
+                Log("");
             }
 
             if (logListBox.Items.Count > 0)
             {
-
-                logListBox.SelectedIndex = logListBox.Items.Count - 1;
+                this.Invoke(new MethodInvoker(delegate()
+                {
+                    logListBox.SelectedIndex = Math.Max(0, logListBox.Items.Count - 1);
+                }));
             }
             outStream.Close();
 			return result;
+        }
+
+        private void Log(object o)
+        {
+            this.Invoke(new MethodInvoker(delegate()
+            {
+                logListBox.Items.Add(o);
+            }));
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
@@ -149,7 +160,9 @@ namespace compiler
 
 		private void buildToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			new Thread(() => BuildSource()).Start();
+            var t = new Thread(() => BuildSource());
+            t.IsBackground = true;
+            t.Start();
 		}
 
 		private void logListBox_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -168,12 +181,14 @@ namespace compiler
 
 		private void runToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			new Thread(() =>
+			var t = new Thread(() =>
 				{
 					if (BuildSource())
 						Process.Start("run_module.bat", outputFileName);
 				}
-			).Start();
+			);
+            t.IsBackground = true;
+            t.Start();
 		}
 
 

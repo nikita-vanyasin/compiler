@@ -16,6 +16,7 @@ namespace compiler
 
         public void SetText(string text)
         {
+            text += "\n";
             Reset();
             this.text = text;
         }
