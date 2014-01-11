@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 
 namespace compiler
@@ -148,7 +149,7 @@ namespace compiler
 
 		private void buildToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			BuildSource();
+			new Thread(() => BuildSource()).Start();
 		}
 
 		private void logListBox_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -167,8 +168,12 @@ namespace compiler
 
 		private void runToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if(BuildSource())
-				Process.Start("run_module.bat", outputFileName);
+			new Thread(() =>
+				{
+					if (BuildSource())
+						Process.Start("run_module.bat", outputFileName);
+				}
+			).Start();
 		}
 
 
