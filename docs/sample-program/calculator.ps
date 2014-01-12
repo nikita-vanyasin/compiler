@@ -1,0 +1,67 @@
+class Program:  
+    private int action
+    private int a
+    private int b  
+
+    public static int Main():
+        while (action != 4):
+            EnterNumbers()
+            action = AskMenu()
+            Console.WriteLine()
+            if (action == 0):
+                ProcessAdd()
+            if (action == 1):
+                ProcessMul()
+            if (action == 2):
+                ProcessDiv()
+            if (action == 3):
+                ProcessMod()
+            Console.WriteLine()
+            Console.WriteLine()
+        return 0  
+
+    private int PrintLn(string msg):
+        Console.WriteString(msg)
+        Console.WriteLine()
+        return 0
+   
+    private int AskMenu():
+        PrintLn("Enter number of operation:")
+        PrintLn("    0 - a + b")
+        PrintLn("    1 - a * b")
+        PrintLn("    2 - a div b")
+        PrintLn("    3 - a mod b")
+        PrintLn("    4 - exit")
+        Console.WriteString("?> ")
+        return Console.ReadInt()
+
+    private int EnterNumbers():
+        Console.WriteString("Enter a:> ")
+        a = Console.ReadInt()
+        Console.WriteString("Enter b:> ")
+        b = Console.ReadInt()
+        return 0
+
+    private int ProcessAdd():
+        Console.WriteString("a + b = ")
+        Console.WriteInt(a + b)
+        Console.WriteLine()
+        return 0
+
+    private int ProcessMul():
+        Console.WriteString("a * b = ")
+        Console.WriteInt(a * b)
+        Console.WriteLine()
+        return 0
+
+    private int ProcessDiv():
+        Console.WriteString("a div b = ")
+        Console.WriteInt(a div b)
+        Console.WriteLine()
+        return 0
+
+    private int ProcessMod():
+        Console.WriteString("a mod b = ")
+        Console.WriteInt(a mod b)
+        Console.WriteLine()
+        return 0

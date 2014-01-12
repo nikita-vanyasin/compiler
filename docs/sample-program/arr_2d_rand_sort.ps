@@ -10,10 +10,13 @@ class Program:
     public static int Main():
         len = 10
         FillArr()
+        Console.WriteString("Initial Array:")
+        Console.WriteLine()
         PrintArr()
         Console.WriteLine()
+        Console.WriteString("Sorted by column values:")
         Console.WriteLine()
-        SortArr()
+        SortColumns()
         PrintArr()
         return 0
 
@@ -39,7 +42,7 @@ class Program:
             i = i + 1
         return 0
 
-    private static int SortArr():
+    private static int SortColumns():
         i = 0
         while (i <= len):
             swapped = true
@@ -48,10 +51,10 @@ class Program:
             while(swapped):
                 swapped = false
                 while(iter <= (len - 1)):
-                    if(a[i, iter] > a[i, iter + 1]):
-                        temp = a[i, iter]
-                        a[i, iter] = a[i, iter + 1]
-                        a[i, iter + 1] = temp
+                    if(a[iter, i] > a[iter + 1, i]):
+                        temp = a[iter, i]
+                        a[iter, i] = a[iter + 1, i]
+                        a[iter + 1, i] = temp
                         swapped = true
                     iter = iter + 1
                 iter = 0  

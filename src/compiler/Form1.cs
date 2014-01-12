@@ -55,14 +55,6 @@ namespace compiler
                 Log("Compiled successfully!");
                 Log("");
             }
-
-            this.Invoke(new MethodInvoker(delegate()
-            {
-                if (logListBox.Items.Count > 0)
-                {
-                    logListBox.SelectedIndex = Math.Max(0, logListBox.Items.Count - 1);        
-                }
-            }));
             outStream.Close();
 			return result;
         }
@@ -73,6 +65,11 @@ namespace compiler
             this.Invoke(new MethodInvoker(delegate()
             {
                 r = logListBox.Items.Add(o);
+
+                if (logListBox.Items.Count > 0)
+                {
+                    logListBox.SelectedIndex = Math.Max(0, logListBox.Items.Count - 1);
+                }
             }));
             return r;
         }
