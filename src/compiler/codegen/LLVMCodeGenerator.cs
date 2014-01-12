@@ -110,6 +110,11 @@ namespace compiler
             codeStream.WriteLine(CreateUnnamedVariable() + " = getelementptr [3 x i8]* @.rstr, i64 0, i64 0");
             string strCallF = " = call i32 (i8 *, ...)* @scanf(i8* " + GetCurrUnnamedVariable() + ", i32* " + tmpVar + ")";
             codeStream.WriteLine(CreateUnnamedVariable() + strCallF);
+
+            // TODO: if scanf returned not 1 -> print error and terminate program
+            // GetCurrentUnnamedVariable() = icmp eq i32 4, 5
+            // br i1 <cond>, label <iftrue>, label <iffalse>
+
             codeStream.WriteLine(CreateUnnamedVariable() + " = load i32* " + tmpVar);            
             SaveArg("i32 " + GetCurrUnnamedVariable());
         }
