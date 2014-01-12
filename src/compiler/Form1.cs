@@ -21,6 +21,8 @@ namespace compiler
 		//номер элемента в логе -> позиция в коде
 		private Dictionary<int, SourcePosition> m_errorPositions = new Dictionary<int, SourcePosition>();
 
+        private AboutBox1 a = new AboutBox1();
+
         public Form1()
         {
             InitializeComponent();
@@ -54,13 +56,13 @@ namespace compiler
                 Log("");
             }
 
-            if (logListBox.Items.Count > 0)
+            this.Invoke(new MethodInvoker(delegate()
             {
-                this.Invoke(new MethodInvoker(delegate()
+                if (logListBox.Items.Count > 0)
                 {
-                    logListBox.SelectedIndex = Math.Max(0, logListBox.Items.Count - 1);
-                }));
-            }
+                    logListBox.SelectedIndex = Math.Max(0, logListBox.Items.Count - 1);        
+                }
+            }));
             outStream.Close();
 			return result;
         }
@@ -235,5 +237,10 @@ namespace compiler
 				logMenuStrip.Show(this, new Point(e.X + logListBox.Left, e.Y + logListBox.Top));
 			}
 		}
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            a.Show();
+        }
     }
 }
