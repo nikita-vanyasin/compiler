@@ -3,12 +3,15 @@ class Program:
     private string i
     public static int Main():   
         a = "Hello,"
-        i = GetWorld()
+        i = GetWorld("t")
         Console.WriteString(a)
         Console.WriteSpace()
         Console.WriteString(i)
         Console.WriteLine()
         return 0 
 
-    private static string GetWorld():
-        return "World!"
+    private static string GetWorld(string arg):
+        a = arg
+        i = a
+        arg = "opa"
+        return arg

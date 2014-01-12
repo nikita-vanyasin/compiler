@@ -35,6 +35,11 @@ namespace compiler
 		private List<string> m_lastIndex;
 		private List<string> m_currentIndex = new List<string>();
 
+        //strings
+        private int stringLiteralCounter = 0;
+        private List<string> stringConstants;
+        private Dictionary<int, int> stringLengths;
+
         private uint CreateWhileUse()
         {
             whileCount++;
@@ -85,8 +90,15 @@ namespace compiler
 
         private void CallPrint()
         {
-            codeStream.WriteLine(CreateUnnamedVariable() + "= getelementptr [3 x i8]* @.str, i64 0, i64 0");
-            string strCallF = "= call i32 (i8 *, ...)* @printf(i8* " + GetCurrUnnamedVariable() + ", ";
+            codeStream.WriteLine(CreateUnnamedVariable() + " = getelementptr [3 x i8]* @.str, i64 0, i64 0");
+            string strCallF = " = call i32 (i8 *, ...)* @printf(i8* " + GetCurrUnnamedVariable() + ", ";
+            codeStream.Write(CreateUnnamedVariable() + strCallF);
+            SaveArg("i32 " + GetCurrUnnamedVariable());
+        }
+        
+        private void CallWriteString()
+        {
+            string strCallF = " = call i32 (i8 *, ...)* @printf(i8* " + GetCurrUnnamedVariable() + ", ";
             codeStream.Write(CreateUnnamedVariable() + strCallF);
             SaveArg("i32 " + GetCurrUnnamedVariable());
         }
@@ -112,7 +124,7 @@ namespace compiler
         private void CallSpace()
         {
             codeStream.WriteLine(CreateUnnamedVariable() + " = getelementptr [2 x i8]* @.spacestr, i64 0, i64 0");
-            string strCallF = "= call i32 (i8 *, ...)* @printf(i8* " + GetCurrUnnamedVariable();
+            string strCallF = " = call i32 (i8 *, ...)* @printf(i8* " + GetCurrUnnamedVariable();
             codeStream.WriteLine(CreateUnnamedVariable() + strCallF + ")");
             SaveArg("i32 " + GetCurrUnnamedVariable());
         }
@@ -120,7 +132,7 @@ namespace compiler
         private void CallEndL()
         {
             codeStream.WriteLine(CreateUnnamedVariable() + " = getelementptr [2 x i8]* @.endlstr, i64 0, i64 0");
-            string strCallF = "= call i32 (i8 *, ...)* @printf(i8* " + GetCurrUnnamedVariable();
+            string strCallF = " = call i32 (i8 *, ...)* @printf(i8* " + GetCurrUnnamedVariable();
             codeStream.WriteLine(CreateUnnamedVariable() + strCallF + ")");
             SaveArg("i32 " + GetCurrUnnamedVariable());
         }
@@ -146,6 +158,9 @@ namespace compiler
                             return;
                         case "WriteLine":
                             CallEndL();
+                            return;
+                        case "WriteString":
+                            CallWriteString();
                             return;
                         default:
                             throw new NotImplementedException();
@@ -184,7 +199,7 @@ namespace compiler
             foreach (var variable in classVariables)
             {
                 var symbolTableVariable = table.Lookup(variable);
-                codeStream.WriteLine("%" + variable + "= load " + GetLLVMType(symbolTableVariable.Type) + "* @" + variable);
+                codeStream.WriteLine("%" + variable + " = load " + GetLLVMType(symbolTableVariable.Type) + "* @" + variable);
             }
         }
 
@@ -194,6 +209,7 @@ namespace compiler
             codeStream.WriteLine("@.endlstr = internal constant [2 x i8] c\"\\0A\\00\"");
             codeStream.WriteLine("@.str = internal constant [3 x i8] c\"%d\\00\"");
             codeStream.WriteLine("@.rstr = internal constant [3 x i8] c\"%d\\00\"");
+            codeStream.WriteLine("@.emptystr = internal constant [1 x i8] c\"\\00\"");
             codeStream.WriteLine("declare i32 @printf(i8 *, ...)");
             codeStream.WriteLine("declare i32 @scanf(i8*, ...)");
             codeStream.WriteLine("declare i32 @rand()");
@@ -229,6 +245,8 @@ namespace compiler
                     return "i1";
                 case BuiltInTypes.VOID:
                     return "void";
+                case BuiltInTypes.STRING:
+                    return "i8*";
                 default:
                     throw new NotImplementedException();
             }
@@ -244,6 +262,8 @@ namespace compiler
                     return "0";
                 case BuiltInTypes.VOID:
                     return "";
+                case BuiltInTypes.STRING:
+                    return "null";
                 default:
                     throw new NotImplementedException();
             }
@@ -270,6 +290,10 @@ namespace compiler
 
         public override bool Generate(AstProgram astRootNode, Stream outStream)
         {
+            stringLiteralCounter = 0;
+            var findStringsVisitor = new FindAllStringConstantsVisitor();
+            stringConstants = findStringsVisitor.FindAll(astRootNode);
+
             codeStream = new StreamWriter(outStream);
             codeStream.AutoFlush = true;
             astRootNode.Accept(this);
@@ -277,9 +301,36 @@ namespace compiler
             return true;
         }
 
+        private void SaveStringConstants()
+        {
+            stringLengths = new Dictionary<int,int>();
+            for (var i = 0; i < stringConstants.Count; ++i)
+            {
+                var str = stringConstants[i];
+                SaveStringConstant(i, str);
+            }
+        }
+
+        private void SaveStringConstant(int index, string str)
+        {
+            var name = GetStringConstantName(index);
+            var length = str.Length + 1;
+            var value = str + "\\00";
+            var def = name + " = internal constant [" + length + " x i8] c\"" + value + "\"";
+            codeStream.WriteLine(def);
+
+            stringLengths[index] = length;
+        }
+
+        private string GetStringConstantName(int index)
+        {
+            return "@.strconst" + index;
+        }
+
         override public bool Visit(AstProgram node)
         {
             table.UseGlobalScope();
+            SaveStringConstants();
             CreateLLVMBuiltIn();
             return true;
         }
@@ -340,20 +391,46 @@ namespace compiler
             table.UseNamedChildScope(node.Name.Id);
 
             ResetUnnamedVariable();
-            var name = node.Name.Id == "Main" ? "main" : node.Name.Id;
+            var isEntryPoint = node.Name.Id == "Main";
+            var name = isEntryPoint ? "main" : node.Name.Id;
             codeStream.Write("define " + GetLLVMType(node.TypeDef.Id) + " @" + name);
-
-            CallRandomize();
 
             currReturnType = GetLLVMType(node.TypeDef.Id);
             node.ArgumentsDefinition.Accept(this);
+
+            if (isEntryPoint)
+            {
+                InitStringFields();
+                CallRandomize();
+            }
+
             node.StatementsBlock.Accept(this);
-            codeStream.WriteLine("ret " + GetLLVMType(node.TypeDef.Id) + " 0");//fake return for 
+            var type = GetLLVMType(node.TypeDef.Id);
+            var fakeRetVal = GetDefaultTypeValue(node.TypeDef);
+            codeStream.WriteLine("ret " + type + " " + fakeRetVal);//fake return for 
             codeStream.WriteLine("}");
 
             table.UseParentScope();
 
             return false;
+        }
+
+        private void InitStringFields()
+        {
+            foreach (var field in classVariables)
+            {
+                var s = table.Lookup(field);
+                if (s.Type == BuiltInTypes.STRING)
+                {
+                    InitStringField(field);
+                }
+            }
+        }
+
+        private void InitStringField(string name)
+        {
+            codeStream.WriteLine(CreateUnnamedVariable() + " = getelementptr [1 x i8]* @.emptystr, i64 0, i64 0");
+            codeStream.WriteLine("store  i8* " + GetCurrUnnamedVariable() + ", i8** @" + name);
         }
 
         private void CallRandomize()
@@ -450,7 +527,7 @@ namespace compiler
             string currIf = CreateIfUse().ToString();
 
             var condExprResult = GetCurrUnnamedVariable();
-            codeStream.WriteLine(CreateUnnamedVariable() + "= icmp eq i1 1, " + condExprResult);
+            codeStream.WriteLine(CreateUnnamedVariable() + " = icmp eq i1 1, " + condExprResult);
             codeStream.WriteLine("br i1 " + GetCurrUnnamedVariable() + ", label %then" + currIf + ", label %else" + currIf);
             codeStream.WriteLine("then" + currIf.ToString() + ":");
             node.ThenBlock.Statements.Accept(this);
@@ -465,9 +542,9 @@ namespace compiler
         override public bool Visit(AstAssignStatement node)
         {
             var symbolTableVariable = table.Lookup(node.Variable.Id);
-            if(Symbol.IsArray(symbolTableVariable))
+            node.NewValue.Accept(this);
+            if (Symbol.IsArray(symbolTableVariable))
             {
-                node.NewValue.Accept(this);
                 arrAssign = true;
                 var newValueVar = GetCurrUnnamedVariable();
                 node.Variable.Accept(this);
@@ -478,17 +555,20 @@ namespace compiler
             }
             else if (classVariables.Contains(node.Variable.Id))
             {
-                node.NewValue.Accept(this);
-
                 codeStream.WriteLine("store " + GetLLVMType(symbolTableVariable.Type) + " " + GetCurrUnnamedVariable()
                  + ", " + GetLLVMType(symbolTableVariable.Type) + "* @" + node.Variable.Id);
                 
             }
+            else if (symbolTableVariable.Type == BuiltInTypes.STRING)
+            {
+            }
             else
             {
-                node.NewValue.Accept(this);
                 UseVaribaleCatched(node.Variable.Id);
-                codeStream.WriteLine("%" + GetCurrVariableState(node.Variable.Id) + " = add " + GetLLVMType(symbolTableVariable.Type) + " 0, " + GetCurrUnnamedVariable());                           
+
+                var name = GetCurrVariableState(node.Variable.Id);
+                var type = GetLLVMType(symbolTableVariable.Type);
+                codeStream.WriteLine("%" + name + " = add " + type + " 0, " + GetCurrUnnamedVariable());
             }
           
             return false;
@@ -516,37 +596,55 @@ namespace compiler
                 saveOperation = "sub ";
             }
             codeStream.WriteLine(CreateUnnamedVariable() + " = " + saveOperation + " i32 0, " + node.Value);
-                SaveArg("i32 " + GetCurrUnnamedVariable());
+            SaveArg("i32 " + GetCurrUnnamedVariable());
             return true;
         }
 
         public override bool Visit(AstStringLiteralExpression node)
         {
-            throw new NotImplementedException();
+            var name = GetStringConstantName(stringLiteralCounter);
+            var length = this.stringLengths[stringLiteralCounter];
+            var op = "getelementptr [" + length + " x i8]* " + name + ", i64 0, i64 0";
+
+            codeStream.WriteLine(CreateUnnamedVariable() + " = " + op);
+            SaveArg("i8* " + GetCurrUnnamedVariable());
+
+            ++stringLiteralCounter;
+
+            return true;
         }
 
         override public bool Visit(AstIdExpression node)
         {
             var symbolTableVariable = table.Lookup(node.Id);
+            var type = symbolTableVariable.Type;
+            var llvmType = GetLLVMType(symbolTableVariable.Type);
             if (classVariables.Contains(node.Id))
             {
-                codeStream.WriteLine(CreateUnnamedVariable() + " = load " + GetLLVMType(symbolTableVariable.Type) + "* @" + node.Id);
+                codeStream.WriteLine(CreateUnnamedVariable() + " = load " + llvmType + "* @" + node.Id);
                 if (IsNegative)
                 {
                     string positiveVar = GetCurrUnnamedVariable();
-                    codeStream.WriteLine(CreateUnnamedVariable() + " = sub " + GetLLVMType(symbolTableVariable.Type) + " 0, " + positiveVar);
+                    codeStream.WriteLine(CreateUnnamedVariable() + " = sub " + llvmType + " 0, " + positiveVar);
                 }
                 if (IsNot)
                 {
                     string inverseVal = GetCurrUnnamedVariable();
-                    codeStream.WriteLine(CreateUnnamedVariable() + " = xor " + GetLLVMType(symbolTableVariable.Type) + " " + inverseVal + ", 1");
+                    codeStream.WriteLine(CreateUnnamedVariable() + " = xor " + llvmType + " " + inverseVal + ", 1");
                 }
+            }
+            else if (type == BuiltInTypes.STRING)
+            {
+                codeStream.WriteLine(CreateUnnamedVariable() + " = alloca i8*");
+                var id = GetCurrUnnamedVariable();
+                codeStream.WriteLine("store i8* %" + GetCurrVariableState(node.Id) + ", i8** " + GetCurrUnnamedVariable());
+                codeStream.WriteLine(CreateUnnamedVariable() + " = load i8** " + id);
             }
             else
             {
                 if (IsNot)
                 {
-                    codeStream.WriteLine(CreateUnnamedVariable() + " = xor " + GetLLVMType(symbolTableVariable.Type) + " %" + GetCurrVariableState(node.Id) + ", 0");
+                    codeStream.WriteLine(CreateUnnamedVariable() + " = xor " + llvmType + " %" + GetCurrVariableState(node.Id) + ", 0");
                 }
                 else
                 {
@@ -555,13 +653,11 @@ namespace compiler
                     {
                         saveOperation = "sub ";
                     }
-                    codeStream.WriteLine(CreateUnnamedVariable() + " = " + saveOperation + GetLLVMType(symbolTableVariable.Type) + " 0, %" + GetCurrVariableState(node.Id));
-
+                    codeStream.WriteLine(CreateUnnamedVariable() + " = " + saveOperation + llvmType + " 0, %" + GetCurrVariableState(node.Id));
                 }
-               
             }
 
-			SaveArg(GetLLVMType(symbolTableVariable.Type) + " " + GetCurrUnnamedVariable());
+            SaveArg(llvmType + " " + GetCurrUnnamedVariable());
 
             return true;
         }
@@ -696,7 +792,7 @@ namespace compiler
             codeStream.WriteLine("whilecond" + currWhileIndex + ":");
             node.Condition.Accept(this);
             var condExprResult = GetCurrUnnamedVariable();
-            codeStream.WriteLine(CreateUnnamedVariable() + "= icmp eq i1 1, " + condExprResult);
+            codeStream.WriteLine(CreateUnnamedVariable() + " = icmp eq i1 1, " + condExprResult);
             codeStream.WriteLine("br i1 " + GetCurrUnnamedVariable() + ", label %whilestart" + currWhileIndex + ", label %endwhile" + currWhileIndex);
             codeStream.WriteLine("endwhile" + currWhileIndex + ":");
             //codeStream

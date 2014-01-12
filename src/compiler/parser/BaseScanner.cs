@@ -265,6 +265,11 @@ namespace compiler
             {
                 return GetErrorToken("Unexpected end of line. Expected: \"");
             }
+
+            if (str.Contains('\\'))
+            {
+                return GetErrorToken("Escaping sequences is not allowed. Will be available in next version.");
+            }
             
             return new Token(TokenType.STRING_LITERAL, str);
         }
