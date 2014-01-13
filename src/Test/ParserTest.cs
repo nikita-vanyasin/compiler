@@ -138,7 +138,7 @@ class Program:
         }
 
         [TestMethod]
-        public void TestInvalidAssignment()
+        public void TestValidAssignment()
         {
             Parser p = new Parser();
             var text = @"  
@@ -150,7 +150,6 @@ class Program:
 
 ";
 
-            // there is no comparision operations support
             var res = p.Parse(text);
             Assert.IsTrue(res);
         }
