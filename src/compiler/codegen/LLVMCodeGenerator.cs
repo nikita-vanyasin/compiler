@@ -146,7 +146,7 @@ namespace compiler
 		private void CallStrstr()
 		{
 			codeStream.Write(CreateUnnamedVariable() +	" = call i8* (i8*, i8*)* @strstr(" );
-			SaveArg("i32 " + GetCurrUnnamedVariable());
+			SaveArg("i8* " + GetCurrUnnamedVariable());
 		}
 
 
