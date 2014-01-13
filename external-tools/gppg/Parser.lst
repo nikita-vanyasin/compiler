@@ -1,11 +1,11 @@
 
 // ==========================================================================
-//  GPPG error listing for yacc source file <Parser.y - 11.01.2014 3:38:36>
+//  GPPG error listing for yacc source file <Parser.y - 13.01.2014 20:44:52>
 // ==========================================================================
 //  Version:  1.5.0
-//  Machine:  CAT-PC
-//  DateTime: 11.01.2014 3:38:44
-//  UserName: invisicat
+//  Machine:  MYCOMPUTER
+//  DateTime: 13.01.2014 20:45:29
+//  UserName: User
 // ==========================================================================
 
 
@@ -16,7 +16,7 @@ IF INT PRIVATE PUBLIC RETURN STATIC TRUE
 COMMA ASSIGNMENT LEFT_PAREN RIGHT_PAREN
 LEFT_BRACE RIGHT_BRACE LEFT_BRACKET
 RIGHT_BRACKET PLUS MINUS MULTIPLICATION DIV MOD
-NOT AND OR LINE_END
+NOT AND OR LINE_END STRING STRING_LITERAL
 BLOCK_START BLOCK_END PASS DOT EOF
 LT GT GTE LTE EQUAL NOT_EQUAL
 %start PS_PROGRAM
@@ -50,6 +50,7 @@ STATIC_MODIFIER : STATIC
 TYPE_DEFINITION : BOOL
                 | INT
                 | INT LEFT_BRACKET INTEGER_VALUE_LIST RIGHT_BRACKET
+                | STRING
                 ;
 
 METHOD_DECLARATION : METHOD_HEADER BLOCK_START STATEMENTS_BLOCK BLOCK_END
@@ -84,11 +85,11 @@ STATEMENT : FUNC_CALL LINE_END
           | IF_STATEMENT
           | WHILE_STATEMENT
           | ASSIGN_STATEMENT LINE_END
-          | RETURN EXPRESSION LINE_END
+          | RETURN OR_TEST LINE_END
           ;
 
-ASSIGN_STATEMENT : ID ASSIGNMENT EXPRESSION
-                 | ID ARRAY ASSIGNMENT EXPRESSION
+ASSIGN_STATEMENT : ID ASSIGNMENT OR_TEST
+                 | ID ARRAY ASSIGNMENT OR_TEST
                  | ID ASSIGNMENT ARRAY_INITIALIZER
                  ;
 
@@ -137,18 +138,14 @@ UNARY_EXPRESSION : MINUS SIMPLE_TERM
                  ;
                  
 
-SIMPLE_TERM : LEFT_PAREN EXPRESSION RIGHT_PAREN
+SIMPLE_TERM : LEFT_PAREN OR_TEST RIGHT_PAREN
             | ID
             | ID ARRAY
             | INTEGER_VALUE
             | BOOL_VALUE
             | FUNC_CALL
+            | STRING_LITERAL
             ;
-            
-            
-/*SIMPLE_TERM_LIST : SIMPLE_TERM
-                | SIMPLE_TERM COMMA SIMPLE_TERM_LIST
-                ;    */
 
 ARRAY : LEFT_BRACKET EXPRESSION_LIST RIGHT_BRACKET
       ;

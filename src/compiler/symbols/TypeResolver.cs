@@ -99,6 +99,10 @@ namespace compiler
             {
                 return BuiltInTypes.STRING;
             }
+            else if (expr is AstComparison)
+            {
+                return BuiltInTypes.BOOL;
+            }
             else
             {
                 throw new Exception("Unknown expression type.");

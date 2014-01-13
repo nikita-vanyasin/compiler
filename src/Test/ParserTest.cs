@@ -152,7 +152,7 @@ class Program:
 
             // there is no comparision operations support
             var res = p.Parse(text);
-            Assert.IsFalse(res);
+            Assert.IsTrue(res);
         }
 
         [TestMethod]
