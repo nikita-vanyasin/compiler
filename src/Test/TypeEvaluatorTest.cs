@@ -985,5 +985,27 @@ class Program:
             Assert.IsFalse(res);
 
         }
+
+        [TestMethod]
+        public void TestNonLinearArrInit()
+        {
+            Parser p = new Parser();
+            var text = @"
+
+class Program:  
+    private int[10, 10] a  
+    public static int Main():
+        a = {1,2,3,4,5}
+        return 0 
+
+";
+            var res = p.Parse(text);
+            Assert.IsTrue(res);
+
+            var checker = new TypeEvaluator();
+            res = checker.Evaluate(p.GetRootNode());
+            Assert.IsFalse(res);
+
+        }
     }
 }

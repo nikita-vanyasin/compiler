@@ -724,7 +724,6 @@ namespace compiler
         public override bool Visit(AstArrayInitializerStatement node)
         {
             var s = table.Lookup(node.Id.Id);
-
             if (s == null)
             {
                 DispatchError(node.Id.TextPosition, "Unknown variable " + node.Id.Id);
@@ -737,11 +736,19 @@ namespace compiler
                 return true;
             }
 
+            var size = s.Size as int[];
+
+            if (size.Length > 1)
+            {
+                DispatchError(node.Id.TextPosition, "only linear array can have an initializer");
+                return true;
+            }
             var valsCount = node.Values.Count;
             if (s.FlatSize > 0 && valsCount > s.FlatSize)
             {
                 DispatchError(node.Values[0].TextPosition, "values count must be lesser than array size (" + s.Size + ")");
             }
+           
        
             return true;
         }
