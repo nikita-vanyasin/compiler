@@ -123,7 +123,12 @@ namespace compiler
         private void CallRand()
         {
             var str = " = call i32 ()* @rand()";
-            codeStream.WriteLine(CreateUnnamedVariable() + str);
+            codeStream.WriteLine(CreateUnnamedVariable() + str);          
+            if (IsNegative)
+            {
+                var tmpStr = " = sup i32 0, " + GetCurrUnnamedVariable();
+                codeStream.WriteLine(CreateUnnamedVariable() + tmpStr);
+            }
             SaveArg("i32 " + GetCurrUnnamedVariable());
         }
 
@@ -131,7 +136,7 @@ namespace compiler
         {
             codeStream.WriteLine(CreateUnnamedVariable() + " = getelementptr [2 x i8]* @.spacestr, i64 0, i64 0");
             string strCallF = " = call i32 (i8 *, ...)* @printf(i8* " + GetCurrUnnamedVariable();
-            codeStream.WriteLine(CreateUnnamedVariable() + strCallF + ")");
+            codeStream.WriteLine(CreateUnnamedVariable() + strCallF + ")");           
             SaveArg("i32 " + GetCurrUnnamedVariable());
         }
 
