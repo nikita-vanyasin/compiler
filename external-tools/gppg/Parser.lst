@@ -1,10 +1,10 @@
 
 // ==========================================================================
-//  GPPG error listing for yacc source file <Parser.y - 13.01.2014 20:44:52>
+//  GPPG error listing for yacc source file <Parser.y - 13.01.2014 21:04:21>
 // ==========================================================================
 //  Version:  1.5.0
 //  Machine:  MYCOMPUTER
-//  DateTime: 13.01.2014 20:45:29
+//  DateTime: 13.01.2014 21:04:25
 //  UserName: User
 // ==========================================================================
 
@@ -170,8 +170,8 @@ CALL_ARGS : LEFT_PAREN CALL_ARGS_LIST RIGHT_PAREN
           | LEFT_PAREN RIGHT_PAREN
           ;
 
-CALL_ARGS_LIST : EXPRESSION
-               | EXPRESSION COMMA CALL_ARGS_LIST
+CALL_ARGS_LIST : OR_TEST
+               | OR_TEST COMMA CALL_ARGS_LIST
                ;
 
 BOOL_VALUE : TRUE
