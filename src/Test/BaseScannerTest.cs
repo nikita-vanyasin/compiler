@@ -119,6 +119,7 @@ class Program:
                         new Token(TokenType.SPACE, " "),
                         new Token(TokenType.SPACE, " "),
                         new Token(TokenType.LINE_END, "\n"),
+                        new Token(TokenType.LINE_END, "\n"),
                 new Token(TokenType.EOF, "\0")
             };
 
