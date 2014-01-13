@@ -539,6 +539,16 @@ namespace compiler
             codeStream.Write(CreateUnnamedVariable() + " = call " + GetLLVMType(symbolFunc.Type) + " @" + symbolFunc.Name + "(");      
             codeStream.Write(string.Join(",", GetCurrFuncArg().ToArray()));
             codeStream.WriteLine(")");
+            if (IsNot)
+            {
+                var tmpStr = " = xor "  + GetLLVMType(symbolFunc.Type) + " 1, " + GetCurrUnnamedVariable() + "";
+                codeStream.WriteLine(CreateUnnamedVariable() + tmpStr);
+            }
+            if (IsNegative)
+            {
+                var tmpStr = " = sup " + GetLLVMType(symbolFunc.Type) + " 0, " + GetCurrUnnamedVariable();
+                codeStream.WriteLine(CreateUnnamedVariable() + tmpStr);
+            }
             SaveArg(GetLLVMType(symbolFunc.Type) + " " + GetCurrUnnamedVariable());
             return false;
         }
