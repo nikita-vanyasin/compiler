@@ -60,6 +60,14 @@ namespace compiler
 			};
 			AddBuiltInFunc("String", "Strstr", BuiltInTypes.STRING, strstrList);
 
+			var strncpyList = new List<string>
+			{
+				BuiltInTypes.STRING,
+				BuiltInTypes.INT, 
+				BuiltInTypes.INT,
+			};
+			AddBuiltInFunc("String", "Substr", BuiltInTypes.STRING, strncpyList);
+
             var emptyList = new List<string>()
             {
             };

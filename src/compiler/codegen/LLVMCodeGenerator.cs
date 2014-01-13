@@ -39,6 +39,7 @@ namespace compiler
         private int stringLiteralCounter = 0;
         private List<string> stringConstants;
         private Dictionary<int, int> stringLengths;
+		private bool m_suppressClosingParen = false;
 
         private uint CreateWhileUse()
         {
@@ -150,6 +151,38 @@ namespace compiler
 		}
 
 
+		private void CallSubstr()
+		{
+			var callArgs = funcCallArgStack.Peek();
+			string lengthArg = callArgs.Last();
+			callArgs.Remove(lengthArg);
+			string offsetArg = callArgs.Last();
+			callArgs.Remove(offsetArg);
+			string strArg = callArgs.Last();
+			callArgs.Remove(strArg);
+
+			//сдвигаем указатель старта подстроки
+			codeStream.WriteLine(CreateUnnamedVariable() + " = getelementptr " + strArg + ", " + offsetArg);
+			strArg = GetCurrUnnamedVariable();
+
+			//создаем хранилище подстроки - length + 1
+			codeStream.WriteLine(CreateUnnamedVariable() + " = add " + lengthArg + ", 1");
+			string newLengthArg = GetCurrUnnamedVariable();
+			codeStream.WriteLine(CreateUnnamedVariable() + " = alloca i8, " + lengthArg);
+			string storageArg = GetCurrUnnamedVariable();
+
+			//чистим хранилище
+			codeStream.WriteLine(CreateUnnamedVariable() + " = call i8* (i8*, i8, i32)* @memset(i8* " + storageArg + ", i8 0, i32 " + newLengthArg + ")");
+
+			//копируем в хранилище
+			codeStream.WriteLine(CreateUnnamedVariable() + " = call i8* (i8*, i8*, i32)* @strncpy(i8* " + storageArg + ", i8* " + strArg + ", " + lengthArg + ")");
+			codeStream.WriteLine(CreateUnnamedVariable() + " = getelementptr i8* " + storageArg + ", i32 0" );
+
+			m_suppressClosingParen = true; //бял
+
+			SaveArg("i8* " + storageArg);
+		}
+
         private void GetLLVMBuilInFucntion(string target, string name)
         {
             switch (target)
@@ -192,6 +225,9 @@ namespace compiler
 					{
 						case "Strstr":
 							CallStrstr();
+							return;
+						case "Substr":
+							CallSubstr();
 							return;
 						default:
 							throw new NotImplementedException();
@@ -238,6 +274,8 @@ namespace compiler
             codeStream.WriteLine("declare void @srand(i32 *)");
             codeStream.WriteLine("declare i32 @time(i32 *)");
 			codeStream.WriteLine("declare i8* @strstr(i8*, i8*)");
+			codeStream.WriteLine("declare i8* @strncpy(i8*, i8*, i32)");
+			codeStream.WriteLine("declare i8* @memset(i8*, i8, i32)");
         }
 
         private void ResetUnnamedVariable()
@@ -520,7 +558,11 @@ namespace compiler
                 node.CallArgs.Accept(this);
                 GetLLVMBuilInFucntion(node.Target.Id, node.Name.Id);
                 codeStream.Write(string.Join(",", GetCurrFuncArg().ToArray()));
-                codeStream.WriteLine(")");
+				if (!m_suppressClosingParen)
+					codeStream.WriteLine(")");
+				else
+					m_suppressClosingParen = false;
+				
                 
                 return false;
             }
