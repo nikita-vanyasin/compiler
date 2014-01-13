@@ -142,6 +142,14 @@ namespace compiler
             SaveArg("i32 " + GetCurrUnnamedVariable());
         }
 
+
+		private void CallStrstr()
+		{
+			codeStream.Write(CreateUnnamedVariable() +	" = call i8* (i8*, i8*)* @strstr(" );
+			SaveArg("i32 " + GetCurrUnnamedVariable());
+		}
+
+
         private void GetLLVMBuilInFucntion(string target, string name)
         {
             switch (target)
@@ -179,6 +187,15 @@ namespace compiler
                         default:
                             throw new NotImplementedException();
                     }
+				case "String":
+					switch (name)
+					{
+						case "Strstr":
+							CallStrstr();
+							return;
+						default:
+							throw new NotImplementedException();
+					}
                 default:
                     throw new NotImplementedException();
             }
@@ -220,6 +237,7 @@ namespace compiler
             codeStream.WriteLine("declare i32 @rand()");
             codeStream.WriteLine("declare void @srand(i32 *)");
             codeStream.WriteLine("declare i32 @time(i32 *)");
+			codeStream.WriteLine("declare i8* @strstr(i8*, i8*)");
         }
 
         private void ResetUnnamedVariable()
