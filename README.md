@@ -1,7 +1,7 @@
 Py# compiler
 ========
 
-ТЯП курсовая работа.
+Compiler implementation (learning purposes)
 
 
 Simple compiler implementation of C#-python like language.
